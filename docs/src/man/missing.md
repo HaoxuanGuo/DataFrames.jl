@@ -1,7 +1,6 @@
-# Missing Data
+# 缺失数据
 
-In Julia, missing values in data are represented using the special object
-`missing`, which is the single instance of the type `Missing`.
+在Julia中，数据的缺失值使用特殊对象`missing`来表示，它是`Missing`类型的唯一实例。
 
 ```jldoctest
 julia> missing
@@ -11,9 +10,7 @@ julia> typeof(missing)
 Missing
 ```
 
-The `Missing` type lets users create vectors and `DataFrame` columns with
-missing values. Here we create a vector with a missing value and the
-element-type of the returned vector is `Union{Missing, Int64}`.
+`Missing`类型允许用户创建包含缺失值的向量和`DataFrame`列。这里我们创建一个包含缺失值的向量，返回的向量的元素类型是`Union{Missing, Int64}`。
 
 ```jldoctest missings
 julia> x = [1, 2, missing]
@@ -32,17 +29,14 @@ julia> eltype(x) == Union{Missing, Int}
 true
 ```
 
-`missing` values can be excluded when performing operations by using
-`skipmissing`, which returns a memory-efficient iterator.
+执行操作时可以使用`skipmissing`来排除`missing`值，它返回一个内存高效的迭代器。
 
 ```jldoctest missings
 julia> skipmissing(x)
 skipmissing(Union{Missing, Int64}[1, 2, missing])
 ```
 
-The output of `skipmissing` can be passed directly into functions as an
-argument. For example, we can find the `sum` of all non-missing values or
-`collect` the non-missing values into a new missing-free vector.
+`skipmissing`的输出可以直接作为函数的参数传入。例如，我们可以找到所有非缺失值的`sum`，或者将非缺失值`collect`到一个新的无缺失值向量中。
 
 ```jldoctest missings
 julia> sum(skipmissing(x))
@@ -54,9 +48,7 @@ julia> collect(skipmissing(x))
  2
 ```
 
-The function `coalesce` can be used to replace missing values with another value
-(note the dot, indicating that the replacement should be applied to all entries
-in `x`):
+函数`coalesce`可以用来将缺失值替换为另一个值（注意点，表示应用到`x`的所有条目）：
 
 ```jldoctest missings
 julia> coalesce.(x, 0)
@@ -66,9 +58,7 @@ julia> coalesce.(x, 0)
  0
 ```
 
-The functions [`dropmissing`](@ref) and [`dropmissing!`](@ref) can be used to
-remove the rows containing `missing` values from a data frame and either create
-a new `DataFrame` or mutate the original in-place respectively.
+函数[`dropmissing`](@ref)和[`dropmissing!`](@ref)可以用来从数据框中删除包含`missing`值的行，并分别创建一个新的`DataFrame`或就地修改原始数据。
 
 ```jldoctest missings
 julia> using DataFrames
@@ -95,8 +85,7 @@ julia> dropmissing(df)
    2 │     5      1  e
 ```
 
-One can specify the column(s) in which to search for rows containing `missing`
-values to be removed.
+可以指定在哪些列中搜索包含`missing`值的行以进行删除。
 
 ```jldoctest missings
 julia> dropmissing(df, :x)
@@ -109,10 +98,7 @@ julia> dropmissing(df, :x)
    3 │     5      1  e
 ```
 
-By default the [`dropmissing`](@ref) and [`dropmissing!`](@ref) functions keep
-the `Union{T, Missing}` element type in columns selected for row removal. To
-remove the `Missing` part, if present, set the `disallowmissing` keyword
-argument to `true` (it will become the default behavior in the future).
+默认情况下，[`dropmissing`](@ref)和[`dropmissing!`](@ref)函数在选定用于行删除的列中保持`Union{T, Missing}`元素类型。要删除`Missing`部分（如果存在），请将`disallowmissing`关键字参数设置为`true`（它将成为未来的默认行为）。
 
 ```jldoctest missings
 julia> dropmissing(df, disallowmissing=true)
@@ -124,10 +110,7 @@ julia> dropmissing(df, disallowmissing=true)
    2 │     5      1  e
 ```
 
-Sometimes it is useful to allow or disallow support of missing values in some
-columns of a data frame. These operations are supported by the
-[`allowmissing`](@ref), [`allowmissing!`](@ref), [`disallowmissing`](@ref), and
-[`disallowmissing!`](@ref) functions. Here is an example:
+有时，允许或不允许数据框的某些列支持缺失值是有用的。这些操作由[`allowmissing`](@ref)、[`allowmissing!`](@ref)、[`disallowmissing`](@ref)和[`disallowmissing!`](@ref)函数支持。这是一个例子：
 
 ```jldoctest missings
 julia> df = DataFrame(x=1:3, y=4:6)
@@ -149,8 +132,7 @@ julia> allowmissing!(df)
    3 │      3       6
 ```
 
-Now `df` allows missing values in all its columns. We can take advantage of this
-fact and set some of the values in `df` to `missing`, e.g.:
+现在，`df`允许其所有列中存在缺失值。我们可以利用这个事实，并将`df`中的一些值设置为`missing`，例如：
 
 ```jldoctest missings
 julia> df[1, 1] = missing
@@ -166,14 +148,9 @@ julia> df
    3 │       3       6
 ```
 
-Note that a column selector can be passed as the second positional argument to
-[`allowmissing`](@ref) and [`allowmissing!`](@ref) to restrict the change to
-only some columns in our data frame.
+请注意，可以将列选择器作为第二个位置参数传递给[`allowmissing`](@ref)和[`allowmissing!`](@ref)，以限制只更改我们数据框中的某些列。
 
-Now let us perform the reverse operation by disallowing missing values in `df`. We
-know that column `:y` does not contain missing values so we can use the
-[`disallowmissing`](@ref) function passing a column selector as the second
-positional argument:
+现在，让我们执行相反的操作，不允许在`df`中有缺失值。我们知道列`:y`不包含缺失值，所以我们可以使用[`disallowmissing`](@ref)函数，将列选择器作为第二个位置参数传入：
 
 ```jldoctest missings
 julia> disallowmissing(df, :y)
@@ -186,14 +163,9 @@ julia> disallowmissing(df, :y)
    3 │       3      6
 ```
 
-This operation created a new `DataFrame`. If we wanted to update the `df`
-in-place the [`disallowmissing!`](@ref) function should be used.
+这个操作创建了一个新的`DataFrame`。如果我们想就地更新`df`，应该使用[`disallowmissing!`](@ref)函数。
 
-If we tried to disallow missings in the whole data frame using
-`disallowmissing(df)` we would get an error. However, it is often useful to
-disallow missings in all columns that actually do not contain them but keep the
-columns that have some `missing` values unchanged without having to list them
-explicitly. This can be accomplished by passing the `error=false` keyword argument:
+如果我们尝试使用`disallowmissing(df)`在整个数据框中不允许缺失值，我们会得到一个错误。然而，通常在所有实际上不包含它们的列中不允许缺失值，但保持有一些`missing`值的列不变，而无需明确列出它们，这是很有用的。这可以通过传递`error=false`关键字参数来实现：
 
 ```jldoctest missings
 julia> disallowmissing(df, error=false)
@@ -206,16 +178,9 @@ julia> disallowmissing(df, error=false)
    3 │       3      6
 ```
 
-The [Missings.jl](https://github.com/JuliaData/Missings.jl) package provides a
-few convenience functions to work with missing values.
+[Missings.jl](https://github.com/JuliaData/Missings.jl)包提供了一些方便的函数来处理缺失值。
 
-One of the most commonly used is `passmissing`. It is a higher order function
-that takes some function `f` as its argument and returns a new function
-which returns `missing` if any of its positional arguments are `missing`
-and otherwise applies the function `f` to these arguments. This functionality
-is useful in combination with functions that do not support passing `missing`
-values as their arguments. For example, trying `uppercase(missing)` would
-produce an error, while the following works:
+最常用的一个是`passmissing`。它是一个高阶函数，接受一些函数`f`作为其参数，并返回一个新函数，如果其位置参数中有任何`missing`，则返回`missing`，否则将函数`f`应用于这些参数。这个功能与那些不支持将`missing`值作为参数传递的函数结合使用是有用的。例如，尝试`uppercase(missing)`会产生一个错误，而以下的操作是可以的：
 
 ```jldoctest missings
 julia> passmissing(uppercase)("a")
@@ -225,8 +190,7 @@ julia> passmissing(uppercase)(missing)
 missing
 ```
 
-The function `Missings.replace` returns an iterator which replaces `missing`
-elements with another value:
+函数`Missings.replace`返回一个迭代器，它用另一个值替换`missing`元素：
 
 ```jldoctest missings
 julia> using Missings
@@ -244,7 +208,7 @@ julia> collect(Missings.replace(x, 1)) == coalesce.(x, 1)
 true
 ```
 
-The function `nonmissingtype` returns the element-type `T` in `Union{T, Missing}`.
+函数`nonmissingtype`返回`Union{T, Missing}`中的元素类型`T`。
 
 ```jldoctest missings
 julia> eltype(x)
@@ -254,8 +218,7 @@ julia> nonmissingtype(eltype(x))
 Int64
 ```
 
-The `missings` function constructs `Vector`s and `Array`s supporting missing
-values, using the optional first argument to specify the element-type.
+`missings`函数构建支持缺失值的`Vector`和`Array`，使用可选的第一个参数来指定元素类型。
 
 ```jldoctest missings
 julia> missings(1)
@@ -277,5 +240,4 @@ julia> missings(Int, 1, 3)
  missing  missing  missing
 ```
 
-See the [Julia manual](https://docs.julialang.org/en/v1/manual/missing/) for
-more information about missing values.
+请参阅[Julia手册](https://docs.julialang.org/en/v1/manual/missing/)以获取更多关于缺失值的信息。

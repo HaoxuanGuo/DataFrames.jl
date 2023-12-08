@@ -1,6 +1,6 @@
-# Reshaping and Pivoting Data
+# 重塑和旋转数据
 
-Reshape data from wide to long format using the `stack` function:
+使用 `stack` 函数将数据从宽格式转换为长格式：
 
 ```jldoctest reshape
 julia> using DataFrames, CSV
@@ -54,9 +54,7 @@ julia> stack(iris, 1:4)
                             585 rows omitted
 ```
 
-The second optional argument to `stack` indicates the columns to be stacked.
-These are normally referred to as the measured variables. Column names can also
-be given:
+`stack` 的第二个可选参数表示要堆叠的列。这些通常被称为测量变量。也可以给出列名：
 
 ```jldoctest reshape
 julia> stack(iris, [:SepalLength, :SepalWidth, :PetalLength, :PetalWidth])
@@ -83,18 +81,11 @@ julia> stack(iris, [:SepalLength, :SepalWidth, :PetalLength, :PetalWidth])
                             585 rows omitted
 ```
 
-Note that all columns can be of different types. Type promotion follows the
-rules of `vcat`.
+注意，所有列可以是不同的类型。类型提升遵循 `vcat` 的规则。
 
-The stacked `DataFrame` that results includes all of the columns not specified
-to be stacked. These are repeated for each stacked column. These are normally
-referred to as identifier (id) columns. In addition to the id columns, two
-additional columns labeled `:variable` and `:values` contain the column
-identifier and the stacked columns.
+堆叠后的 `DataFrame` 包括所有未指定为堆叠的列。这些列对于每个堆叠的列都会重复。这些通常被称为标识符（id）列。除了 id 列，还有两个额外的列，标签为 `:variable` 和 `:values`，包含列标识符和堆叠的列。
 
-A third optional argument to `stack` represents the id columns that are
-repeated. This makes it easier to specify which variables you want included in
-the long format:
+`stack` 的第三个可选参数表示重复的 id 列。这使得指定您希望包含在长格式中的变量更加容易：
 
 ```jldoctest reshape
 julia> stack(iris, [:SepalLength, :SepalWidth], :Species)
@@ -121,7 +112,7 @@ julia> stack(iris, [:SepalLength, :SepalWidth], :Species)
                             285 rows omitted
 ```
 
-If you prefer to specify the id columns then use `Not` with `stack` like this:
+如果你更喜欢指定 id 列，那么可以像这样使用 `Not` 和 `stack`：
 
 ```jldoctest reshape
 julia> stack(iris, Not(:Species))
@@ -148,9 +139,9 @@ julia> stack(iris, Not(:Species))
                             585 rows omitted
 ```
 
-`unstack` converts from a long format to a wide format.
-The default is requires specifying which columns are an id variable,
-column variable names, and column values:
+`unstack` 将数据从长格式转换为宽格式。默认情况下需要指定哪些列是 id 变量、列变量名和列值：
+
+这是对上述Julia代码和注释的中文翻译：
 
 ```jldoctest reshape
 julia> iris.id = 1:size(iris, 1)
@@ -203,7 +194,7 @@ julia> unstack(longdf, :id, :variable, :value)
                                                135 rows omitted
 ```
 
-If the remaining columns are unique, you can skip the id variable and use:
+如果剩余的列是唯一的，你可以跳过 id 变量并使用：
 
 ```jldoctest reshape
 julia> unstack(longdf, :variable, :value)
@@ -230,8 +221,7 @@ julia> unstack(longdf, :variable, :value)
                                                                135 rows omitted
 ```
 
-You can even skip passing the `:variable` and `:value` values as positional
-arguments, as they will be used by default, and write:
+你甚至可以跳过传递 `:variable` 和 `:value` 值作为位置参数，因为它们将默认被使用，可以这样写：
 ```jldoctest reshape
 julia> unstack(longdf)
 150×6 DataFrame
@@ -257,13 +247,12 @@ julia> unstack(longdf)
                                                                135 rows omitted
 ```
 
-Passing `view=true` to `stack` returns a data frame whose columns are views into
-the original wide data frame. Here is an example:
+将 `view=true` 传递给 `stack` 会返回一个数据框，其列是原始宽数据框的视图。以下是一个例子：
 
 ```jldoctest reshape
 julia> stack(iris, view=true)
 600×4 DataFrame
- Row │ Species         id     variable     value
+ 行 │ Species         id     variable     value
      │ String15        Int64  String       Float64
 ─────┼─────────────────────────────────────────────
    1 │ Iris-setosa         1  SepalLength      5.1
@@ -282,22 +271,22 @@ julia> stack(iris, view=true)
  598 │ Iris-virginica    148  PetalWidth       2.0
  599 │ Iris-virginica    149  PetalWidth       2.3
  600 │ Iris-virginica    150  PetalWidth       1.8
-                                   585 rows omitted
+                                   585行被省略
 ```
 
-This saves memory. To create the view, several `AbstractVector`s are defined:
+这样可以节省内存。为了创建这个视图，定义了几个`AbstractVector`：
 
-`:variable` column -- `EachRepeatedVector`
-This repeats the variables N times where N is the number of rows of the original AbstractDataFrame.
+`:variable`列 -- `EachRepeatedVector`
+这将变量重复N次，其中N是原始AbstractDataFrame的行数。
 
-`:value` column -- `StackedVector`
-This is provides a view of the original columns stacked together.
+`:value`列 -- `StackedVector`
+这提供了原始列堆叠在一起的视图。
 
-Id columns -- `RepeatedVector`
-This repeats the original columns N times where N is the number of columns stacked.
+Id列 -- `RepeatedVector`
+这将原始列重复N次，其中N是堆叠的列数。
 
-To do aggregation, use the split-apply-combine functions in combination with
-`unstack` or use the `combine` keyword argument in `unstack`. Here is an example:
+要进行聚合，可以使用split-apply-combine函数与
+`unstack`结合，或者在`unstack`中使用`combine`关键字参数。以下是一个例子：
 
 ```jldoctest reshape
 julia> using Statistics
@@ -369,7 +358,7 @@ julia> unstack(d, :variable, :Species, :value, combine=mean)
    5 │ id                25.5             75.5           125.5
 ```
 
-To turn an `AbstractDataFrame` on its side, use [`permutedims`](@ref).
+要将`AbstractDataFrame`转置，可以使用[`permutedims`](@ref)函数。
 
 ```jldoctest reshape
 julia> df1 = DataFrame(a=["x", "y"], b=[1.0, 2.0], c=[3, 4], d=[true, false])
@@ -390,15 +379,7 @@ julia> permutedims(df1, 1)
    3 │ d           1.0      0.0
 ```
 
-Note that the column indexed by `src_colnames` in the original `df`
-becomes the column names in the permuted result,
-and the column names of the original become a new column.
-Typically, this would be used on columns with homogeneous element types,
-since the element types of the other columns
-are the result of `promote_type` on _all_ the permuted columns.
-Note also that, by default, the new column created from the column names
-of the original `df` has the same name as `src_namescol`.
-An optional positional argument `dest_namescol` can alter this:
+请注意，原始`df`中由`src_colnames`索引的列在转置结果中成为列名，原始列名成为新列。这通常用于具有同类元素类型的列，因为其他列的元素类型是对所有转置列的`promote_type`结果。还要注意，默认情况下，从原始`df`的列名创建的新列与`src_namescol`的名称相同。可选的位置参数`dest_namescol`可以改变这一点：
 
 ```jldoctest reshape
 julia> df2 = DataFrame(a=["x", "y"], b=[1, "two"], c=[3, 4], d=[true, false])

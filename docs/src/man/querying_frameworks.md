@@ -1,36 +1,25 @@
-# Data manipulation frameworks
+# 数据操作框架
 
-Three frameworks provide convenience methods to manipulate `DataFrame`s:
-DataFramesMeta.jl, DataFrameMacros.jl and Query.jl. They implement a functionality similar to
-[dplyr](https://dplyr.tidyverse.org/) or
-[LINQ](https://en.wikipedia.org/wiki/Language_Integrated_Query).
+有三个框架提供了方便的方法来操作 `DataFrame`：DataFramesMeta.jl，DataFrameMacros.jl和Query.jl。它们实现了类似于[dplyr](https://dplyr.tidyverse.org/)或[LINQ](https://en.wikipedia.org/wiki/Language_Integrated_Query)的功能。
 
 ## DataFramesMeta.jl
 
-The [DataFramesMeta.jl](https://github.com/JuliaStats/DataFramesMeta.jl) package
-provides a convenient yet fast macro-based interface to work with `DataFrame`s.
-The instructions below are for version 0.10.0 of DataFramesMeta.jl.
+[DataFramesMeta.jl](https://github.com/JuliaStats/DataFramesMeta.jl)包提供了一个便捷且快速的基于宏的接口来处理 `DataFrame`。下面的指南适用于DataFramesMeta.jl的0.10.0版本。
 
-First install the DataFramesMeta.jl package:
+首先安装DataFramesMeta.jl包：
 
 ```julia
 using Pkg
 Pkg.add("DataFramesMeta")
 ```
 
-The major benefit of the package is it provides a more convenient syntax
-for the transformation functions `transform`, `select`, and `combine` 
-via the macros `@transform`, `@select`, `@combine`, and more.
+该包的主要优点是它通过宏`@transform`，`@select`，`@combine`等提供了更便捷的语法来进行转换函数 `transform`，`select`和`combine`。
 
-DataFramesMeta.jl also reexports the `@chain` macro from 
-[Chain.jl](https://github.com/jkrumbiegel/Chain.jl), allowing users to
-pipe the output of one transformation as an input to another, as with 
-`|>` and `%>%` in R. 
+DataFramesMeta.jl还从[Chain.jl](https://github.com/jkrumbiegel/Chain.jl)中重新导出了`@chain`宏，允许用户把一个转换的输出作为另一个转换的输入，就像在R中的`|>`和`%>%`一样。
 
-Below we present several selected examples of usage of the package.
+下面我们展示了一些使用该包的选定示例。
 
-First we subset rows of the source data frame using a logical condition
-and select its two columns, renaming one of them:
+首先我们使用逻辑条件对源数据框的行进行子集选择，并选择其两列，重命名其中一列：
 
 ```jldoctest dataframesmeta
 julia> using DataFramesMeta
@@ -58,7 +47,7 @@ julia> @chain df begin
    2 │                  4  Roger
 ```
 
-In the following examples we show that DataFramesMeta.jl also supports the split-apply-combine pattern:
+在下面的示例中，我们展示了DataFramesMeta.jl也支持分割-应用-组合模式：
 
 ```jldoctest dataframesmeta
 julia> df = DataFrame(key=repeat(1:3, 4), value=1:12)
@@ -114,32 +103,22 @@ julia> @chain df begin
   12 │     3     12       9
 ```
 
-You can find more details about how this package can be used on the
-[DataFramesMeta.jl GitHub page](https://github.com/JuliaData/DataFramesMeta.jl).
+你可以在[DataFramesMeta.jl GitHub页面](https://github.com/JuliaData/DataFramesMeta.jl)上找到更多关于如何使用此包的详细信息。
 
 ## DataFrameMacros.jl
 
-[DataFrameMacros.jl](https://github.com/jkrumbiegel/DataFrameMacros.jl) is
-an alternative to DataFramesMeta.jl with an additional focus on convenient
-solutions for the transformation of multiple columns at once.
-The instructions below are for version 0.3 of DataFrameMacros.jl.
+[DataFrameMacros.jl](https://github.com/jkrumbiegel/DataFrameMacros.jl) 是DataFramesMeta.jl的替代品，它额外关注于便捷地同时转换多列的解决方案。下面的指南适用于DataFrameMacros.jl的0.3版本。
 
-First, install the DataFrameMacros.jl package:
+首先，安装DataFrameMacros.jl包：
 
 ```julia
 using Pkg
 Pkg.add("DataFrameMacros")
 ```
 
-In DataFrameMacros.jl, all but the `@combine` macro are row-wise by default.
-There is also a `@groupby` which allows creating grouping columns on the fly
-using the same syntax as `@transform`, for grouping by new columns
-without writing them out twice.
+在DataFrameMacros.jl中，除了`@combine`宏，默认情况下所有宏都是按行处理的。还有一个`@groupby`宏，它允许使用与`@transform`相同的语法在运行时创建分组列，以便在不需要两次编写它们的情况下按新列进行分组。
 
-In the example below, you can also see some of DataFrameMacros.jl's multi-column
-features, where `mean` is applied to both age columns at once by selecting
-them with the `r"age"` regex. The new column names are then derived using the
-`"{}"` shortcut which splices the transformed column names into a string.
+在下面的示例中，你还可以看到DataFrameMacros.jl的多列功能，其中`mean`一次应用于通过`r"age"`正则表达式选择的两个年龄列。然后使用`"{}"`快捷方式生成新的列名，该快捷方式将转换的列名插入到字符串中。
 
 ```jldoctest dataframemacros
 julia> using DataFrames, DataFrameMacros, Chain, Statistics
@@ -168,9 +147,7 @@ julia> @chain df begin
    2 │      true      56.5            678.0
 ```
 
-There's also the capability to reference a group of multiple columns as a single unit,
-for example to run aggregations over them, with the `{{ }}` syntax.
-In the following example, the first quarter is compared to the maximum of the other three:
+还有一种能力是将一组多列作为一个单元引用，例如对它们进行聚合，使用`{{ }}`语法。在下面的示例中，将第一季度与其他三个季度的最大值进行比较：
 
 ```jldoctest dataframemacros
 julia> df = DataFrame(q1 = [12.0, 0.4, 42.7],
@@ -197,27 +174,18 @@ julia> @transform df :q1_best = :q1 > maximum({{Not(:q1)}})
 
 ## Query.jl
 
-The [Query.jl](https://github.com/queryverse/Query.jl) package provides advanced
-data manipulation capabilities for `DataFrame`s (and many other data
-structures). This section provides a short introduction to the package, the
-[Query.jl documentation](http://www.queryverse.org/Query.jl/stable/) has a more
-comprehensive documentation of the package. The instructions here are for version
-1.0.0 of Query.jl.
+[Query.jl](https://github.com/queryverse/Query.jl)包为`DataFrame`（以及许多其他数据结构）提供了高级数据操作功能。本节提供了该包的简短介绍，[Query.jl文档](http://www.queryverse.org/Query.jl/stable/)提供了包的更全面的文档。这里的指示适用于Query.jl的1.0.0版本。
 
-To get started, install the Query.jl package:
+首先，安装Query.jl包：
 
 ```julia
 using Pkg
 Pkg.add("Query")
 ```
 
-A query is started with the `@from` macro and consists of a series of query
-commands. Query.jl provides commands that can filter, project, join, flatten and
-group data from a `DataFrame`. A query can return an iterator, or one can
-materialize the results of a query into a variety of data structures, including
-a new `DataFrame`.
+查询以`@from`宏开始，并由一系列查询命令组成。Query.jl提供了可以过滤，投射，连接，展平和分组`DataFrame`数据的命令。查询可以返回一个迭代器，或者可以将查询结果实体化到各种数据结构中，包括新的`DataFrame`。
 
-A simple example of a query looks like this:
+一个简单的查询示例如下：
 
 ```jldoctest query
 julia> using DataFrames, Query
@@ -246,27 +214,9 @@ julia> q1 = @from i in df begin
    2 │                  4  Roger
 ```
 
-The query starts with the `@from` macro. The first argument `i` is the name of
-the range variable that will be used to refer to an individual row in later
-query commands. The next argument `df` is the data source that one wants to
-query. The `@where` command in this query will filter the source data by
-applying the filter condition `i.age > 40`. This filters out any rows in which
-the `age` column is not larger than 40. The `@select` command then projects the
-columns of the source data onto a new column structure. The example here applies
-three specific modifications: 1) it only keeps a subset of the columns in the
-source `DataFrame`, i.e. the `age` column will not be part of the transformed
-data; 2) it changes the order of the two columns that are selected; and 3) it
-renames one of the columns that is selected from `children` to
-`number_of_children`. The example query uses the `{}` syntax to achieve this. A
-`{}` in a Query.jl expression instantiates a new
-[NamedTuple](https://github.com/blackrock/NamedTuples.jl), i.e. it is a shortcut
-for writing `@NT(number_of_children=>i.children, name=>i.name)`. The `@collect`
-statement determines the data structure that the query returns. In this example
-the results are returned as a `DataFrame`.
+查询以`@from`宏开始。第一个参数`i`是将在后续查询命令中用于引用单个行的范围变量的名称。下一个参数`df`是你想要查询的数据源。此查询中的`@where`命令将通过应用过滤条件`i.age > 40`来过滤源数据。这将过滤掉任何`age`列不大于40的行。然后，`@select`命令将源数据的列投射到新的列结构上。这里的示例应用了三个特定的修改：1) 它只保留源`DataFrame`中的列子集，即转换后的数据不会包含`age`列；2) 它更改了选定的两列的顺序；和3) 它将选定的一列从`children`重命名为`number_of_children`。示例查询使用`{}`语法来实现这一点。Query.jl表达式中的`{}`实例化一个新的[NamedTuple](https://github.com/blackrock/NamedTuples.jl)，即它是编写`@NT(number_of_children=>i.children, name=>i.name)`的快捷方式。`@collect`语句确定查询返回的数据结构。在此示例中，结果以`DataFrame`的形式返回。
 
-A query without a `@collect` statement returns a standard julia iterator that
-can be used with any normal julia language construct that can deal with
-iterators. The following code returns a julia iterator for the query results:
+没有`@collect`语句的查询返回一个标准的Julia迭代器，可以用任何可以处理迭代器的正常Julia语言结构来使用。以下代码为查询结果返回一个Julia迭代器：
 
 ```jldoctest query
 julia> q2 = @from i in df begin
@@ -276,7 +226,7 @@ julia> q2 = @from i in df begin
 
 ```
 
-One can loop over the results using a standard julia `for` statement:
+可以使用标准的Julia `for`语句遍历结果：
 
 ```jldoctest query
 julia> total_children = 0
@@ -291,7 +241,7 @@ julia> total_children
 
 ```
 
-Or one can use a comprehension to extract the name of a subset of rows:
+或者可以使用理解（comprehension）来提取一部分行的名称：
 
 ```jldoctest query
 julia> y = [i.name for i in q2 if i.number_of_children > 0]
@@ -300,8 +250,7 @@ julia> y = [i.name for i in q2 if i.number_of_children > 0]
 
 ```
 
-The last example (extracting only the name and applying a second filter) could
-of course be completely expressed as a query expression:
+最后一个示例（只提取名称并应用第二个过滤器）当然可以完全表示为查询表达式：
 
 ```jldoctest query
 julia> q3 = @from i in df begin
@@ -314,14 +263,6 @@ julia> q3 = @from i in df begin
 
 ```
 
-A query that ends with a `@collect` statement without a specific type will
-materialize the query results into an array. Note also the difference in the
-`@select` statement: The previous queries all used the `{}` syntax in the
-`@select` statement to project results into a tabular format. The last query
-instead just selects a single value from each row in the `@select` statement.
+以`@collect`语句结束但没有特定类型的查询将查询结果实体化为数组。还要注意`@select`语句中的区别：前面的查询都在`@select`语句中使用`{}`语法将结果投射到表格格式。最后一个查询在`@select`语句中只从每行中选择一个值。
 
-These examples only scratch the surface of what one can do with
-[Query.jl](https://github.com/queryverse/Query.jl), and the interested reader is
-referred to the [Query.jl
-documentation](http://www.queryverse.org/Query.jl/stable/) for more
-information.
+这些例子只是使用[Query.jl](https://github.com/queryverse/Query.jl)可以做的事情的冰山一角，有兴趣的读者可以参考[Query.jl文档](http://www.queryverse.org/Query.jl/stable/)以获取更多信息。

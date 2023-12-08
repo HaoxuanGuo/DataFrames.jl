@@ -1,7 +1,6 @@
-# Sorting
+# 排序
 
-Sorting is a fundamental component of data analysis. Basic sorting is trivial:
-just calling `sort!` will sort all columns, in place:
+排序是数据分析的基本组成部分。基本排序很简单：只需调用 `sort!` 就可以原地对所有列进行排序：
 
 ```jldoctest sort
 julia> using DataFrames, CSV
@@ -55,12 +54,11 @@ julia> sort!(iris)
                                                         135 rows omitted
 ```
 
-Observe that all columns are taken into account lexicographically when sorting the `DataFrame`.
+请注意，在对 `DataFrame` 进行排序时，所有列都会按字典顺序考虑。
 
-You can also call the `sort` function to create a new `DataFrame` with freshly allocated sorted vectors.
+你也可以调用 `sort` 函数来创建一个新的 `DataFrame`，其中包含新分配的排序向量。
 
-In sorting `DataFrame`s, you may want to sort different columns with different options.
-Here are some examples showing most of the possible options:
+在排序 `DataFrame` 时，你可能希望用不同的选项对不同的列进行排序。以下是一些示例，展示了大部分可能的选项：
 
 ```jldoctest sort
 julia> sort!(iris, rev = true)
@@ -133,17 +131,11 @@ julia> sort!(iris, [order(:Species, by=length), order(:SepalLength, rev=true)])
                                                          135 rows omitted
 ```
 
-Keywords used above include `rev` (to sort in reverse),
-and `by` (to apply a function to values before comparing them).
-Each keyword can either be a single value, a vector with values corresponding to
-individual columns, or a selector: `:`, `Cols`, `All`, `Not`, `Between`, or `Regex`.
+上面使用的关键字包括 `rev`（用于逆序排序），和 `by`（用于在比较值之前对它们应用函数）。每个关键字可以是单个值，可以是与各列对应的值的向量，也可以是选择器：`:`、`Cols`、`All`、`Not`、`Between` 或 `Regex`。
 
-As an alternative to using a vector values you can use `order` to specify
-an ordering for a particular column within a set of columns.
+作为使用向量值的替代方法，你可以使用 `order` 来指定一组列中特定列的排序。
 
-The following two examples show two ways to sort the `iris` dataset with the
-same result: `:Species` will be ordered in reverse order, and within groups,
-rows will be sorted by increasing `:PetalLength`:
+以下两个示例展示了两种对 `iris` 数据集进行排序的方法，结果相同：`Species` 将以反向顺序排序，而在组内，行将按 `PetalLength` 的增序排序：
 
 ```jldoctest sort
 julia> sort!(iris, [:Species, :PetalLength], rev=[true, false])

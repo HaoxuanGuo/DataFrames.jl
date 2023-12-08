@@ -1,51 +1,32 @@
-# Getting Started
+# 入门指南
 
-## Installation
+## 安装
 
-The DataFrames package is available through the Julia package system and can be installed using the following commands:
+DataFrames包通过Julia包系统提供，可以使用以下命令进行安装：
 
 ```julia
 using Pkg
 Pkg.add("DataFrames")
 ```
 
-Throughout the rest of this tutorial, we will assume that you have installed the
-DataFrames package and have already typed `using DataFrames` to bring all of the
-relevant variables into your current namespace.
+在本教程的其余部分，我们假设你已经安装了DataFrames包，并且已经输入了`using DataFrames`，将所有相关的变量引入到你当前的命名空间。
 
-!!! note
+!!! 注意
 
-    By default DataFrames.jl limits the number of rows and columns when displaying a data frame in a Jupyter
-    Notebook to 25 and 100, respectively. You can override this behavior by changing the values of the
-    `ENV["DATAFRAMES_COLUMNS"]` and `ENV["DATAFRAMES_ROWS"]` variables to hold the maximum number of columns
-    and rows of the output. All columns or rows will be printed if those numbers are equal or lower than 0.
+    默认情况下，DataFrames.jl在Jupyter Notebook中显示数据帧时，行和列的数量分别限制为25和100。你可以通过改变`ENV["DATAFRAMES_COLUMNS"]`和`ENV["DATAFRAMES_ROWS"]`变量的值来覆盖这种行为，以保持输出的最大列数和行数。如果这些数字等于或小于0，将打印所有的列或行。
 
-    Alternatively, you may want to set the maximum number of data frame rows to print to `100` and the maximum
-    number of columns to print to `1000` for every Julia session using some Jupyter kernel file (numbers `100`
-    and `1000` are only examples and can be adjusted). In such case add a
-    `"DATAFRAME_COLUMNS": "1000", "DATAFRAMES_ROWS": "100"` entry to the `"env"` variable in this Jupyter kernel
-    file. See [here](https://jupyter-client.readthedocs.io/en/stable/kernels.html) for information about location
-    and specification of Jupyter kernels.
+    或者，你可能想要在每个Julia会话中，通过某个Jupyter内核文件设置数据帧的最大打印行数为`100`，最大打印列数为`1000`（数字`100`和`1000`只是例子，可以进行调整）。在这种情况下，向这个Jupyter内核文件的`"env"`变量中添加一个`"DATAFRAME_COLUMNS": "1000", "DATAFRAMES_ROWS": "100"`条目。关于Jupyter内核的位置和规范的信息，请查看[这里](https://jupyter-client.readthedocs.io/en/stable/kernels.html)。
 
-    The package [PrettyTables.jl](https://github.com/ronisbr/PrettyTables.jl) renders the `DataFrame` in the
-    Jupyter notebook. Users can customize the output by passing keywords arguments `kwargs...` to the
-    function `show`: `show(stdout, MIME("text/html"), df; kwargs...)`, where `df` is the `DataFrame`. Any
-    argument supported by PrettyTables.jl in the HTML backend can be used here. Hence, for example, if the user
-    wants to change the color of all numbers smaller than 0 to red in Jupyter, they can execute:
-    `show(stdout, MIME("text/html"), df; highlighters = hl_lt(0, HtmlDecoration(color = "red")))` after
-    `using PrettyTables`. For more information about the available options, check
-    [PrettyTables.jl documentation](https://ronisbr.github.io/PrettyTables.jl/stable/man/usage/).
+    [PrettyTables.jl](https://github.com/ronisbr/PrettyTables.jl)包在Jupyter notebook中渲染`DataFrame`。用户可以通过向`show`函数传递关键字参数`kwargs...`来自定义输出：`show(stdout, MIME("text/html"), df; kwargs...)`，其中`df`是`DataFrame`。此处可以使用PrettyTables.jl在HTML后端支持的任何参数。因此，例如，如果用户想要在Jupyter中将所有小于0的数字的颜色改为红色，他们可以在`using PrettyTables`后执行：`show(stdout, MIME("text/html"), df; highlighters = hl_lt(0, HtmlDecoration(color = "red")))`。关于可用选项的更多信息，请查看[PrettyTables.jl文档](https://ronisbr.github.io/PrettyTables.jl/stable/man/usage/)。
 
-## The `DataFrame` Type
+## `DataFrame` 类型
 
-Objects of the `DataFrame` type represent a data table as a series of vectors,
-each corresponding to a column or variable. The simplest way of constructing a
-`DataFrame` is to pass column vectors using keyword arguments or pairs:
+`DataFrame`类型的对象表示一个数据表，作为一系列向量，每个向量对应一列或变量。构造`DataFrame`的最简单方式是使用关键字参数或对传递列向量：
 
 ```jldoctest dataframe
 julia> using DataFrames
 
-julia> DataFrame(a=1:4, b=["M", "F", "F", "M"]) # keyword argument constructor
+julia> DataFrame(a=1:4, b=["M", "F", "F", "M"]) # 关键字参数构造器
 4×2 DataFrame
  Row │ a      b
      │ Int64  String
@@ -56,10 +37,10 @@ julia> DataFrame(a=1:4, b=["M", "F", "F", "M"]) # keyword argument constructor
    4 │     4  M
 ```
 
-Here are examples of other commonly used ways to construct a data frame:
+以下是其他常用的构造数据帧的方法：
 
 ```jldoctest dataframe
-julia> DataFrame((a=[1, 2], b=[3, 4])) # Tables.jl table constructor from a named tuple of vectors
+julia> DataFrame((a=[1, 2], b=[3, 4])) # 从命名元组的向量构造Tables.jl表
 2×2 DataFrame
  Row │ a      b
      │ Int64  Int64
@@ -67,7 +48,7 @@ julia> DataFrame((a=[1, 2], b=[3, 4])) # Tables.jl table constructor from a name
    1 │     1      3
    2 │     2      4
 
-julia> DataFrame([(a=1, b=0), (a=2, b=0)]) # Tables.jl table constructor from a vector of named tuples
+julia> DataFrame([(a=1, b=0), (a=2, b=0)]) # 从命名元组的向量构造Tables.jl表
 2×2 DataFrame
  Row │ a      b
      │ Int64  Int64
@@ -75,7 +56,7 @@ julia> DataFrame([(a=1, b=0), (a=2, b=0)]) # Tables.jl table constructor from a 
    1 │     1      0
    2 │     2      0
 
-julia> DataFrame("a" => 1:2, "b" => 0) # Pair constructor
+julia> DataFrame("a" => 1:2, "b" => 0) # Pair构造器
 2×2 DataFrame
  Row │ a      b
      │ Int64  Int64
@@ -83,7 +64,7 @@ julia> DataFrame("a" => 1:2, "b" => 0) # Pair constructor
    1 │     1      0
    2 │     2      0
 
-julia> DataFrame([:a => 1:2, :b => 0]) # vector of Pairs constructor
+julia> DataFrame([:a => 1:2, :b => 0]) # Pairs向量构造器
 2×2 DataFrame
  Row │ a      b
      │ Int64  Int64
@@ -91,7 +72,7 @@ julia> DataFrame([:a => 1:2, :b => 0]) # vector of Pairs constructor
    1 │     1      0
    2 │     2      0
 
-julia> DataFrame(Dict(:a => 1:2, :b => 0)) # dictionary constructor
+julia> DataFrame(Dict(:a => 1:2, :b => 0)) # 字典构造器
 2×2 DataFrame
  Row │ a      b
      │ Int64  Int64
@@ -99,7 +80,7 @@ julia> DataFrame(Dict(:a => 1:2, :b => 0)) # dictionary constructor
    1 │     1      0
    2 │     2      0
 
-julia> DataFrame([[1, 2], [0, 0]], [:a, :b]) # vector of vectors constructor
+julia> DataFrame([[1, 2], [0, 0]], [:a, :b]) # 向量的向量构造器
 2×2 DataFrame
  Row │ a      b
      │ Int64  Int64
@@ -107,7 +88,7 @@ julia> DataFrame([[1, 2], [0, 0]], [:a, :b]) # vector of vectors constructor
    1 │     1      0
    2 │     2      0
 
-julia> DataFrame([1 0; 2 0], :auto) # matrix constructor
+julia> DataFrame([1 0; 2 0], :auto) # 矩阵构造器
 2×2 DataFrame
  Row │ x1     x2
      │ Int64  Int64
@@ -116,21 +97,9 @@ julia> DataFrame([1 0; 2 0], :auto) # matrix constructor
    2 │     2      0
 ```
 
-Columns can be directly (i.e. without copying) extracted using `df.col`,
-`df."col"`, `df[!, :col]` or `df[!, "col"]` (this rule applies to getting data
-from a data frame, not writing data to a data frame). The two latter syntaxes
-are more flexible as they allow passing a variable holding the name of the
-column, and not only a literal name. Note that column names can be either
-symbols (written as `:col`, `:var"col"` or `Symbol("col")`) or strings (written
-as `"col"`). In the forms `df."col"` and `:var"col"` variable interpolation into
-a string using `$` does not work. Columns can also be extracted using an integer
-index specifying their position.
+列可以直接（即，不复制）用`df.col`，`df."col"`，`df[!, :col]`或`df[!, "col"]`提取（这个规则适用于从数据帧获取数据，而不是向数据帧写入数据）。后两种语法更灵活，因为它们允许传递一个保存列名的变量，而不仅仅是一个字面名。注意，列名可以是符号（写成`:col`，`:var"col"`或`Symbol("col")`）或字符串（写成`"col"`）。在`df."col"`和`:var"col"`的形式中，使用`进行字符串插值不起作用。列也可以通过指定它们的位置的整数索引来提取。
 
-Since `df[!, :col]` does not make a copy, changing the elements of the column
-vector returned by this syntax will affect the values stored in the original
-`df`. To get a copy of the column use `df[:, :col]`: changing the vector
-returned by this syntax does not change `df`.
-
+由于`df[!, :col]`不会复制，改变这种语法返回的列向量的元素将影响存储在原始`df`中的值。要获取列的副本，使用`df[:, :col]`：改变这种语法返回的向量不会改变`df`。
 
 ```jldoctest dataframe
 julia> df = DataFrame(A=1:4, B=["M", "F", "F", "M"])
@@ -197,7 +166,7 @@ julia> df[:, firstcolumn] == df.A
 true
 ```
 
-Column names can be obtained as strings using the `names` function:
+列名可以使用`names`函数获取为字符串：
 
 ```jldoctest dataframe
 julia> names(df)
@@ -206,25 +175,23 @@ julia> names(df)
  "B"
 ```
 
-You can also filter column names by passing a column selector condition as a second argument.
-See the [`names`](@ref) docstring for a detailed list of available conditions.
-Here we give some selected examples:
+你也可以通过传递一个列选择器条件作为第二个参数来过滤列名。在[`names`](@ref)文档字符串中，你可以找到关于所有可用条件的详细列表。这里我们给出一些选定的例子：
 
 ```jldoctest dataframe
-julia> names(df, r"A") # a regular expression selector
+julia> names(df, r"A") # 正则表达式选择器
 1-element Vector{String}:
  "A"
 
-julia> names(df, Int) # a selector using column element type
+julia> names(df, Int) # 使用列元素类型的选择器
 1-element Vector{String}:
  "A"
 
-julia> names(df, Not(:B)) # selector keeping all columns except :B
+julia> names(df, Not(:B)) # 保留除:B以外的所有列的选择器
 1-element Vector{String}:
  "A"
 ```
 
-To get column names as `Symbol`s use the `propertynames` function:
+要以`Symbol`形式获取列名，使用`propertynames`函数：
 
 ```jldoctest dataframe
 julia> propertynames(df)
@@ -233,16 +200,13 @@ julia> propertynames(df)
  :B
 ```
 
-!!! note
+!!! 注意
 
-    DataFrames.jl allows to use `Symbol`s (like `:A`) and strings (like `"A"`)
-    for all column indexing operations for convenience. However, using `Symbol`s
-    is slightly faster and should generally be preferred, if not generating them
-    via string manipulation.
+    DataFrames.jl允许使用`Symbol`（如`:A`）和字符串（如`"A"`）进行所有列索引操作，以便于使用。然而，使用`Symbol`稍微快一些，通常应该被优先选择，除非通过字符串操作生成它们。
 
-### Constructing Column by Column
+### 按列构造
 
-It is also possible to start with an empty `DataFrame` and add columns to it one by one:
+也可以从一个空的`DataFrame`开始，一列一列地添加：
 
 ```jldoctest dataframe
 julia> df = DataFrame()
@@ -288,8 +252,7 @@ julia> df
    8 │     8  F           0
 ```
 
-The `DataFrame` we build in this way has 8 rows and 3 columns.
-This can be checked using the `size` function:
+我们以这种方式构建的`DataFrame`有8行和3列。这可以使用`size`函数进行检查：
 
 ```jldoctest dataframe
 julia> size(df, 1)
@@ -302,16 +265,11 @@ julia> size(df)
 (8, 3)
 ```
 
-In the above example notice that the `df[!, :C] .= 0` expression created a new
-column in the data frame by broadcasting a scalar.
+在上述例子中，注意到表达式`df[!, :C] .= 0`通过广播一个标量来创建了数据框中的新列。
 
-When setting a column of a data frame the `df[!, :C]` and `df.C` syntaxes are
-equivalent and they would replace (or create) the `:C` column in `df`. This
-is different from using `df[:, :C]` to set a column in a data frame, which
-updates the contents of column in-place if it already exists.
+在设置数据框的列时，`df[!, :C]`和`df.C`的语法是等价的，它们会替换（或创建）`df`中的`:C`列。这与使用`df[:, :C]`设置数据框中的列不同，后者如果列已经存在的话，会就地更新列的内容。
 
-Here is an example showing this difference. Let us try changing the `:B` column
-to a binary variable.
+这里有一个例子展示这种差异。让我们尝试将`:B`列改为二元变量。
 
 ```jldoctest dataframe
 julia> df[:, :B] = df.B .== "F"
@@ -321,10 +279,9 @@ julia> df[:, :B] .= df.B .== "F"
 ERROR: MethodError: Cannot `convert` an object of type Bool to an object of type String
 ```
 
-The above operations did not work because when you use `:` as row selector the
-`:B` column is updated in-place, and it only supports storing strings.
+上述操作没有成功，因为当你使用`:`作为行选择器时，`:B`列是就地更新的，它只支持存储字符串。
 
-On the other hand the following works:
+另一方面，下面的操作可以：
 
 ```jldoctest dataframe
 julia> df.B = df.B .== "F"
@@ -353,18 +310,13 @@ julia> df
    8 │     8   true      0
 ```
 
-As you can see because we used `df.B` on the right-hand side of the assignment
-the `:B` column was replaced. The same effect would be achieved if we used
-`df[!, :B]` instead or if we used broadcasted assignment `.=`.
+如你所见，因为我们在赋值的右侧使用了`df.B`，所以`:B`列被替换了。如果我们使用`df[!, :B]`或者我们使用广播赋值`.=`，将会达到同样的效果。
 
-In the [Indexing](@ref) section of the manual you can find all details about all
-the available indexing options.
+在手册的[Indexing](@ref)部分，你可以找到所有关于所有可用索引选项的详细信息。
 
-### Constructing Row by Row
+### 逐行构建
 
-It is also possible to fill a `DataFrame` row by row. Let us construct an empty
-data frame with two columns (note that the first column can only contain
-integers and the second one can only contain strings):
+也可以逐行填充`DataFrame`。让我们构建一个空的数据框，有两列（注意第一列只能包含整数，第二列只能包含字符串）：
 
 ```jldoctest dataframe
 julia> df = DataFrame(A=Int[], B=String[])
@@ -374,8 +326,7 @@ julia> df = DataFrame(A=Int[], B=String[])
 ─────┴───────────────
 ```
 
-Rows can then be added as tuples or vectors, where the order of elements matches that of columns.
-To add new rows at the end of a data frame use [`push!`](@ref):
+然后可以添加元组或向量作为行，其中元素的顺序与列的顺序匹配。要在数据框的末尾添加新行，使用[`push!`](@ref)：
 
 ```jldoctest dataframe
 julia> push!(df, (1, "M"))
@@ -394,7 +345,7 @@ julia> push!(df, [2, "N"])
    2 │     2  N
 ```
 
-Rows can also be added as `Dict`s, where the dictionary keys match the column names:
+行也可以作为`Dict`添加，其中字典的键匹配列的名称：
 
 ```jldoctest dataframe
 julia> push!(df, Dict(:B => "F", :A => 3))
@@ -407,40 +358,31 @@ julia> push!(df, Dict(:B => "F", :A => 3))
    3 │     3  F
 ```
 
-Note that constructing a `DataFrame` row by row is significantly less performant than
-constructing it all at once, or column by column. For many use-cases this will not matter,
-but for very large `DataFrame`s  this may be a consideration.
+请注意，逐行构建`DataFrame`的性能明显低于一次性构建，或者按列构建。对于许多用例，这可能无关紧要，但对于非常大的`DataFrame`，这可能是一个考虑因素。
 
-If you want to add rows at the beginning of a data frame use [`pushfirst!`](@ref)
-and to insert a row in an arbitrary location use [`insert!`](@ref).
+如果你想在数据框的开始处添加行，使用[`pushfirst!`](@ref)，要在任意位置插入行，使用[`insert!`](@ref)。
 
-You can also add whole tables to a data frame using the [`append!`](@ref)
-and [`prepend!`](@ref) functions.
+你也可以使用[`append!`](@ref)和[`prepend!`](@ref)函数将整个表添加到数据框中。
 
-### Constructing from another table type
+### 从另一种表类型构建
 
-DataFrames supports the [Tables.jl](https://github.com/JuliaData/Tables.jl) interface for
-interacting with tabular data. This means that a `DataFrame` can be used as a "source"
-to any package that expects a Tables.jl interface input, (file format packages,
-data manipulation packages, etc.). A `DataFrame` can also be a sink for any Tables.jl
-interface input. Some example uses are:
+DataFrames支持[Tables.jl](https://github.com/JuliaData/Tables.jl)接口，用于与表格数据交互。这意味着`DataFrame`可以作为任何期望Tables.jl接口输入的包的"源"（文件格式包，数据操作包等）。`DataFrame`也可以是任何Tables.jl接口输入的接收器。一些示例用途是：
 
 ```julia
 df = DataFrame(a=[1, 2, 3], b=[:a, :b, :c])
 
-# write DataFrame out to CSV file
+# 把 DataFrame 写入 CSV 文件
 CSV.write("dataframe.csv", df)
 
-# store DataFrame in an SQLite database table
+# 把 DataFrame 存储在 SQLite 数据库表中
 SQLite.load!(df, db, "dataframe_table")
 
-# transform a DataFrame through Query.jl package
+# 通过 Query.jl 包转换 DataFrame
 df = df |> @map({a=_.a + 1, _.b}) |> DataFrame
 ```
 
-A particular common case of a collection that supports the
-[Tables.jl](https://github.com/JuliaData/Tables.jl) interface is
-a vector of `NamedTuple`s:
+支持[Tables.jl](https://github.com/JuliaData/Tables.jl)接口的特定常见集合的一个例子是`NamedTuple`的向量：
+
 ```jldoctest dataframe
 julia> v = [(a=1, b=2), (a=3, b=4)]
 2-element Vector{NamedTuple{(:a, :b), Tuple{Int64, Int64}}}:
@@ -455,7 +397,9 @@ julia> df = DataFrame(v)
    1 │     1      2
    2 │     3      4
 ```
-You can also easily convert a data frame back to a vector of `NamedTuple`s:
+
+你也可以很容易地把数据框转换回`NamedTuple`的向量：
+
 ```jldoctest dataframe
 julia> using Tables
 

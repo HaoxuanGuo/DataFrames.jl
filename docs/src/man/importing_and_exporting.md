@@ -1,40 +1,34 @@
-# Importing and Exporting Data (I/O)
+# 导入和导出数据 (I/O)
 
-## CSV Files
+## CSV 文件
 
-For reading and writing tabular data from CSV and other delimited text files,
-use the [CSV.jl](https://github.com/JuliaData/CSV.jl) package.
+对于从 CSV 和其他分隔符文本文件读取和写入表格数据，可以使用 [CSV.jl](https://github.com/JuliaData/CSV.jl) 包。
 
-If you have not used the CSV.jl package before then you may need to install it first:
+如果你之前没有使用过 CSV.jl 包，那么你可能需要先安装它：
 ```julia
 using Pkg
 Pkg.add("CSV")
 ```
 
-The CSV.jl functions are not loaded automatically and must be imported into the session.
+CSV.jl 的函数不会自动加载，必须导入到会话中。
 ```julia
 using CSV
 ```
 
-A dataset can now be read from a CSV file at path `input` using
+现在可以从路径 `input` 的 CSV 文件中读取数据集：
 ```julia
 DataFrame(CSV.File(input))
 ```
 
-A `DataFrame` can be written to a CSV file at path `output` using
+可以将 `DataFrame` 写入到路径 `output` 的 CSV 文件中：
 ```julia
 df = DataFrame(x=1, y=2)
 CSV.write(output, df)
 ```
 
-The behavior of CSV functions can be adapted via keyword arguments. For more
-information, see `?CSV.File`, `?CSV.read` and `?CSV.write`, or checkout the
-online [CSV.jl documentation](https://juliadata.github.io/CSV.jl/stable/).
+CSV 函数的行为可以通过关键字参数进行调整。更多信息请参阅 `?CSV.File`，`?CSV.read` 和 `?CSV.write`，或查看在线 [CSV.jl 文档](https://juliadata.github.io/CSV.jl/stable/)。
 
-In simple cases, when compilation latency of CSV.jl might be an issue,
-using the `DelimitedFiles` module from the Julia standard library can be considered.
-Here is an example showing how to read in the data and perform its
-post-processing:
+在简单的情况下，当 CSV.jl 的编译延迟可能成为问题时，可以考虑使用 Julia 标准库的 `DelimitedFiles` 模块。以下是一个示例，展示如何读入数据并进行后处理：
 
 ```jldoctest readdlm
 julia> using DelimitedFiles, DataFrames
@@ -90,41 +84,30 @@ julia> iris = identity.(iris_raw)
                                                         135 rows omitted
 ```
 
-Observe that in our example:
-* `header` is a `Matrix` therefore we had to pass `vec(header)` to the `DataFrame`
-  constructor;
-* we broadcasted the `identity` function over the `iris_raw` data frame to perform
-  narrowing of `eltype` of columns of `iris_raw`; the reason is that read in by
-  the `readdlm` function is stored into a `data` `Matrix` so all columns in
-  `iris_raw` initially have the same `eltype` -- in this case it had to be `Any`
-  as some of the columns are numeric and some are string.
+请注意，在我们的例子中：
+* `header` 是一个 `Matrix`，因此我们必须将 `vec(header)` 传递给 `DataFrame` 构造器；
+* 我们对 `iris_raw` 数据框进行了 `identity` 函数的广播，以执行 `iris_raw` 列的 `eltype` 的缩小；原因是 `readdlm` 函数读入的数据存储在 `data` `Matrix` 中，所以 `iris_raw` 中的所有列最初都有相同的 `eltype` -- 在这种情况下，必须是 `Any`，因为某些列是数值型，而某些列是字符串。
 
-All such operations (and many more) are automatically handled by CSV.jl.
+所有这些操作（以及更多）都可以由 CSV.jl 自动处理。
 
-Similarly, you can use the `writedlm` function from the `DelimitedFiles` module to
-save a data frame like this:
+类似地，你可以使用 `DelimitedFiles` 模块的 `writedlm` 函数来保存数据框，例如：
 
 ```julia
 writedlm("test.csv", Iterators.flatten(([names(iris)], eachrow(iris))), ',')
 ```
 
-As you can see the code required to transform `iris` into a proper input to the
-`writedlm` function so that you can create the CSV file having the expected
-format is not easy. Therefore CSV.jl is the preferred package to write CSV files
-for data stored in data frames.
+如你所见，将 `iris` 转换成适合 `writedlm` 函数的正确输入，以便你可以创建具有预期格式的 CSV 文件，这是不容易的。因此，CSV.jl 是写入存储在数据框中的数据的 CSV 文件的首选包。
 
-## Other formats
+## 其他格式
 
-Other data formats are supported for reading and writing in the following packages
-(non exhaustive list):
-* Apache Arrow (including Feather v2): [Arrow.jl](https://github.com/JuliaData/Arrow.jl)
-* Apache Feather (v1): [Feather.jl](https://github.com/JuliaData/Feather.jl)
-* Apache Avro: [Avro.jl](https://github.com/JuliaData/Avro.jl)
-* JSON: [JSONTables.jl](https://github.com/JuliaData/JSONTables.jl)
-* Parquet: [Parquet2.jl](https://gitlab.com/ExpandingMan/Parquet2.jl)
-* Stata, SAS and SPSS: [ReadStatTables.jl](https://github.com/junyuan-chen/ReadStatTables.jl)
-  (alternatively [Queryverse](https://www.queryverse.org/)
-   users can choose [StatFiles.jl](https://github.com/queryverse/StatFiles.jl))
-* reading R data files (.rda, .RData): [RData.jl](https://github.com/JuliaData/RData.jl)
-* Microsoft Excel (XLSX): [XLSX.jl](https://github.com/felipenoris/XLSX.jl)
-* Copying/pasting to clipboard, for sending data to and from spreadsheets: [ClipData.jl](https://github.com/pdeffebach/ClipData.jl)
+以下包支持读取和写入其他数据格式（非详尽列表）：
+* Apache Arrow（包括 Feather v2）：[Arrow.jl](https://github.com/JuliaData/Arrow.jl)
+* Apache Feather（v1）：[Feather.jl](https://github.com/JuliaData/Feather.jl)
+* Apache Avro：[Avro.jl](https://github.com/JuliaData/Avro.jl)
+* JSON：[JSONTables.jl](https://github.com/JuliaData/JSONTables.jl)
+* Parquet：[Parquet2.jl](https://gitlab.com/ExpandingMan/Parquet2.jl)
+* Stata，SAS 和 SPSS：[ReadStatTables.jl](https://github.com/junyuan-chen/ReadStatTables.jl)
+  （或者 [Queryverse](https://www.queryverse.org/) 用户可以选择 [StatFiles.jl](https://github.com/queryverse/StatFiles.jl)）
+* 读取 R 数据文件 (.rda, .RData)：[RData.jl](https://github.com/JuliaData/RData.jl)
+* Microsoft Excel (XLSX)：[XLSX.jl](https://github.com/felipenoris/XLSX.jl)
+* 复制/粘贴到剪贴板，用于发送数据到电子表格和从电子表格获取数据：[ClipData.jl](https://github.com/pdeffebach/ClipData.jl)

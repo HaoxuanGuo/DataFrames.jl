@@ -1,9 +1,9 @@
-# First Steps with DataFrames.jl
+# 使用DataFrames.jl的第一步
 
-## Setting up the Environment
+## 设置环境
 
-If want to use the DataFrames.jl package you need to install it first.
-You can do it using the following commands:
+如果你想使用DataFrames.jl包，你需要首先安装它。
+你可以使用以下命令来进行安装：
 
 ```julia
 julia> using Pkg
@@ -11,26 +11,24 @@ julia> using Pkg
 julia> Pkg.add("DataFrames")
 ```
 
-or
+或者
 
 ```julia
-julia> ] # ']' should be pressed
+julia> ] # 按下 ']'
 
 (@v1.9) pkg> add DataFrames
 ```
 
-If you want to make sure everything works as expected you can run the tests
-bundled with DataFrames.jl, but be warned that it will take more than 30
-minutes:
+如果你想确保一切都按预期工作，你可以运行与DataFrames.jl捆绑的测试，
+但请注意，这将需要超过30分钟：
 
 ```julia
 julia> using Pkg
 
-julia> Pkg.test("DataFrames") # Warning! This will take more than 30 minutes.
+julia> Pkg.test("DataFrames") # 警告！这将需要超过30分钟。
 ```
 
-Additionally, it is recommended to check the version of DataFrames.jl that
-you have installed with the `status` command.
+另外，建议使用`status`命令检查你已安装的DataFrames.jl的版本。
 
 ```julia
 julia> ]
@@ -40,45 +38,34 @@ julia> ]
   [a93c6f00] DataFrames v1.5.0
 ```
 
-Throughout the rest of the tutorial we will assume that you have installed the
-DataFrames.jl package and have already typed `using DataFrames` which loads the
-package:
+在本教程的其余部分，我们将假设你已经安装了DataFrames.jl包，并已经键入`using DataFrames`来加载包：
 
 ```jldoctest dataframe
 julia> using DataFrames
 ```
 
-The most fundamental type provided by DataFrames.jl is `DataFrame`, where
-typically each row is interpreted as an observation and each column as a
-feature.
+DataFrames.jl提供的最基本的类型是`DataFrame`，其中通常每行被解释为一个观察，每列被解释为一个特征。
 
-!!! note "Advanced installation configuration"
+!!! 注意 "高级安装配置"
 
-    DataFrames.jl puts in extra time and effort when the package is being built
-    (precompiled) to make sure it is more responsive when you are using it.
-    However, in some scenarios users might want to avoid this extra
-    precompilaion effort to reduce the time needed to build the package and
-    later to load it. To disable precompilation of DataFrames.jl in your current
-    project follow the instructions given in the
-    [PrecompileTools.jl documentation](https://julialang.github.io/PrecompileTools.jl/stable/#Package-developers:-reducing-the-cost-of-precompilation-during-development)
+    在构建（预编译）包时，DataFrames.jl会投入额外的时间和努力，以确保在你使用它时它更具响应性。
+    然而，在某些情况下，用户可能希望避免这种额外的预编译工作，以减少构建包和后来加载它所需的时间。
+    要在你当前的项目中禁用DataFrames.jl的预编译，请按照[PrecompileTools.jl文档](https://julialang.github.io/PrecompileTools.jl/stable/#Package-developers:-reducing-the-cost-of-precompilation-during-development)中给出的指示操作。
 
-## Constructors and Basic Utility Functions
+## 构造函数和基本实用函数
 
-### Constructors
+### 构造函数
 
-In this section you will see several ways to create a `DataFrame` using the
-constructor. You can find a detailed list of supported constructors along with
-more examples in the documentation of the [`DataFrame`](@ref) object.
+在本节中，你将看到使用构造函数创建`DataFrame`的几种方式。你可以在[`DataFrame`](@ref)对象的文档中找到支持的构造函数的详细列表，以及更多的示例。
 
-We start by creating an empty `DataFrame`:
+我们首先创建一个空的`DataFrame`：
 
 ```jldoctest dataframe
 julia> DataFrame()
 0×0 DataFrame
 ```
 
-Now let us initialize a `DataFrame` with several columns. This is a basic way to
-do it is the following:
+现在让我们初始化一个包含多个列的`DataFrame`。基本的方式如下：
 
 ```jldoctest dataframe
 julia> DataFrame(A=1:3, B=5:7, fixed=1)
@@ -91,12 +78,9 @@ julia> DataFrame(A=1:3, B=5:7, fixed=1)
    3 │     3      7      1
 ```
 
-Observe that using this constructor scalars, like `1` for the column `:fixed`
-get automatically broadcasted to fill all rows of the created `DataFrame`.
+注意，使用这个构造函数时，标量（如列`:fixed`的`1`）会自动广播以填充创建的`DataFrame`的所有行。
 
-Sometimes one needs to create a data frame whose column names are not valid
-Julia identifiers. In such a case the following form, where `=` is replaced by
-`=>` is handy:
+有时候，你需要创建一个其列名不是有效的Julia标识符的数据帧。在这种情况下，下面的形式，其中`=`被`=>`替换，会很方便：
 
 ```jldoctest dataframe
 julia> DataFrame("customer age" => [15, 20, 25],
@@ -110,11 +94,10 @@ julia> DataFrame("customer age" => [15, 20, 25],
    3 │           25  Akshat
 ```
 
-Notice that this time we have passed column names as strings.
+注意，这次我们将列名作为字符串传递。
 
-Often you have your source data stored in a dictionary.
-Provided that the keys of the dictionary are strings or `Symbol`s
-you can also easily create a `DataFrame` from it:
+你的源数据通常存储在字典中。
+只要字典的键是字符串或`Symbol`，你也可以轻松地从中创建`DataFrame`：
 
 ```jldoctest dataframe
 julia> dict = Dict("customer age" => [15, 20, 25],
@@ -148,14 +131,9 @@ julia> DataFrame(dict)
    3 │           25  Akshat
 ```
 
-Using `Symbol`s, e.g. `:customer_age` rather than strings, e.g. `"customer age"`
-to denote column names is preferred as it is faster. However, as you can see
-in the example above if our column name contains a space it is not very
-convenient to pass it as a `Symbol` (you would have to write `Symbol("customer age")`,
-which is verbose) so using a string is more convenient.
+使用`Symbol`，例如`:customer_age`，而不是字符串，例如`"customer age"`，来表示列名是首选的，因为它更快。然而，如你在上面的例子中看到的，如果我们的列名包含一个空格，将它作为一个`Symbol`传递并不方便（你必须写成`Symbol("customer age")`，这很冗长），所以使用字符串更方便。
 
-It is also quite common to create a `DataFrame` from a `NamedTuple` of vectors
-or a vector of `NamedTuple`s. Here are some examples of these operations:
+从向量的`NamedTuple`或`NamedTuple`的向量创建`DataFrame`也很常见。下面是这些操作的一些示例：
 
 ```jldoctest dataframe
 julia> DataFrame((a=[1, 2], b=[3, 4]))
@@ -209,9 +187,41 @@ julia> DataFrame(source)
 ERROR: type NamedTuple has no field radius
 ```
 
-Let us finish our review of constructors by showing how to create a `DataFrame`
-from a matrix. In this case you pass a matrix as a first argument. If the second
-argument is just `:auto` then column names `x1`, `x2`, ... will be auto generated.
+Sometimes your source data might have a heterogeneous set of columns for each observation.
+Here is an example:
+
+```
+julia> source = [(type="circle", radius=10), (type="square", side=20)]
+2-element Vector{NamedTuple{names, Tuple{String, Int64}} where names}:
+ (type = "circle", radius = 10)
+ (type = "square", side = 20)
+```
+
+If you want to create a data frame from such data containing all columns present in at least
+one of the source observations, with a `missing` entry if some column is not present then
+you can use `Tables.dictcolumntable` function to help you create the desired data frame:
+
+```
+julia> DataFrame(Tables.dictcolumntable(source))
+2×3 DataFrame
+ Row │ type    radius   side
+     │ String  Int64?   Int64?
+─────┼──────────────────────────
+   1 │ circle       10  missing
+   2 │ square  missing       20
+```
+
+The role of `Tables.dictcolumntable` is to make sure that the `DataFrame` constructor gets information
+about all columns present in the source data and properly instantiates them. If we did not use
+this function the `DataFrame` constructor would assume that the first row of data contains the set
+of columns present in the source, which would lead to an error in our example:
+
+```
+julia> DataFrame(source)
+ERROR: type NamedTuple has no field radius
+```
+
+让我们通过展示如何从矩阵创建`DataFrame`来结束构造函数的复习。在这种情况下，你将矩阵作为第一个参数传递。如果第二个参数只是`:auto`，那么列名`x1`，`x2`，...将会自动生成。
 
 ```jldoctest dataframe
 julia> DataFrame([1 0; 2 0], :auto)
@@ -223,8 +233,7 @@ julia> DataFrame([1 0; 2 0], :auto)
    2 │     2      0
 ```
 
-Alternatively you can pass a vector of column names as a second argument to the
-`DataFrame` constructor:
+或者，你可以将列名的向量作为第二个参数传递给`DataFrame`构造函数：
 
 ```jldoctest dataframe
 julia> mat = [1 2 4 5; 15 58 69 41; 23 21 26 69]
@@ -250,17 +259,13 @@ julia> DataFrame(mat, nms)
    3 │    23     21     26     69
 ```
 
-You now know how to create a `DataFrame` from data that you already have in your
-Julia session. In the next section we show how to load data to a `DataFrame`
-from disk.
+现在你知道如何从你的Julia会话中已经有的数据创建`DataFrame`。在下一节中，我们将展示如何从磁盘加载数据到`DataFrame`。
 
-### Reading Data From CSV Files
+### 从CSV文件中读取数据
 
-Here we focus on one of the most common scenarios, where one has data stored on
-disk in the CSV format.
+这里我们关注最常见的场景，即数据存储在硬盘上的CSV格式。
 
-First make sure you have CSV.jl installed. You can do it using the following
-instructions:
+首先确保你已经安装了CSV.jl。你可以按照以下指示进行安装：
 
 ```julia
 julia> using Pkg
@@ -268,7 +273,7 @@ julia> using Pkg
 julia> Pkg.add("CSV")
 ```
 
-In order to read the file in we will use the `CSV.read` function.
+为了读取文件，我们将使用`CSV.read`函数。
 
 ```jldoctest dataframe
 julia> using CSV
@@ -299,60 +304,39 @@ julia> german_ref = CSV.read(path, DataFrame)
                                                   4 columns and 985 rows omitted
 ```
 
-As you can see the data frame is wider and taller than the display width, so it
-got cropped and its 4 rightmost columns and middle 985 rows were not printed.
-Later in the tutorial we will discuss how to force Julia to show the whole
-data frame if we wanted so.
+如你所见，数据框比显示宽度更宽更高，因此它被剪裁，其最右边的4列和中间的985行未被打印。稍后在教程中，我们将讨论如何强制Julia显示整个数据框（如果我们需要的话）。
 
-Also observe that DataFrames.jl displays the data type of the column
-below its name. In our case, it is an `Int64`, or `String7` and `String15`.
+另外请注意，DataFrames.jl在列名下方显示了列的数据类型。在我们的例子中，它是`Int64`，或者`String7`和`String15`。
 
-Let us mention here the difference between the standard `String` type in Julia
-and e.g. the `String7` or `String15` types. The types with number suffix denote
-strings that have a fixed width (similar `CHAR(N)` type provided by many data
-bases). Such strings are much faster to work with (especially if you have many
-of them) than the standard `String` type because their instances are not heap
-allocated. For this reason `CSV.read` by default reads in narrow string columns
-using these fixed-width types.
+让我们在这里提到Julia中标准的`String`类型和例如`String7`或`String15`类型之间的区别。带有数字后缀的类型表示具有固定宽度的字符串（类似于许多数据库提供的`CHAR(N)`类型）。这种字符串的处理速度要比标准的`String`类型快得多（特别是如果你有很多这样的字符串），因为它们的实例不是在堆上分配的。出于这个原因，`CSV.read`默认使用这些固定宽度类型读取狭窄的字符串列。
 
-Let us now explain in detail the following code block:
+现在让我们详细解释以下代码块：
+
 ```julia
 path = joinpath(pkgdir(DataFrames), "docs", "src", "assets", "german.csv");
 
 german_ref = CSV.read(path, DataFrame)
 ```
-- we are storing the `german.csv` file in the DataFrames.jl repository to make
-  user's life easier and avoid having to download it each time;
-- `pkgdir(DataFrames)` gives us the full path to the root of the DataFrames.jl
-  package.
-- then from this directory we need to move to the directory where the
-  `german.csv` file is stored; we use `joinpath` as this is a recommended way to
-  compose paths to resources stored on disk in an operating system independent
-  way (remember that Windows and Unix differ as they use either `/` or `\` as
-  path separator; the `joinpath` function ensures we are not running into issues
-  with this);
-- then we read the CSV file; the second argument to `CSV.read` is `DataFrame` to
-  indicate that we want to read in the file into a `DataFrame` (as `CSV.read`
-  allows for many different target formats of data it can read-into).
 
-Before proceeding copy the reference data frame:
+- 我们将`german.csv`文件存储在DataFrames.jl仓库中，以便使用户的生活更轻松，避免每次都需要下载它；
+- `pkgdir(DataFrames)`给我们提供了到DataFrames.jl包根目录的完整路径。
+- 然后从这个目录，我们需要移动到存储`german.csv`文件的目录；我们使用`joinpath`，因为这是在操作系统中独立地组合硬盘上资源的路径的推荐方式（记住，Windows和Unix的路径分隔符不同，它们使用`/`或`\`作为路径分隔符；`joinpath`函数确保我们不会因此遇到问题）；
+- 然后我们读取CSV文件；`CSV.read`的第二个参数是`DataFrame`，表示我们想要将文件读入一个`DataFrame`（因为`CSV.read`允许读入许多不同的目标数据格式）。
+
+在继续之前，复制参考数据框：
 
 ```jldoctest dataframe
-julia> german = copy(german_ref); # we copy the data frame
+julia> german = copy(german_ref); # 我们复制数据框
 ```
 
-In this way we can always easily restore our data even if we mess up the
-`german` data frame by modifying it.
+通过这种方式，即使我们通过修改`german`数据框弄乱了数据，我们也可以轻松地恢复我们的数据。
 
-### Basic Operations on Data Frames
+### 对数据框进行基本操作
 
-To extract the columns of a data frame directly (i.e. without copying)
-you can use one of the following syntaxes:
-`german.Sex`, `german."Sex"`, `german[!, :Sex]` or `german[!, "Sex"]`.
+要直接提取数据框的列（即不进行复制），你可以使用以下语法之一：
+`german.Sex`，`german."Sex"`，`german[!, :Sex]` 或 `german[!, "Sex"]`。
 
-The two latter syntaxes using indexing are more flexible as they allow
-us passing a variable holding the name of the column, and not only a literal name
-as in the case of the syntax using a `.`.
+后两种使用索引的语法更为灵活，因为它们允许我们传递一个变量来存储列的名称，而不仅仅是使用 `.` 的语法中的文字名称。
 
 ```jldoctest dataframe
 julia> german.Sex
@@ -405,15 +389,9 @@ julia> german[!, colname]
  "male"
 ```
 
-Since `german.Sex` does not make a copy when extracting a column from the data
-frame, changing the elements of the vector returned by this operation will
-affect the values stored in the original `german` data frame. To get a *copy* of
-the column you can use `german[:, :Sex]` or `german[:, "Sex"]`. In this case
-changing the vector returned by this operation does not affect the data stored
-in the `german` data frame.
+由于 `german.Sex` 在提取数据框的列时不会复制，因此改变此操作返回的向量的元素将影响存储在原始 `german` 数据框中的值。要获取列的*副本*，你可以使用 `german[:, :Sex]` 或 `german[:, "Sex"]`。在这种情况下，改变此操作返回的向量不会影响存储在 `german` 数据框中的数据。
 
-The `===` function allows us to check if both expressions produce the same object
-and confirm the behavior described above:
+`===` 函数允许我们检查两个表达式是否生成了相同的对象，并确认上述行为：
 
 ```jldoctest dataframe
 julia> german.Sex === german[!, :Sex]
@@ -423,8 +401,7 @@ julia> german.Sex === german[:, :Sex]
 false
 ```
 
-You can obtain a vector of column names of the data frame as `String`s using the
-`names` function:
+你可以使用 `names` 函数获取数据框的列名向量，列名为 `String`：
 
 ```jldoctest dataframe
 julia> names(german)
@@ -441,10 +418,9 @@ julia> names(german)
  "Purpose"
 ```
 
-Sometimes you are interested in names of columns that meet a particular condition.
+有时你可能对满足特定条件的列名感兴趣。
 
-For example you can get column names with a given element type by passing this
-type as a second argument to the `names` function:
+例如，你可以通过将此类型作为 `names` 函数的第二个参数来获取具有给定元素类型的列名：
 
 ```jldoctest dataframe
 julia> names(german, AbstractString)
@@ -456,11 +432,9 @@ julia> names(german, AbstractString)
  "Purpose"
 ```
 
-You can explore more options of filtering column names in the documentation of
-the [`names`](@ref) function.
+你可以在 [`names`](@ref) 函数的文档中探索更多过滤列名的选项。
 
-If instead you wanted to get column names of a data frame as `Symbol`s use the
-`propertynames` function:
+如果你想将数据框的列名作为 `Symbol` 获取，可以使用 `propertynames` 函数：
 
 ```jldoctest dataframe
 julia> propertynames(german)
@@ -477,12 +451,9 @@ julia> propertynames(german)
  :Purpose
 ```
 
-As you can see the column names containing spaces are not very convenient to work with
-as `Symbol`s because they require more typing and introduce some visual noise.
+如你所见，包含空格的列名作为 `Symbol` 使用并不方便，因为它们需要更多的输入并引入了一些视觉噪声。
 
-If you were interested in element types of the columns instead. You can use the
-`eachcol(german)` function to get an iterator over the columns of the data frame.
-Then you can broadcast the `eltype` function over it to get the desired result:
+如果你对列的元素类型感兴趣，你可以使用 `eachcol(german)` 函数获取数据框列的迭代器。然后，你可以对其进行广播 `eltype` 函数以获得所需的结果：
 
 ```jldoctest dataframe
 julia> eltype.(eachcol(german))
@@ -499,20 +470,13 @@ julia> eltype.(eachcol(german))
  String31
 ```
 
-!!! note
+!!! 注意
 
-    Remember that DataFrames.jl allows to use `Symbol`s (like `:id`) and strings
-    (like `"id"`) for all column indexing operations for convenience.
-    However, using `Symbol`s is slightly faster, but strings are simpler to work
-    with when non standard characters are present in column names or one wants
-    to manipulate them.
+    请记住，DataFrames.jl 允许使用 `Symbol`（如 `:id`）和字符串（如 `"id"`）进行所有列索引操作以方便使用。然而，使用 `Symbol` 稍微快一些，但是当列名中存在非标准字符或者你想要操作它们时，字符串更简单。
 
-Before we wrap up let us discuss the `empty` and `empty!` functions that
-remove all rows from a `DataFrame`. Understanding the difference between the
-behavior of these two functions will help you to understand the function naming
-scheme in DataFrames.jl in general.
+在我们结束之前，让我们讨论 `empty` 和 `empty!` 函数，这两个函数会从 `DataFrame` 中移除所有行。理解这两个函数行为的差异将帮助你理解 DataFrames.jl 中的函数命名方案。
 
-Let us start with the example of using the `empty` and `empty!` functions:
+让我们从使用 `empty` 和 `empty!` 函数的例子开始：
 
 ```jldoctest dataframe
 julia> empty(german)
@@ -560,24 +524,15 @@ julia> german
                                                                4 columns omitted
 ```
 
-In the above example `empty` function created a new `DataFrame` with the same
-column names and column element types as `german` but with zero rows. On the
-other hand `empty!` function removed all rows from `german` in-place and made
-each of its columns empty.
+在上述示例中，`empty` 函数创建了一个新的 `DataFrame`，其列名和列元素类型与 `german` 相同，但没有行。另一方面，`empty!` 函数在原地从 `german` 中移除了所有行，并使其每一列都为空。
 
-The difference between the behavior of the `empty` and `empty!` functions is an
-application of the
-[stylistic convention](https://docs.julialang.org/en/v1/manual/variables/#Stylistic-Conventions)
-employed in the Julia language. This convention is followed in all functions
-provided by the DataFrames.jl package.
+`empty` 和 `empty!` 函数行为的差异是应用了 Julia 语言中的[风格约定](https://docs.julialang.org/en/v1/manual/variables/#Stylistic-Conventions)。DataFrames.jl 包提供的所有函数都遵循这一约定。
 
-### Getting Basic Information about a Data Frame
+### 获取DataFrame的基本信息
 
-In this section we will learn about how to get basic information on our `german`
-`DataFrame`:
+在这一部分，我们将了解如何获取我们的`german` `DataFrame`的基本信息：
 
-The `size` function returns the dimensions of the data frame.
-First we restore the `german` data frame, as we have just emptied it above.
+`size`函数返回数据框的维度。首先我们恢复`german`数据框，因为我们刚刚在上面清空了它。
 
 ```jldoctest dataframe
 julia> german = copy(german_ref);
@@ -592,8 +547,7 @@ julia> size(german, 2)
 10
 ```
 
-Additionally the `nrow` and `ncol` functions can be used to get the number of rows
-and columns in a data frame:
+此外，`nrow`和`ncol`函数可以用来获取数据框的行数和列数：
 ```jldoctest dataframe
 julia> nrow(german)
 1000
@@ -602,9 +556,7 @@ julia> ncol(german)
 10
 ```
 
-To get basic statistics of data in your data frame use the `describe` function
-(check out the help of [`describe`](@ref) for information on how to customize
-the shown statistics).
+要获取数据框中的数据的基本统计信息，使用`describe`函数（查看[`describe`](@ref)的帮助以了解如何自定义显示的统计信息）。
 
 ```jldoctest dataframe
 julia> describe(german)
@@ -625,7 +577,7 @@ julia> describe(german)
                                                                 1 column omitted
 ```
 
-To limit the columns processed by `describe` use `cols` keyword argument, e.g.:
+要限制`describe`处理的列，使用`cols`关键字参数，例如：
 
 ```jldoctest dataframe
 julia> describe(german, cols=1:3)
@@ -638,13 +590,9 @@ julia> describe(german, cols=1:3)
    3 │ Sex               female          male         0  String7
 ```
 
-The default statistics reported are mean, min, median, max, number of missing
-values, and element type of the column. `missing` values are skipped when
-computing the summary statistics.
+默认报告的统计量是平均值、最小值、中位数、最大值、缺失值的数量以及列的元素类型。在计算摘要统计时，会跳过`missing`值。
 
-You can adjust how data frame is displayed by calling the `show` function manually:
-`show(german, allrows=true)` prints all rows even if they do not fit on screen and
-`show(german, allcols=true)` does the same for columns, e.g.:
+你可以通过手动调用`show`函数来调整数据框的显示方式：`show(german, allrows=true)`会打印所有行，即使它们无法在屏幕上显示，`show(german, allcols=true)`对列也会做同样的处理，例如：
 
 ```jldoctest dataframe
 julia> show(german, allcols=true)
@@ -671,8 +619,7 @@ julia> show(german, allcols=true)
                                                                                                                985 rows omitted
 ```
 
-It is easy to compute descriptive statistics directly on individual columns using
-the functions defined in the `Statistics` module:
+直接在单个列上计算描述性统计量非常容易，只需使用在`Statistics`模块中定义的函数：
 
 ```jldoctest dataframe
 julia> using Statistics
@@ -681,12 +628,7 @@ julia> mean(german.Age)
 35.546
 ```
 
-If instead we want to apply some function to all columns of a data frame we can
-use the `mapcols` function. It returns a `DataFrame` where each column of the
-source data frame is transformed using a function passed as a first argument.
-Note that `mapcols` guarantees not to reuse the columns from `german` in the
-returned `DataFrame`. If the transformation returns its argument then it gets
-copied before being stored.
+如果我们想对数据框的所有列应用某个函数，我们可以使用`mapcols`函数。它返回一个`DataFrame`，其中源数据框的每一列都通过第一个参数传递的函数进行转换。请注意，`mapcols`保证不会在返回的`DataFrame`中重用`german`的列。如果转换返回其参数，那么在存储之前会先复制它。
 
 ```jldoctest dataframe
 julia> mapcols(id -> id .^ 2, german)
@@ -713,8 +655,7 @@ julia> mapcols(id -> id .^ 2, german)
                                                   4 columns and 985 rows omitted
 ```
 
-If you want to look at first and last rows of a data frame then you can do this
-using the `first` and `last` functions respectively:
+如果你想查看数据框的第一行和最后一行，那么你可以使用`first`和`last`函数分别进行操作：
 
 ```jldoctest dataframe
 julia> first(german, 6)
@@ -743,12 +684,7 @@ julia> last(german, 5)
                                                                4 columns omitted
 ```
 
-Using `first` and `last` without passing the number of rows will return a
-first/last `DataFrameRow` in the data frame. `DataFrameRow` is a view into a
-single row of an `AbstractDataFrame`. It stores a reference to a parent
-`DataFrame` and information about which row and columns from the parent are
-selected. You can think of `DataFrameRow` as a `NamedTuple` that is mutable,
-i.e. allows to update the source data frame, which is often useful.
+如果不传递行数，使用`first`和`last`将返回数据框中的第一/最后一个`DataFrameRow`。`DataFrameRow`是`AbstractDataFrame`的单行视图。它存储了对父`DataFrame`的引用以及从父数据框中选择的行和列的信息。你可以将`DataFrameRow`看作是可变的`NamedTuple`，即允许更新源数据框，这通常很有用。
 
 ```jldoctest dataframe
 julia> first(german)
@@ -768,18 +704,13 @@ DataFrameRow
                                                                4 columns omitted
 ```
 
-## Getting and Setting Data in a Data Frame
+## 获取和设置数据框中的数据
 
-### Indexing Syntax
+### 索引语法
 
-Data frame can be indexed in a similar way to matrices.
-In the [Indexing](@ref) section of the manual you can find all details about all
-the available options. Here we highlight the basic ones.
+数据框可以类似于矩阵的方式进行索引。在手册的[Indexing](@ref)部分，你可以找到所有可用选项的详细信息。在这里，我们只强调基本的几种。
 
-The general syntax for indexing is `data_frame[selected_rows, selected_columns]`.
-Observe that, as opposed to matrices in Julia Base, it is required to always pass
-both row and column selector. The colon `:` indicates that all items (rows or
-columns depending on its position) should be retained. Here are a few examples:
+一般的索引语法是`data_frame[selected_rows, selected_columns]`。请注意，与Julia Base中的矩阵不同，这里总是需要传递行选择器和列选择器。冒号`:`表示应保留所有项目（取决于它的位置是行还是列）。以下是一些例子：
 
 ```jldoctest dataframe
 julia> german[1:5, [:Sex, :Age]]
@@ -839,14 +770,7 @@ julia> german[:, [:Age, :Sex]]
        985 rows omitted
 ```
 
-Pay attention that `german[!, [:Sex]]` and `german[:, [:Sex]]` returns a data
-frame object, while `german[!, :Sex]` and `german[:, :Sex]` returns a vector. In
-the first case, `[:Sex]` is a vector, indicating that the resulting object
-should be a data frame. On the other hand, `:Sex` is a single `Symbol`,
-indicating that a single column vector should be extracted. Note that in the
-first case a vector is required to be passed (not just any iterable), so e.g.
-`german[:, (:Age, :Sex)]` is not allowed, but `german[:, [:Age, :Sex]]` is
-valid. Below we show both operations to highlight this difference:
+注意，`german[!, [:Sex]]`和`german[:, [:Sex]]`返回的是一个数据框对象，而`german[!, :Sex]`和`german[:, :Sex]`返回的是一个向量。在第一种情况下，`[:Sex]`是一个向量，表示结果对象应该是一个数据框。另一方面，`:Sex`是一个单独的`Symbol`，表示应该提取一个单独的列向量。注意，第一种情况需要传递一个向量（不仅仅是任何可迭代的对象），所以例如`german[:, (:Age, :Sex)]`是不允许的，但`german[:, [:Age, :Sex]]`是有效的。下面我们展示这两种操作以强调这个区别：
 
 ```jldoctest dataframe
 julia> german[!, [:Sex]]
@@ -896,42 +820,29 @@ julia> german[!, :Sex]
  "male"
 ```
 
-As it was explained earlier in this tutorial the difference between using `!`
-and `:` when passing a row index is that `!` does not perform a copy of columns,
-while `:` does when reading data from a data frame. Therefore
-`german[!, [:Sex]]` data frame stores the same vector as the source `german`
-data frame, while `german[:, [:Sex]]` stores its copy.
+如同本教程之前解释的，使用`!`和`:`传递行索引的区别在于`!`不复制列，而`:`从数据框读取数据时会复制。因此，`german[!, [:Sex]]`数据框存储的是与源`german`数据框相同的向量，而`german[:, [:Sex]]`存储的是它的复制品。
 
-The `!` selector normally should be avoided as using it can lead to hard to
-catch bugs. However, when working with very large data frames it can be useful
-to save memory and improve performance of operations.
+`!`选择器通常应该避免使用，因为使用它可能导致难以捕获的错误。然而，当处理非常大的数据框时，它可以用来节省内存和提高操作的性能。
 
-Recapping what we have already learned,
-To get the column `:Age` from the `german` data frame you can do the following:
+回顾我们已经学到的，要从`german`数据框中获取列`:Age`，你可以执行以下操作：
 
-- to copy the vector: `german[:, :Age]`, `german[:, "Age"]` or `german[:, 2]`;
-- to get a vector without copying: `german.Age`, `german."Age"`, `german[!, :Age]`,
-  `german[!, "Age"]` or `german[!, 2]`.
+- 复制向量：`german[:, :Age]`，`german[:, "Age"]`或`german[:, 2]`；
+- 获取向量而不复制：`german.Age`，`german."Age"`，`german[!, :Age]`，`german[!, "Age"]`或`german[!, 2]`。
 
-To get the first two columns as a `DataFrame`, we can index as follows:
-- to get the copied columns: `german[:, 1:2]`, `german[:, [:id, :Age]]`,
-  or `german[:, ["id", "Age"]]`;
-- to reuse the columns without copying: `german[!, 1:2]`, `german[!, [:id, :Age]]`,
-  or `german[!, ["id", "Age"]]`.
+要获取前两列作为`DataFrame`，我们可以如下索引：
+- 获取复制的列：`german[:, 1:2]`，`german[:, [:id, :Age]]`，或`german[:, ["id", "Age"]]`；
+- 不复制列的情况下重复使用列：`german[!, 1:2]`，`german[!, [:id, :Age]]`，或`german[!, ["id", "Age"]]`。
 
-If you want to can get a single cell of a data frame use the same syntax as the
-one that gets a cell of a matrix:
+如果你想获取数据框的单个单元格，使用与获取矩阵单元格相同的语法：
 
 ```jldoctest dataframe
 julia> german[4, 4]
 2
 ```
 
-### Views
+### 视图
 
-We can also create a `view` of a data frame. It is often useful as it is more
-memory efficient than creating a materialized selection. You can create it using
-a `view` function:
+我们也可以创建一个数据帧的`view`。它通常非常有用，因为它比创建实体化的选择更节省内存。你可以使用`view`函数来创建：
 
 ```jldoctest dataframe
 julia> view(german, :, 2:5)
@@ -958,7 +869,7 @@ julia> view(german, :, 2:5)
                        985 rows omitted
 ```
 
-or using a `@view` macro:
+或者使用`@view`宏：
 
 ```jldoctest dataframe
 julia> @view german[end:-1:1, [1, 4]]
@@ -985,7 +896,7 @@ julia> @view german[end:-1:1, [1, 4]]
      985 rows omitted
 ```
 
-Similarly we can get a view of one column of a data frame:
+同样，我们可以获取数据帧一列的视图：
 
 ```jldoctest dataframe
 julia> @view german[1:5, 1]
@@ -997,7 +908,7 @@ julia> @view german[1:5, 1]
  4
 ```
 
-its single cell:
+它的单个单元格：
 
 ```jldoctest dataframe
 julia> @view german[2, 2]
@@ -1005,7 +916,7 @@ julia> @view german[2, 2]
 22
 ```
 
-or a single row:
+或者单独的一行：
 
 ```jldoctest dataframe
 julia> @view german[3, 2:5]
@@ -1016,13 +927,9 @@ DataFrameRow
    3 │    49  male         1  own
 ```
 
-As you can see the row and column indexing syntax is exactly the same as for
-indexing. The only difference is that we do not create a new object, but a view
-into an existing one.
+如你所见，行和列的索引语法与索引完全相同。唯一的区别是我们没有创建一个新的对象，而是创建了一个现有对象的视图。
 
-In order to compare the performance of indexing vs creation of a view let us
-run the following benchmark using the BenchmarkTools.jl package (please install
-it if you want to re-run this comparison):
+为了比较索引的性能和创建视图的性能，让我们使用BenchmarkTools.jl包运行以下基准测试（如果你想重新运行这个比较，请安装它）：
 
 ```julia
 julia> using BenchmarkTools
@@ -1034,20 +941,17 @@ julia> @btime @view $german[1:end-1, 1:end-1];
   67.332 ns (2 allocations: 32 bytes)
 ```
 
-As you can see creation of a view is:
-- an order of magnitude faster;
-- allocates much less memory.
+如你所见，创建一个视图：
+- 快一个数量级；
+- 分配的内存更少。
 
-The downside of the view is that:
-- it points to the same memory as its parent (so changing a view changes the
-  parent, which is sometimes undesirable);
-- some operations might be a bit slower (as DataFrames.jl needs to perform a
-  mapping of indices of a view to indices of the parent).
+视图的缺点是：
+- 它指向与其父对象相同的内存（所以改变视图会改变父对象，这有时是不可取的）；
+- 一些操作可能稍微慢一些（因为DataFrames.jl需要执行视图的索引到父对象的索引的映射）。
 
-### Changing the Data Stored in a Data Frame
+### 更改存储在数据框中的数据
 
-In order to show how to perform mutating operations on a data frame we make a
-subset of a `german` data frame first:
+为了展示如何在数据框上执行变异操作，我们首先创建一个`german`数据框的子集：
 
 ```jldoctest dataframe
 julia> df1 = german[1:6, 2:4]
@@ -1063,8 +967,7 @@ julia> df1 = german[1:6, 2:4]
    6 │    35  male         1
 ```
 
-In the following example we replace the column `:Age` in our `df1` data frame
-with a new vector:
+在下面的示例中，我们用一个新的向量替换了`df1`数据框中的列`:Age`：
 
 ```jldoctest dataframe
 julia> val = [80, 85, 98, 95, 78, 89]
@@ -1098,18 +1001,14 @@ julia> df1
    6 │    89  male         1
 ```
 
-This is a non-copying operation. One can perform it only if `val` vector has the
-same length as number of rows of `df1` or as a special case if `df1` would not
-have any columns.
+这是一个非复制操作。只有当`val`向量的长度与`df1`的行数相同时，才能执行此操作，或者作为特殊情况，如果`df1`没有任何列。
 
 ```jldoctest dataframe
-julia> df1.Age === val # no copy is performed
+julia> df1.Age === val # 没有进行复制
 true
 ```
 
-If in indexing you select a subset of rows from a data frame the mutation is
-performed in place, i.e. writing to an existing vector.
-Below setting values of column `:Job` in rows `1:3` to values `[2, 4, 6]`:
+如果在索引中从数据框中选择了一部分行，则会就地执行变异操作，即写入现有向量。下面将行`1:3`中的列`:Job`的值设置为`[2, 4, 6]`：
 
 ```jldoctest dataframe
 julia> df1[1:3, :Job] = [2, 3, 2]
@@ -1131,9 +1030,7 @@ julia> df1
    6 │    89  male         1
 ```
 
-As a special rule using `!` as row selector replaces column without copying
-(just like in the `df1.Age = val` example above).
-For example below we replace the `:Sex` column:
+作为特殊规则，使用`!`作为行选择器将替换列而不进行复制（就像上面的`df1.Age = val`示例中一样）。例如，下面我们替换`:Sex`列：
 
 ```jldoctest dataframe
 julia> df1[!, :Sex] = ["male", "female", "female", "transgender", "female", "male"]
@@ -1158,8 +1055,7 @@ julia> df1
    6 │    89  male             1
 ```
 
-Similarly to setting selected rows of a single column we can also set
-selected columns of a given row of a data frame:
+类似于设置单列的选定行，我们还可以设置数据框的给定行的选定列：
 
 ```jldoctest dataframe
 julia> df1[3, 1:3] = [78, "male", 4]
@@ -1181,18 +1077,17 @@ julia> df1
    6 │    89  male             1
 ```
 
-We have already mentioned that `DataFrameRow` can be used to mutate its parent
-data frame. Here are a few examples:
+我们已经提到过`DataFrameRow`可以用于修改其父数据框。下面是一些示例：
 
 ```jldoctest dataframe
-julia> dfr = df1[2, :] # DataFrameRow with the second row and all columns of df1
+julia> dfr = df1[2, :] # DataFrameRow，包含df1的第二行和所有列
 DataFrameRow
  Row │ Age    Sex     Job
      │ Int64  String  Int64
 ─────┼──────────────────────
    2 │    85  female      3
 
-julia> dfr.Age = 98 # set value of col `:Age` in row `2` to `98` in-place
+julia> dfr.Age = 98 # 将第二行中列`:Age`的值设置为`98`
 98
 
 julia> dfr
@@ -1202,7 +1097,7 @@ DataFrameRow
 ─────┼──────────────────────
    2 │    98  female      3
 
-julia> dfr[2:3] = ["male", 2] # set values of entries in columns `:Sex` and `:Job`
+julia> dfr[2:3] = ["male", 2] # 设置列`:Sex`和`:Job`中的条目值
 2-element Vector{Any}:
   "male"
  2
@@ -1215,10 +1110,9 @@ DataFrameRow
    2 │    98  male        2
 ```
 
-This operations updated the data stored in the `df1` data frame.
+这些操作更新了存储在`df1`数据框中的数据。
 
-In a similar fashion views can be used to update data stored in their parent
-data frame. Here are some examples:
+类似地，视图可以用于更新其父数据框中存储的数据。下面是一些示例：
 
 ```jldoctest dataframe
 julia> sdf = view(df1, :, 2:3)
@@ -1233,7 +1127,7 @@ julia> sdf = view(df1, :, 2:3)
    5 │ female           2
    6 │ male             1
 
-julia> sdf[2, :Sex] = "female" # set value of col `:Sex` in second row to `female` in-place
+julia> sdf[2, :Sex] = "female" # 将第二行中的列`:Sex`的值设置为`female`
 "female"
 
 julia> sdf
@@ -1266,17 +1160,14 @@ julia> sdf
    6 │ female           3
 ```
 
-In all these cases the parent of `sdf` view was also updated.
+在所有这些情况下，`sdf`视图的父级也会被更新。
 
-### Broadcasting Assignment
+### 广播赋值
 
-Apart from normal assignment one can perform broadcasting assignment using the
-`.=` operation.
+除了普通的赋值，还可以使用`.=`操作进行广播赋值。
 
-Before we move forward let us explain how broadcasting works in Julia.
-The standard syntax to perform
-[broadcasting](https://docs.julialang.org/en/v1/manual/mathematical-operations/#man-dot-operators)
-is to use `.`. For example, as opposed to R this operation fails:
+在我们继续之前，让我们解释一下在Julia中广播是如何工作的。
+执行[broadcasting](https://docs.julialang.org/en/v1/manual/mathematical-operations/#man-dot-operators)的标准语法是使用`.`。例如，与R不同，下面的操作会失败：
 
 ```jldoctest dataframe
 julia> s = [25, 26, 35, 56]
@@ -1290,7 +1181,7 @@ julia> s[2:3] = 0
 ERROR: ArgumentError: indexed assignment with a single value to possibly many locations is not supported; perhaps use broadcasting `.=` instead?
 ```
 
-Instead we have to write:
+相反，我们必须写成：
 
 ```jldoctest dataframe
 julia> s[2:3] .= 0
@@ -1306,11 +1197,10 @@ julia> s
  56
 ```
 
-Similar syntax is fully supported in DataFrames.jl. Here, Column `:Age` is
-replaced freshly allocated vector because of broadcasting assignment:
+DataFrames.jl完全支持类似的语法。在这里，由于广播赋值，列`:Age`被一个全新的分配的向量替换：
 
 ```jldoctest dataframe
-julia> df1[!, :Age] .= [85, 89, 78, 58, 96, 68] # col `:Age` is replaced freshly allocated vector
+julia> df1[!, :Age] .= [85, 89, 78, 58, 96, 68] # 列`:Age`被一个全新的分配的向量替换
 6-element Vector{Int64}:
  85
  89
@@ -1332,14 +1222,11 @@ julia> df1
    6 │    68  female           3
 ```
 
-Using the `:` instead of `!` above would perform a broadcasting assignment
-in-place into an existing column. The major difference between in-place and
-replace operations is that replacing columns is needed if new values have a
-different type than the old ones.
+在上面的例子中，如果使用`:`而不是`!`，将在现有列中进行广播赋值。
+就地(in-place)和替换(replace)操作之间的主要区别在于，如果新值与旧值具有不同的类型，则需要替换列。
 
-In the examples below we operate on columns `:Customers` and `:City` that are not
-present in `df1`. In this case using `!` and `:` are equivalent and a new column
-is allocated:
+在下面的示例中，我们操作不存在于`df1`中的列`:Customers`和`:City`。
+在这种情况下，使用`!`和`:`是等效的，并且会分配一个新的列：
 
 ```jldoctest dataframe
 julia> df1[!, :Customers] .= ["Rohit", "Akshat", "Rahul", "Aayush", "Prateek", "Anam"]
@@ -1373,41 +1260,14 @@ julia> df1
    6 │    68  female           3  Anam       Dehradoon
 ```
 
-A most common broadcasting assignment operation is when a scalar is used on the
-right hand side, e.g:
-
-```jldoctest dataframe
-julia> df1[:, 3] .= 4 # an in-place replacement of values stored in column number 3 by 4
-6-element view(::Vector{Int64}, :) with eltype Int64:
- 4
- 4
- 4
- 4
- 4
- 4
-
-julia> df1
-6×5 DataFrame
- Row │ Age    Sex          Job    Customers  City
-     │ Int64  String       Int64  String     String
-─────┼───────────────────────────────────────────────────
-   1 │    85  male             4  Rohit      Kanpur
-   2 │    89  female           4  Akshat     Lucknow
-   3 │    78  male             4  Rahul      Bhuvneshwar
-   4 │    58  transgender      4  Aayush     Jaipur
-   5 │    96  female           4  Prateek    Ranchi
-   6 │    68  female           4  Anam       Dehradoon
-```
-
-For `:` row selector the broadcasting assignment operation works in-place,
-so the following operation throws an error:
+对于`:Age`选择器，广播赋值操作是就地进行的，所以下面的操作会引发错误：
 
 ```jldoctest dataframe
 julia> df1[:, :Age] .= "Economics"
 ERROR: MethodError: Cannot `convert` an object of type String to an object of type Int64
 ```
 
-We need to use `!` instead as it replaces the old vector with a freshly allocated one:
+我们需要使用`!`，因为它会用一个全新的向量替换旧的向量：
 
 ```jldoctest dataframe
 julia> df1[!, :Age] .= "Economics"
@@ -1432,16 +1292,13 @@ julia> df1
    6 │ Economics  female           4  Anam       Dehradoon
 ```
 
-There are some scenarios in DataFrames.jl, when we naturally want a
-broadcasting-like behaviour, but do not allow for the use of `.` operation. In
-such cases a so-called pseudo-broadcasting is performed for user convenience. We
-have already seen it in examples of `DataFrame` constructor. Below we show
-pseudo-broadcasting at work in the `insertcols!` function, that inserts a column
-into a data frame in an arbitrary position.
+在DataFrames.jl中，有一些情况下，我们自然地希望实现类似广播的行为，但不允许使用`.`操作。
+在这种情况下，为了方便用户，执行所谓的伪广播(pseudo-broadcasting)。
+我们已经在`DataFrame`构造函数的示例中看到了它。下面我们展示了在`insertcols!`函数中伪广播的工作方式，
+该函数在任意位置向数据框中插入列。
 
-In the example below we are creating a column `:Country` with the `insertcols!`
-function. Since we pass a scalar `"India"` value of the column it is broadcasted
-to all rows in the output data frame:
+在下面的示例中，我们使用`insertcols!`函数创建了一个名为`:Country`的列。
+由于我们传递了一个标量值`"India"`，该列的值被广播到输出数据框的所有行：
 
 ```jldoctest dataframe
 julia> insertcols!(df1, 1, :Country => "India")
@@ -1457,8 +1314,7 @@ julia> insertcols!(df1, 1, :Country => "India")
    6 │ India    Economics  female           4  Anam       Dehradoon
 ```
 
-You can pass a column location where you want to put the inserted column as a
-second argument to the `insertcols!` function:
+您可以将要插入列的位置作为第二个参数传递给`insertcols!`函数：
 ```
 julia> insertcols!(df1, 4, :b => exp(4))
 6×7 DataFrame
@@ -1473,22 +1329,18 @@ julia> insertcols!(df1, 4, :b => exp(4))
    6 │ India    Economics  female       54.5982      4  Anam       Dehradoon
 ```
 
-### Not, Between, Cols, and All Column Selectors
+### Not、Between、Cols和All列选择器
 
-You can use `Not`, `Between`, `Cols`, and `All` selectors in more complex column
-selection scenarios:
-- `Not` selector (from the [InvertedIndices.jl](https://github.com/mbauman/InvertedIndices.jl)
-  package) allows us to specify the columns we want to exclude from the resulting
-  data frame. We can put any valid other column selector inside `Not`;
-- `Between` selector allows us to specify a range of columns (we can pass the
-  start and stop column using any of the single column selector syntaxes);
-- `Cols(...)` selector picks a union of other selectors passed as its arguments;
-- `All()` allows us to select all columns of `DataFrame`; this is the same as passing `:`;
-- regular expression to select columns whose names match it.
+在更复杂的列选择场景中，您可以使用`Not`、`Between`、`Cols`和`All`选择器：
+- `Not`选择器（来自[InvertedIndices.jl](https://github.com/mbauman/InvertedIndices.jl)包）允许我们指定要从结果数据框中排除的列。我们可以在`Not`内部放置任何有效的其他列选择器；
+- `Between`选择器允许我们指定一系列列（我们可以使用任何单列选择器语法传递起始和停止列）；
+- `Cols(...)`选择器选择作为其参数传递的其他选择器的并集；
+- `All()`允许我们选择`DataFrame`的所有列；这与传递`:`是相同的；
+- 使用正则表达式选择与其名称匹配的列。
 
-Let us give some examples of these selectors.
+让我们给出一些这些选择器的示例。
 
-Drop `:Age` column:
+删除`:Age`列：
 
 ```jldoctest dataframe
 julia> german[:, Not(:Age)]
@@ -1515,7 +1367,7 @@ julia> german[:, Not(:Age)]
                                                   3 columns and 985 rows omitted
 ```
 
-Select columns starting from `:Sex` and ending at `:Housing`:
+选择从`:Sex`到`:Housing`的列：
 
 ```
 julia> german[:, Between(:Sex, :Housing)]
@@ -1542,8 +1394,7 @@ julia> german[:, Between(:Sex, :Housing)]
                985 rows omitted
 ```
 
-In the example below `Cols` selector is picking a union of `"Age"` and
-`Between("Sex", "Job")` selectors passed as its arguments:
+在下面的示例中，`Cols`选择器选择作为其参数传递的`"Age"`和`Between("Sex", "Job")`选择器的并集：
 
 ```jldoctest dataframe
 julia> german[:, Cols("Age", Between("Sex", "Job"))]
@@ -1570,9 +1421,7 @@ julia> german[:, Cols("Age", Between("Sex", "Job"))]
               985 rows omitted
 ```
 
-You can also use `Regex` (regular expressions) to select columns. In the example
-below we select columns that have `"S"` in their name and also we use `Not` to
-drop row number 5:
+您还可以使用正则表达式`Regex`来选择列。在下面的示例中，我们选择具有其名称中包含`"S"`的列，并使用`Not`来删除第5行：
 
 ```jldoctest dataframe
 julia> german[Not(5), r"S"]
@@ -1599,40 +1448,26 @@ julia> german[Not(5), r"S"]
                 984 rows omitted
 ```
 
-## Basic Usage of Transformation Functions
+## 转换函数的基本用法
 
-In DataFrames.jl we have five functions that we can be used to perform
-transformations of columns of a data frame:
+在DataFrames.jl中，我们有五个函数可以用来对数据帧的列进行转换：
 
-- `combine`: creates a new data frame populated with columns that are results of
-  transformation applied to the source data frame columns, potentially combining
-  its rows;
-- `select`: creates a new data frame that has the same number of rows as the
-  source data frame populated with columns that are results of transformations
-  applied to the source data frame columns;
-- `select!`: the same as `select` but updates the passed data frame in place;
-- `transform`: the same as `select` but keeps the columns that were already
-  present in the data frame (note though that these columns can be potentially
-  modified by the transformation passed to `transform`);
-- `transform!`: the same as `transform` but updates the passed data frame in
-  place.
+- `combine`：创建一个新的数据帧，其中包含对源数据帧列应用转换得到的列，可以合并行；
+- `select`：创建一个与源数据帧具有相同行数的新数据帧，其中包含对源数据帧列应用转换得到的列；
+- `select!`：与`select`相同，但会直接在传入的数据帧上进行更新；
+- `transform`：与`select`相同，但会保留数据帧中已存在的列（需要注意的是，这些列可能会被传递给`transform`的转换修改）；
+- `transform!`：与`transform`相同，但会直接在传入的数据帧上进行更新。
 
-The fundamental ways to specify a transformation are:
+指定转换的基本方式有以下几种：
 
-- `source_column => transformation => target_column_name`; In this scenario the
-  `source_column` is passed as an argument to `transformation` function and
-  stored in `target_column_name` column.
-- `source_column => transformation`; In this scenario we apply the
-  transformation function to `source_column` and the target column names is
-  automatically generated.
-- `source_column => target_column_name` renames the `source_column` to
-  `target_column_name`.
-- `source_column` just keep the source column as is in the result without any
-  transformation;
+- `source_column => transformation => target_column_name`：在这种情况下，将`source_column`作为参数传递给`transformation`函数，并将其存储在`target_column_name`列中。
+- `source_column => transformation`：在这种情况下，我们将转换函数应用于`source_column`，目标列名会自动生成。
+- `source_column => target_column_name`：将`source_column`重命名为`target_column_name`。
+- `source_column`：在结果中保持源列不进行任何转换。
 
-These rules are typically called transformation mini-language.
+这些规则通常被称为转换迷你语言。
 
-Let us move to the examples of application of these rules
+让我们来看一些应用这些规则的示例。
 
 ```jldoctest dataframe
 julia> using Statistics
@@ -1668,18 +1503,9 @@ julia> select(german, :Age => mean => :mean_age)
  985 rows omitted
 ```
 
-As you can see in both cases the `mean` function was applied to `:Age` column
-and the result was stored in the `:mean_age` column. The difference between
-the `combine` and `select` functions is that the `combine` aggregates data
-and produces as many rows as were returned by the transformation function.
-On the other hand the `select` function always keeps the number of rows in a
-data frame to be the same as in the source data frame. Therefore in this case
-the result of the `mean` function got broadcasted.
+如您所见，在这两种情况下，`mean`函数被应用于`:Age`列，并将结果存储在`:mean_age`列中。`combine`和`select`函数的区别在于，`combine`对数据进行聚合，并根据转换函数返回的行数生成相应的行数。而`select`函数始终保持数据帧中的行数与源数据帧相同。因此，在这种情况下，`mean`函数的结果被广播。
 
-As `combine` potentially allows any number of rows to be produced as a result
-of the transformation if we have a combination of transformations where some of
-them produce a vector, and other produce scalars then scalars get broadcasted
-exactly like in  `select`. Here is an example:
+由于`combine`可以根据转换的结果生成任意数量的行，如果我们组合了一些转换，其中一些转换生成向量，而其他转换生成标量，则标量会像在`select`中一样被广播。下面是一个示例：
 
 ```jldoctest dataframe
 julia> combine(german, :Age => mean => :mean_age, :Housing => unique => :housing)
@@ -1692,17 +1518,14 @@ julia> combine(german, :Age => mean => :mean_age, :Housing => unique => :housing
    3 │   35.546  rent
 ```
 
-Note, however, that it is not allowed to return vectors of different lengths in
-different transformations:
+请注意，不允许在不同的转换中返回长度不同的向量：
 
 ```jldoctest dataframe
 julia> combine(german, :Age, :Housing => unique => :Housing)
 ERROR: ArgumentError: New columns must have the same length as old columns
 ```
 
-Let us discuss some other examples using `select`. Often we want to apply some
-function not to the whole column of a data frame, but rather to its individual
-elements. Normally we can achieve this using broadcasting like this:
+让我们使用`select`讨论一些其他示例。通常，我们希望将某个函数应用于数据帧的整个列，而不是其各个元素。通常，我们可以使用广播来实现这一点，如下所示：
 
 ```jldoctest dataframe
 julia> select(german, :Sex => (x -> uppercase.(x)) => :Sex)
@@ -1729,12 +1552,7 @@ julia> select(german, :Sex => (x -> uppercase.(x)) => :Sex)
 985 rows omitted
 ```
 
-This pattern is encountered very often in practice, therefore there is a `ByRow`
-convenience wrapper for a function that creates its broadcasted variant. In
-these examples `ByRow` is a special type used for selection operations to signal
-that the wrapped function should be applied to each element (row) of the
-selection. Here we are passing `ByRow` wrapper to target column name `:Sex`
-using `uppercase` function:
+这种模式在实践中经常遇到，因此有一个`ByRow`的便捷包装器，用于创建广播变体的函数。在这些示例中，`ByRow`是一种特殊类型，用于选择操作，以表示应将包装的函数应用于选择的每个元素（行）。在这里，我们使用`uppercase`函数将`ByRow`包装器传递给目标列名`:Sex`：
 
 ```jldoctest dataframe
 julia> select(german, :Sex => ByRow(uppercase) => :SEX)
@@ -1761,8 +1579,7 @@ julia> select(german, :Sex => ByRow(uppercase) => :SEX)
 985 rows omitted
 ```
 
-In this case we transform our source column `:Age` using `ByRow` wrapper and
-automatically generate the target column name:
+在这种情况下，我们使用`ByRow`包装器来转换源列`:Age`，并自动生成目标列名：
 
 ```jldoctest dataframe
 julia> select(german, :Age, :Age => ByRow(sqrt))
@@ -1789,10 +1606,9 @@ julia> select(german, :Age, :Age => ByRow(sqrt))
         985 rows omitted
 ```
 
-When we pass just a column (without the `=>` part) we can use any column selector
-that is allowed in indexing.
+当我们只传递一个列（不包括`=>`部分）时，我们可以使用在索引中允许的任何列选择器。
 
-Here we exclude the column `:Age` from the resulting data frame:
+在这里，我们从结果数据框中排除列`:Age`：
 
 ```jldoctest dataframe
 julia> select(german, Not(:Age))
@@ -1819,10 +1635,7 @@ julia> select(german, Not(:Age))
                                                   3 columns and 985 rows omitted
 ```
 
-In the next example we drop columns `"Age"`, `"Saving accounts"`,
-`"Checking account"`, `"Credit amount"`, and `"Purpose"`. Note that this time
-we use string column selectors because some of the column names have spaces
-in them:
+在下一个示例中，我们删除列`"Age"`、`"Saving accounts"`、`"Checking account"`、`"Credit amount"`和`"Purpose"`。请注意，这次我们使用字符串列选择器，因为一些列名中包含空格：
 
 ```jldoctest dataframe
 julia> select(german, Not(["Age", "Saving accounts", "Checking account",
@@ -1851,8 +1664,7 @@ julia> select(german, Not(["Age", "Saving accounts", "Checking account",
 
 ```
 
-As another example let us present that the `r"S"` regular expression we used
-above also works with `select`:
+作为另一个示例，让我们展示一下我们之前使用的`r"S"`正则表达式在`select`中也可以使用：
 
 ```jldoctest dataframe
 julia> select(german, r"S")
@@ -1879,8 +1691,7 @@ julia> select(german, r"S")
                  985 rows omitted
 ```
 
-The benefit of `select` or `combine` over indexing is that it is easier
-to get the union of several column selectors, e.g.:
+使用`select`或`combine`相对于索引的好处是更容易获取多个列选择器的并集，例如：
 
 ```jldoctest dataframe
 julia> select(german, r"S", "Job", 1)
@@ -1907,8 +1718,7 @@ julia> select(german, r"S", "Job", 1)
                                985 rows omitted
 ```
 
-Taking advantage of this flexibility here is an idiomatic pattern to move some
-column to the front of a data frame:
+利用这种灵活性，这里是一种将某些列移动到数据框前面的惯用模式：
 
 ```jldoctest dataframe
 julia> select(german, "Sex", :)
@@ -1935,8 +1745,7 @@ julia> select(german, "Sex", :)
                                                   4 columns and 985 rows omitted
 ```
 
-Below, we are simply passing source column and target column name to rename them
-(without specifying the transformation part):
+下面，我们只是传递源列和目标列名来重命名它们（没有指定转换部分）：
 
 ```jldoctest dataframe
 julia> select(german, :Sex => :x1, :Age => :x2)
@@ -1963,8 +1772,7 @@ julia> select(german, :Sex => :x1, :Age => :x2)
        985 rows omitted
 ```
 
-It is important to note that `select` always returns a data frame, even if a
-single column selected as opposed to indexing syntax. Compare the following:
+需要注意的是，`select`始终返回一个数据框，即使只选择了一个单独的列，与索引语法相反。比较以下两种情况：
 
 ```jldoctest dataframe
 julia> select(german, :Age)
@@ -2014,8 +1822,7 @@ julia> german[:, :Age]
  27
 ```
 
-By default `select` copies columns of a passed source data frame. In order to
-avoid copying, pass the `copycols=false` keyword argument:
+默认情况下，`select`会复制传递的源数据框的列。为了避免复制，可以传递`copycols=false`关键字参数：
 
 ```jldoctest dataframe
 julia> df = select(german, :Sex)
@@ -2071,7 +1878,7 @@ julia> df.Sex === german.Sex # no-copy is performed
 true
 ```
 
-To perform the selection operation in-place use `select!`:
+要在原地执行选择操作，请使用`select!`：
 
 ```jldoctest dataframe
 julia> select!(german, Not(:Age));
@@ -2100,11 +1907,9 @@ julia> german
                                                   3 columns and 985 rows omitted
 ```
 
-As you can see the `:Age` column was dropped from the `german` data frame.
+正如您所看到的，`german`数据框中的`:Age`列已被删除。
 
-The `transform` and `transform!` functions work identically to `select` and
-`select!` with the only difference that they retain all columns that are present
-in the source data frame. Here are some examples:
+`transform`和`transform!`函数的工作方式与`select`和`select!`完全相同，唯一的区别是它们保留源数据框中存在的所有列。以下是一些示例：
 
 ```jldoctest dataframe
 julia> german = copy(german_ref);
@@ -2138,7 +1943,7 @@ julia> transform(df, :Age => maximum)
    8 │     7     35  male         3  rent              67
 ```
 
-In the example below we are swapping values stored in columns `:Sex` and `:Age`:
+在下面的示例中，我们交换存储在`:Sex`列和`:Age`列中的值：
 
 ```jldoctest dataframe
 julia> transform(german, :Age => :Sex, :Sex => :Age)
@@ -2165,10 +1970,7 @@ julia> transform(german, :Age => :Sex, :Sex => :Age)
                                                   4 columns and 985 rows omitted
 ```
 
-If we give more than one source column to a transformation they are passed as
-consecutive positional arguments. So for example the
-`[:Age, :Job] => (+) => :res` transformation below evaluates `+(df1.Age, df1.Job)`
-(which adds two columns) and stores the result in the `:res` column:
+如果我们将多个源列传递给转换函数，它们将作为连续的位置参数传递。因此，例如下面的`[:Age, :Job] => (+) => :res`转换会计算`+(df1.Age, df1.Job)`（将两列相加），并将结果存储在`:res`列中：
 
 ```jldoctest dataframe
 julia> select(german, :Age, :Job, [:Age, :Job] => (+) => :res)
@@ -2195,8 +1997,4 @@ julia> select(german, :Age, :Job, [:Age, :Job] => (+) => :res)
             985 rows omitted
 ```
 
-In the examples given in this introductory tutorial we did not cover all
-options of the transformation mini-language. More advanced examples, in particular
-showing how to pass or produce multiple columns using the `AsTable` operation
-(which you might have seen in some DataFrames.jl demos) are given in the later
-sections of the manual.
+在这个入门教程中给出的示例并没有涵盖转换迷你语言的所有选项。在手册的后面部分，有更高级的示例，特别是展示如何使用`AsTable`操作传递或生成多列的示例（您可能在一些DataFrames.jl的演示中见过）。
