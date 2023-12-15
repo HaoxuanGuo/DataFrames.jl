@@ -27,7 +27,7 @@ DataFrames.jl提供了一套用于在Julia中处理表格数据的工具。其�
 
 DataFrames.jl在Julia数据生态系统中起着核心作用，并且与许多不同的库紧密集成。DataFrames.jl并不是Julia中处理表格数据的唯一工具——如下所述，对于某些特定用例，还有一些其他的优秀库——但是它通过熟悉的接口提供了出色的数据整理功能。
 
-要更详细地了解这个工具链，请查看本手册中的教程。新用户可以从[DataFrames.jl的第一步](@ref)部分开始。
+要更详细地了解这个工具链，请查看本手册中的教程。新用户可以从[使用DataFrames.jl的第一步](@ref)部分开始。
 
 你可能会发现[DataFramesMeta.jl](https://juliadata.github.io/DataFramesMeta.jl/stable/)包或者本手册中讨论的[数据操作框架](@ref)部分的其他便利包在编写更高级的数据转换时很有帮助，尤其是如果你没有太多的编程经验。这些包提供了类似于R中[dplyr](https://dplyr.tidyverse.org/)的便利语法。
 

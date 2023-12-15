@@ -748,7 +748,7 @@ operations:
   package provides macros for most standard functions from DataFrames.jl,
   with convenient syntax for the manipulation of multiple columns at once.
 
-See the [Data manipulation frameworks](@ref) section for more information.
+See the [数据操作框架](@ref) section for more information.
 
 ## Summarizing Data
 

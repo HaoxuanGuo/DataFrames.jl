@@ -83,7 +83,7 @@ Pandas使用`NaN`表示缺失数据和浮点数的"not a number"值。
 Julia为表示缺失数据定义了一个特殊值`missing`。DataFrames.jl在默认情况下遵守
 Julia中有关传播`missing`值的一般规则。如果需要，
 可以使用`skipmissing`函数删除缺失数据。
-有关更多信息，请参阅[Missing Data](@ref)部分。
+有关更多信息，请参阅[缺失数据](@ref)部分。
 
 此外，pandas在应用函数后保留原始列名。
 DataFrames.jl默认情况下在列名后附加后缀。为了简化起见，
