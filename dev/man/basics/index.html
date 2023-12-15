@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>First Steps with DataFrames.jl · DataFrames.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link rel="canonical" href="https://juliadata.github.io/DataFrames.jl/stable/man/basics/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script><link href="../../assets/favicon.ico" rel="icon" type="image/x-icon"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="DataFrames.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">DataFrames.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li class="is-active"><a class="tocitem" href>First Steps with DataFrames.jl</a><ul class="internal"><li><a class="tocitem" href="#设置环境"><span>设置环境</span></a></li><li><a class="tocitem" href="#构造函数和基本实用函数"><span>构造函数和基本实用函数</span></a></li><li><a class="tocitem" href="#获取和设置数据框中的数据"><span>获取和设置数据框中的数据</span></a></li><li><a class="tocitem" href="#转换函数的基本用法"><span>转换函数的基本用法</span></a></li></ul></li><li><span class="tocitem">User Guide</span><ul><li><a class="tocitem" href="../getting_started/">Getting Started</a></li><li><a class="tocitem" href="../working_with_dataframes/">Working with DataFrames</a></li><li><a class="tocitem" href="../importing_and_exporting/">Importing and Exporting Data (I/O)</a></li><li><a class="tocitem" href="../joins/">Joins</a></li><li><a class="tocitem" href="../split_apply_combine/">Split-apply-combine</a></li><li><a class="tocitem" href="../reshaping_and_pivoting/">Reshaping</a></li><li><a class="tocitem" href="../sorting/">Sorting</a></li><li><a class="tocitem" href="../categorical/">Categorical Data</a></li><li><a class="tocitem" href="../missing/">Missing Data</a></li><li><a class="tocitem" href="../querying_frameworks/">Data manipulation frameworks</a></li><li><a class="tocitem" href="../comparisons/">Comparison with Python/R/Stata</a></li></ul></li><li><span class="tocitem">API</span><ul><li><a class="tocitem" href="../../lib/types/">Types</a></li><li><a class="tocitem" href="../../lib/functions/">Functions</a></li><li><a class="tocitem" href="../../lib/indexing/">Indexing</a></li><li><a class="tocitem" href="../../lib/metadata/">Metadata</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>First Steps with DataFrames.jl</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>First Steps with DataFrames.jl</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/HaoxuanGuo/DataFrames.jl/blob/main/docs/src/man/basics.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="使用DataFrames.jl的第一步"><a class="docs-heading-anchor" href="#使用DataFrames.jl的第一步">使用DataFrames.jl的第一步</a><a id="使用DataFrames.jl的第一步-1"></a><a class="docs-heading-anchor-permalink" href="#使用DataFrames.jl的第一步" title="Permalink"></a></h1><h2 id="设置环境"><a class="docs-heading-anchor" href="#设置环境">设置环境</a><a id="设置环境-1"></a><a class="docs-heading-anchor-permalink" href="#设置环境" title="Permalink"></a></h2><p>如果你想使用DataFrames.jl包，你需要首先安装它。 你可以使用以下命令来进行安装：</p><pre><code class="language-julia hljs">julia&gt; using Pkg
+
+julia&gt; Pkg.add(&quot;DataFrames&quot;)</code></pre><p>或者</p><pre><code class="language-julia hljs">julia&gt; ] # 按下 &#39;]&#39;
+
+(@v1.9) pkg&gt; add DataFrames</code></pre><p>如果你想确保一切都按预期工作，你可以运行与DataFrames.jl捆绑的测试， 但请注意，这将需要超过30分钟：</p><pre><code class="language-julia hljs">julia&gt; using Pkg
+
+julia&gt; Pkg.test(&quot;DataFrames&quot;) # 警告！这将需要超过30分钟。</code></pre><p>另外，建议使用<code>status</code>命令检查你已安装的DataFrames.jl的版本。</p><pre><code class="language-julia hljs">julia&gt; ]
+
+(@v1.9) pkg&gt; status DataFrames
+      Status `~\v1.6\Project.toml`
+  [a93c6f00] DataFrames v1.5.0</code></pre><p>在本教程的其余部分，我们将假设你已经安装了DataFrames.jl包，并已经键入<code>using DataFrames</code>来加载包：</p><pre><code class="language-julia-repl hljs">julia&gt; using DataFrames</code></pre><p>DataFrames.jl提供的最基本的类型是<code>DataFrame</code>，其中通常每行被解释为一个观察，每列被解释为一个特征。</p><p>!!! 注意 &quot;高级安装配置&quot;</p><pre><code class="nohighlight hljs">在构建（预编译）包时，DataFrames.jl会投入额外的时间和努力，以确保在你使用它时它更具响应性。
+然而，在某些情况下，用户可能希望避免这种额外的预编译工作，以减少构建包和后来加载它所需的时间。
+要在你当前的项目中禁用DataFrames.jl的预编译，请按照[PrecompileTools.jl文档](https://julialang.github.io/PrecompileTools.jl/stable/#Package-developers:-reducing-the-cost-of-precompilation-during-development)中给出的指示操作。</code></pre><h2 id="构造函数和基本实用函数"><a class="docs-heading-anchor" href="#构造函数和基本实用函数">构造函数和基本实用函数</a><a id="构造函数和基本实用函数-1"></a><a class="docs-heading-anchor-permalink" href="#构造函数和基本实用函数" title="Permalink"></a></h2><h3 id="构造函数"><a class="docs-heading-anchor" href="#构造函数">构造函数</a><a id="构造函数-1"></a><a class="docs-heading-anchor-permalink" href="#构造函数" title="Permalink"></a></h3><p>在本节中，你将看到使用构造函数创建<code>DataFrame</code>的几种方式。你可以在<a href="../../lib/types/#DataFrames.DataFrame"><code>DataFrame</code></a>对象的文档中找到支持的构造函数的详细列表，以及更多的示例。</p><p>我们首先创建一个空的<code>DataFrame</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; DataFrame()
+0×0 DataFrame</code></pre><p>现在让我们初始化一个包含多个列的<code>DataFrame</code>。基本的方式如下：</p><pre><code class="language-julia-repl hljs">julia&gt; DataFrame(A=1:3, B=5:7, fixed=1)
+3×3 DataFrame
+ Row │ A      B      fixed
+     │ Int64  Int64  Int64
+─────┼─────────────────────
+   1 │     1      5      1
+   2 │     2      6      1
+   3 │     3      7      1</code></pre><p>注意，使用这个构造函数时，标量（如列<code>:fixed</code>的<code>1</code>）会自动广播以填充创建的<code>DataFrame</code>的所有行。</p><p>有时候，你需要创建一个其列名不是有效的Julia标识符的数据帧。在这种情况下，下面的形式，其中<code>=</code>被<code>=&gt;</code>替换，会很方便：</p><pre><code class="language-julia-repl hljs">julia&gt; DataFrame(&quot;customer age&quot; =&gt; [15, 20, 25],
+                 &quot;first name&quot; =&gt; [&quot;Rohit&quot;, &quot;Rahul&quot;, &quot;Akshat&quot;])
+3×2 DataFrame
+ Row │ customer age  first name
+     │ Int64         String
+─────┼──────────────────────────
+   1 │           15  Rohit
+   2 │           20  Rahul
+   3 │           25  Akshat</code></pre><p>注意，这次我们将列名作为字符串传递。</p><p>你的源数据通常存储在字典中。 只要字典的键是字符串或<code>Symbol</code>，你也可以轻松地从中创建<code>DataFrame</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; dict = Dict(&quot;customer age&quot; =&gt; [15, 20, 25],
+                   &quot;first name&quot; =&gt; [&quot;Rohit&quot;, &quot;Rahul&quot;, &quot;Akshat&quot;])
+Dict{String, Vector} with 2 entries:
+  &quot;first name&quot;   =&gt; [&quot;Rohit&quot;, &quot;Rahul&quot;, &quot;Akshat&quot;]
+  &quot;customer age&quot; =&gt; [15, 20, 25]
+
+julia&gt; DataFrame(dict)
+3×2 DataFrame
+ Row │ customer age  first name
+     │ Int64         String
+─────┼──────────────────────────
+   1 │           15  Rohit
+   2 │           20  Rahul
+   3 │           25  Akshat
+
+julia&gt; dict = Dict(:customer_age =&gt; [15, 20, 25],
+                   :first_name =&gt; [&quot;Rohit&quot;, &quot;Rahul&quot;, &quot;Akshat&quot;])
+Dict{Symbol, Vector} with 2 entries:
+  :customer_age =&gt; [15, 20, 25]
+  :first_name   =&gt; [&quot;Rohit&quot;, &quot;Rahul&quot;, &quot;Akshat&quot;]
+
+julia&gt; DataFrame(dict)
+3×2 DataFrame
+ Row │ customer_age  first_name
+     │ Int64         String
+─────┼──────────────────────────
+   1 │           15  Rohit
+   2 │           20  Rahul
+   3 │           25  Akshat</code></pre><p>使用<code>Symbol</code>，例如<code>:customer_age</code>，而不是字符串，例如<code>&quot;customer age&quot;</code>，来表示列名是首选的，因为它更快。然而，如你在上面的例子中看到的，如果我们的列名包含一个空格，将它作为一个<code>Symbol</code>传递并不方便（你必须写成<code>Symbol(&quot;customer age&quot;)</code>，这很冗长），所以使用字符串更方便。</p><p>从向量的<code>NamedTuple</code>或<code>NamedTuple</code>的向量创建<code>DataFrame</code>也很常见。下面是这些操作的一些示例：</p><pre><code class="language-julia-repl hljs">julia&gt; DataFrame((a=[1, 2], b=[3, 4]))
+2×2 DataFrame
+ Row │ a      b
+     │ Int64  Int64
+─────┼──────────────
+   1 │     1      3
+   2 │     2      4
+
+julia&gt; DataFrame([(a=1, b=0), (a=2, b=0)])
+2×2 DataFrame
+ Row │ a      b
+     │ Int64  Int64
+─────┼──────────────
+   1 │     1      0
+   2 │     2      0</code></pre><p>Sometimes your source data might have a heterogeneous set of columns for each observation. Here is an example:</p><pre><code class="nohighlight hljs">julia&gt; source = [(type=&quot;circle&quot;, radius=10), (type=&quot;square&quot;, side=20)]
+2-element Vector{NamedTuple{names, Tuple{String, Int64}} where names}:
+ (type = &quot;circle&quot;, radius = 10)
+ (type = &quot;square&quot;, side = 20)</code></pre><p>If you want to create a data frame from such data containing all columns present in at least one of the source observations, with a <code>missing</code> entry if some column is not present then you can use <code>Tables.dictcolumntable</code> function to help you create the desired data frame:</p><pre><code class="nohighlight hljs">julia&gt; DataFrame(Tables.dictcolumntable(source))
+2×3 DataFrame
+ Row │ type    radius   side
+     │ String  Int64?   Int64?
+─────┼──────────────────────────
+   1 │ circle       10  missing
+   2 │ square  missing       20</code></pre><p>The role of <code>Tables.dictcolumntable</code> is to make sure that the <code>DataFrame</code> constructor gets information about all columns present in the source data and properly instantiates them. If we did not use this function the <code>DataFrame</code> constructor would assume that the first row of data contains the set of columns present in the source, which would lead to an error in our example:</p><pre><code class="nohighlight hljs">julia&gt; DataFrame(source)
+ERROR: type NamedTuple has no field radius</code></pre><p>Sometimes your source data might have a heterogeneous set of columns for each observation. Here is an example:</p><pre><code class="nohighlight hljs">julia&gt; source = [(type=&quot;circle&quot;, radius=10), (type=&quot;square&quot;, side=20)]
+2-element Vector{NamedTuple{names, Tuple{String, Int64}} where names}:
+ (type = &quot;circle&quot;, radius = 10)
+ (type = &quot;square&quot;, side = 20)</code></pre><p>If you want to create a data frame from such data containing all columns present in at least one of the source observations, with a <code>missing</code> entry if some column is not present then you can use <code>Tables.dictcolumntable</code> function to help you create the desired data frame:</p><pre><code class="nohighlight hljs">julia&gt; DataFrame(Tables.dictcolumntable(source))
+2×3 DataFrame
+ Row │ type    radius   side
+     │ String  Int64?   Int64?
+─────┼──────────────────────────
+   1 │ circle       10  missing
+   2 │ square  missing       20</code></pre><p>The role of <code>Tables.dictcolumntable</code> is to make sure that the <code>DataFrame</code> constructor gets information about all columns present in the source data and properly instantiates them. If we did not use this function the <code>DataFrame</code> constructor would assume that the first row of data contains the set of columns present in the source, which would lead to an error in our example:</p><pre><code class="nohighlight hljs">julia&gt; DataFrame(source)
+ERROR: type NamedTuple has no field radius</code></pre><p>让我们通过展示如何从矩阵创建<code>DataFrame</code>来结束构造函数的复习。在这种情况下，你将矩阵作为第一个参数传递。如果第二个参数只是<code>:auto</code>，那么列名<code>x1</code>，<code>x2</code>，...将会自动生成。</p><pre><code class="language-julia-repl hljs">julia&gt; DataFrame([1 0; 2 0], :auto)
+2×2 DataFrame
+ Row │ x1     x2
+     │ Int64  Int64
+─────┼──────────────
+   1 │     1      0
+   2 │     2      0</code></pre><p>或者，你可以将列名的向量作为第二个参数传递给<code>DataFrame</code>构造函数：</p><pre><code class="language-julia-repl hljs">julia&gt; mat = [1 2 4 5; 15 58 69 41; 23 21 26 69]
+3×4 Matrix{Int64}:
+  1   2   4   5
+ 15  58  69  41
+ 23  21  26  69
+
+julia&gt; nms = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]
+4-element Vector{String}:
+ &quot;a&quot;
+ &quot;b&quot;
+ &quot;c&quot;
+ &quot;d&quot;
+
+julia&gt; DataFrame(mat, nms)
+3×4 DataFrame
+ Row │ a      b      c      d
+     │ Int64  Int64  Int64  Int64
+─────┼────────────────────────────
+   1 │     1      2      4      5
+   2 │    15     58     69     41
+   3 │    23     21     26     69</code></pre><p>现在你知道如何从你的Julia会话中已经有的数据创建<code>DataFrame</code>。在下一节中，我们将展示如何从磁盘加载数据到<code>DataFrame</code>。</p><h3 id="从CSV文件中读取数据"><a class="docs-heading-anchor" href="#从CSV文件中读取数据">从CSV文件中读取数据</a><a id="从CSV文件中读取数据-1"></a><a class="docs-heading-anchor-permalink" href="#从CSV文件中读取数据" title="Permalink"></a></h3><p>这里我们关注最常见的场景，即数据存储在硬盘上的CSV格式。</p><p>首先确保你已经安装了CSV.jl。你可以按照以下指示进行安装：</p><pre><code class="language-julia hljs">julia&gt; using Pkg
+
+julia&gt; Pkg.add(&quot;CSV&quot;)</code></pre><p>为了读取文件，我们将使用<code>CSV.read</code>函数。</p><pre><code class="language-julia-repl hljs">julia&gt; using CSV
+
+julia&gt; path = joinpath(pkgdir(DataFrames), &quot;docs&quot;, &quot;src&quot;, &quot;assets&quot;, &quot;german.csv&quot;);
+
+julia&gt; german_ref = CSV.read(path, DataFrame)
+1000×10 DataFrame
+  Row │ id     Age    Sex      Job    Housing  Saving accounts  Checking accou ⋯
+      │ Int64  Int64  String7  Int64  String7  String15         String15       ⋯
+──────┼─────────────────────────────────────────────────────────────────────────
+    1 │     0     67  male         2  own      NA               little         ⋯
+    2 │     1     22  female       2  own      little           moderate
+    3 │     2     49  male         1  own      little           NA
+    4 │     3     45  male         2  free     little           little
+    5 │     4     53  male         2  free     little           little         ⋯
+    6 │     5     35  male         1  free     NA               NA
+    7 │     6     53  male         2  own      quite rich       NA
+    8 │     7     35  male         3  rent     little           moderate
+  ⋮   │   ⋮      ⋮       ⋮       ⋮       ⋮            ⋮                ⋮       ⋱
+  994 │   993     30  male         3  own      little           little         ⋯
+  995 │   994     50  male         2  own      NA               NA
+  996 │   995     31  female       1  own      little           NA
+  997 │   996     40  male         3  own      little           little
+  998 │   997     38  male         2  own      little           NA             ⋯
+  999 │   998     23  male         2  free     little           little
+ 1000 │   999     27  male         2  own      moderate         moderate
+                                                  4 columns and 985 rows omitted</code></pre><p>如你所见，数据框比显示宽度更宽更高，因此它被剪裁，其最右边的4列和中间的985行未被打印。稍后在教程中，我们将讨论如何强制Julia显示整个数据框（如果我们需要的话）。</p><p>另外请注意，DataFrames.jl在列名下方显示了列的数据类型。在我们的例子中，它是<code>Int64</code>，或者<code>String7</code>和<code>String15</code>。</p><p>让我们在这里提到Julia中标准的<code>String</code>类型和例如<code>String7</code>或<code>String15</code>类型之间的区别。带有数字后缀的类型表示具有固定宽度的字符串（类似于许多数据库提供的<code>CHAR(N)</code>类型）。这种字符串的处理速度要比标准的<code>String</code>类型快得多（特别是如果你有很多这样的字符串），因为它们的实例不是在堆上分配的。出于这个原因，<code>CSV.read</code>默认使用这些固定宽度类型读取狭窄的字符串列。</p><p>现在让我们详细解释以下代码块：</p><pre><code class="language-julia hljs">path = joinpath(pkgdir(DataFrames), &quot;docs&quot;, &quot;src&quot;, &quot;assets&quot;, &quot;german.csv&quot;);
+
+german_ref = CSV.read(path, DataFrame)</code></pre><ul><li>我们将<code>german.csv</code>文件存储在DataFrames.jl仓库中，以便使用户的生活更轻松，避免每次都需要下载它；</li><li><code>pkgdir(DataFrames)</code>给我们提供了到DataFrames.jl包根目录的完整路径。</li><li>然后从这个目录，我们需要移动到存储<code>german.csv</code>文件的目录；我们使用<code>joinpath</code>，因为这是在操作系统中独立地组合硬盘上资源的路径的推荐方式（记住，Windows和Unix的路径分隔符不同，它们使用<code>/</code>或<code>\</code>作为路径分隔符；<code>joinpath</code>函数确保我们不会因此遇到问题）；</li><li>然后我们读取CSV文件；<code>CSV.read</code>的第二个参数是<code>DataFrame</code>，表示我们想要将文件读入一个<code>DataFrame</code>（因为<code>CSV.read</code>允许读入许多不同的目标数据格式）。</li></ul><p>在继续之前，复制参考数据框：</p><pre><code class="language-julia-repl hljs">julia&gt; german = copy(german_ref); # 我们复制数据框</code></pre><p>通过这种方式，即使我们通过修改<code>german</code>数据框弄乱了数据，我们也可以轻松地恢复我们的数据。</p><h3 id="对数据框进行基本操作"><a class="docs-heading-anchor" href="#对数据框进行基本操作">对数据框进行基本操作</a><a id="对数据框进行基本操作-1"></a><a class="docs-heading-anchor-permalink" href="#对数据框进行基本操作" title="Permalink"></a></h3><p>要直接提取数据框的列（即不进行复制），你可以使用以下语法之一： <code>german.Sex</code>，<code>german.&quot;Sex&quot;</code>，<code>german[!, :Sex]</code> 或 <code>german[!, &quot;Sex&quot;]</code>。</p><p>后两种使用索引的语法更为灵活，因为它们允许我们传递一个变量来存储列的名称，而不仅仅是使用 <code>.</code> 的语法中的文字名称。</p><pre><code class="language-julia-repl hljs">julia&gt; german.Sex
+1000-element PooledArrays.PooledVector{String7, UInt32, Vector{UInt32}}:
+ &quot;male&quot;
+ &quot;female&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ ⋮
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;female&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+
+julia&gt; colname = &quot;Sex&quot;
+&quot;Sex&quot;
+
+julia&gt; german[!, colname]
+1000-element PooledArrays.PooledVector{String7, UInt32, Vector{UInt32}}:
+ &quot;male&quot;
+ &quot;female&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ ⋮
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;female&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;</code></pre><p>由于 <code>german.Sex</code> 在提取数据框的列时不会复制，因此改变此操作返回的向量的元素将影响存储在原始 <code>german</code> 数据框中的值。要获取列的<em>副本</em>，你可以使用 <code>german[:, :Sex]</code> 或 <code>german[:, &quot;Sex&quot;]</code>。在这种情况下，改变此操作返回的向量不会影响存储在 <code>german</code> 数据框中的数据。</p><p><code>===</code> 函数允许我们检查两个表达式是否生成了相同的对象，并确认上述行为：</p><pre><code class="language-julia-repl hljs">julia&gt; german.Sex === german[!, :Sex]
+true
+
+julia&gt; german.Sex === german[:, :Sex]
+false</code></pre><p>你可以使用 <code>names</code> 函数获取数据框的列名向量，列名为 <code>String</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; names(german)
+10-element Vector{String}:
+ &quot;id&quot;
+ &quot;Age&quot;
+ &quot;Sex&quot;
+ &quot;Job&quot;
+ &quot;Housing&quot;
+ &quot;Saving accounts&quot;
+ &quot;Checking account&quot;
+ &quot;Credit amount&quot;
+ &quot;Duration&quot;
+ &quot;Purpose&quot;</code></pre><p>有时你可能对满足特定条件的列名感兴趣。</p><p>例如，你可以通过将此类型作为 <code>names</code> 函数的第二个参数来获取具有给定元素类型的列名：</p><pre><code class="language-julia-repl hljs">julia&gt; names(german, AbstractString)
+5-element Vector{String}:
+ &quot;Sex&quot;
+ &quot;Housing&quot;
+ &quot;Saving accounts&quot;
+ &quot;Checking account&quot;
+ &quot;Purpose&quot;</code></pre><p>你可以在 <a href="../../lib/functions/#Base.names"><code>names</code></a> 函数的文档中探索更多过滤列名的选项。</p><p>如果你想将数据框的列名作为 <code>Symbol</code> 获取，可以使用 <code>propertynames</code> 函数：</p><pre><code class="language-julia-repl hljs">julia&gt; propertynames(german)
+10-element Vector{Symbol}:
+ :id
+ :Age
+ :Sex
+ :Job
+ :Housing
+ Symbol(&quot;Saving accounts&quot;)
+ Symbol(&quot;Checking account&quot;)
+ Symbol(&quot;Credit amount&quot;)
+ :Duration
+ :Purpose</code></pre><p>如你所见，包含空格的列名作为 <code>Symbol</code> 使用并不方便，因为它们需要更多的输入并引入了一些视觉噪声。</p><p>如果你对列的元素类型感兴趣，你可以使用 <code>eachcol(german)</code> 函数获取数据框列的迭代器。然后，你可以对其进行广播 <code>eltype</code> 函数以获得所需的结果：</p><pre><code class="language-julia-repl hljs">julia&gt; eltype.(eachcol(german))
+10-element Vector{DataType}:
+ Int64
+ Int64
+ String7
+ Int64
+ String7
+ String15
+ String15
+ Int64
+ Int64
+ String31</code></pre><p>!!! 注意</p><pre><code class="nohighlight hljs">请记住，DataFrames.jl 允许使用 `Symbol`（如 `:id`）和字符串（如 `&quot;id&quot;`）进行所有列索引操作以方便使用。然而，使用 `Symbol` 稍微快一些，但是当列名中存在非标准字符或者你想要操作它们时，字符串更简单。</code></pre><p>在我们结束之前，让我们讨论 <code>empty</code> 和 <code>empty!</code> 函数，这两个函数会从 <code>DataFrame</code> 中移除所有行。理解这两个函数行为的差异将帮助你理解 DataFrames.jl 中的函数命名方案。</p><p>让我们从使用 <code>empty</code> 和 <code>empty!</code> 函数的例子开始：</p><pre><code class="language-julia-repl hljs">julia&gt; empty(german)
+0×10 DataFrame
+ Row │ id     Age    Sex      Job    Housing  Saving accounts  Checking accoun ⋯
+     │ Int64  Int64  String7  Int64  String7  String15         String15        ⋯
+─────┴──────────────────────────────────────────────────────────────────────────
+                                                               4 columns omitted
+
+julia&gt; german
+1000×10 DataFrame
+  Row │ id     Age    Sex      Job    Housing  Saving accounts  Checking accou ⋯
+      │ Int64  Int64  String7  Int64  String7  String15         String15       ⋯
+──────┼─────────────────────────────────────────────────────────────────────────
+    1 │     0     67  male         2  own      NA               little         ⋯
+    2 │     1     22  female       2  own      little           moderate
+    3 │     2     49  male         1  own      little           NA
+    4 │     3     45  male         2  free     little           little
+    5 │     4     53  male         2  free     little           little         ⋯
+    6 │     5     35  male         1  free     NA               NA
+    7 │     6     53  male         2  own      quite rich       NA
+    8 │     7     35  male         3  rent     little           moderate
+  ⋮   │   ⋮      ⋮       ⋮       ⋮       ⋮            ⋮                ⋮       ⋱
+  994 │   993     30  male         3  own      little           little         ⋯
+  995 │   994     50  male         2  own      NA               NA
+  996 │   995     31  female       1  own      little           NA
+  997 │   996     40  male         3  own      little           little
+  998 │   997     38  male         2  own      little           NA             ⋯
+  999 │   998     23  male         2  free     little           little
+ 1000 │   999     27  male         2  own      moderate         moderate
+                                                  4 columns and 985 rows omitted
+
+julia&gt; empty!(german)
+0×10 DataFrame
+ Row │ id     Age    Sex      Job    Housing  Saving accounts  Checking accoun ⋯
+     │ Int64  Int64  String7  Int64  String7  String15         String15        ⋯
+─────┴──────────────────────────────────────────────────────────────────────────
+                                                               4 columns omitted
+
+julia&gt; german
+0×10 DataFrame
+ Row │ id     Age    Sex      Job    Housing  Saving accounts  Checking accoun ⋯
+     │ Int64  Int64  String7  Int64  String7  String15         String15        ⋯
+─────┴──────────────────────────────────────────────────────────────────────────
+                                                               4 columns omitted</code></pre><p>在上述示例中，<code>empty</code> 函数创建了一个新的 <code>DataFrame</code>，其列名和列元素类型与 <code>german</code> 相同，但没有行。另一方面，<code>empty!</code> 函数在原地从 <code>german</code> 中移除了所有行，并使其每一列都为空。</p><p><code>empty</code> 和 <code>empty!</code> 函数行为的差异是应用了 Julia 语言中的<a href="https://docs.julialang.org/en/v1/manual/variables/#Stylistic-Conventions">风格约定</a>。DataFrames.jl 包提供的所有函数都遵循这一约定。</p><h3 id="获取DataFrame的基本信息"><a class="docs-heading-anchor" href="#获取DataFrame的基本信息">获取DataFrame的基本信息</a><a id="获取DataFrame的基本信息-1"></a><a class="docs-heading-anchor-permalink" href="#获取DataFrame的基本信息" title="Permalink"></a></h3><p>在这一部分，我们将了解如何获取我们的<code>german</code> <code>DataFrame</code>的基本信息：</p><p><code>size</code>函数返回数据框的维度。首先我们恢复<code>german</code>数据框，因为我们刚刚在上面清空了它。</p><pre><code class="language-julia-repl hljs">julia&gt; german = copy(german_ref);
+
+julia&gt; size(german)
+(1000, 10)
+
+julia&gt; size(german, 1)
+1000
+
+julia&gt; size(german, 2)
+10</code></pre><p>此外，<code>nrow</code>和<code>ncol</code>函数可以用来获取数据框的行数和列数：</p><pre><code class="language-julia-repl hljs">julia&gt; nrow(german)
+1000
+
+julia&gt; ncol(german)
+10</code></pre><p>要获取数据框中的数据的基本统计信息，使用<code>describe</code>函数（查看<a href="../../lib/functions/#DataAPI.describe"><code>describe</code></a>的帮助以了解如何自定义显示的统计信息）。</p><pre><code class="language-julia-repl hljs">julia&gt; describe(german)
+10×7 DataFrame
+ Row │ variable          mean     min       median  max              nmissing  ⋯
+     │ Symbol            Union…   Any       Union…  Any              Int64     ⋯
+─────┼──────────────────────────────────────────────────────────────────────────
+   1 │ id                499.5    0         499.5   999                     0  ⋯
+   2 │ Age               35.546   19        33.0    75                      0
+   3 │ Sex                        female            male                    0
+   4 │ Job               1.904    0         2.0     3                       0
+   5 │ Housing                    free              rent                    0  ⋯
+   6 │ Saving accounts            NA                rich                    0
+   7 │ Checking account           NA                rich                    0
+   8 │ Credit amount     3271.26  250       2319.5  18424                   0
+   9 │ Duration          20.903   4         18.0    72                      0  ⋯
+  10 │ Purpose                    business          vacation/others         0
+                                                                1 column omitted</code></pre><p>要限制<code>describe</code>处理的列，使用<code>cols</code>关键字参数，例如：</p><pre><code class="language-julia-repl hljs">julia&gt; describe(german, cols=1:3)
+3×7 DataFrame
+ Row │ variable  mean    min     median  max   nmissing  eltype
+     │ Symbol    Union…  Any     Union…  Any   Int64     DataType
+─────┼────────────────────────────────────────────────────────────
+   1 │ id        499.5   0       499.5   999          0  Int64
+   2 │ Age       35.546  19      33.0    75           0  Int64
+   3 │ Sex               female          male         0  String7</code></pre><p>默认报告的统计量是平均值、最小值、中位数、最大值、缺失值的数量以及列的元素类型。在计算摘要统计时，会跳过<code>missing</code>值。</p><p>你可以通过手动调用<code>show</code>函数来调整数据框的显示方式：<code>show(german, allrows=true)</code>会打印所有行，即使它们无法在屏幕上显示，<code>show(german, allcols=true)</code>对列也会做同样的处理，例如：</p><pre><code class="language-julia-repl hljs">julia&gt; show(german, allcols=true)
+1000×10 DataFrame
+  Row │ id     Age    Sex      Job    Housing  Saving accounts  Checking account  Credit amount  Duration  Purpose
+      │ Int64  Int64  String7  Int64  String7  String15         String15          Int64          Int64     String31
+──────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+    1 │     0     67  male         2  own      NA               little                     1169         6  radio/TV
+    2 │     1     22  female       2  own      little           moderate                   5951        48  radio/TV
+    3 │     2     49  male         1  own      little           NA                         2096        12  education
+    4 │     3     45  male         2  free     little           little                     7882        42  furniture/equipment
+    5 │     4     53  male         2  free     little           little                     4870        24  car
+    6 │     5     35  male         1  free     NA               NA                         9055        36  education
+    7 │     6     53  male         2  own      quite rich       NA                         2835        24  furniture/equipment
+    8 │     7     35  male         3  rent     little           moderate                   6948        36  car
+  ⋮   │   ⋮      ⋮       ⋮       ⋮       ⋮            ⋮                ⋮                ⋮           ⋮               ⋮
+  994 │   993     30  male         3  own      little           little                     3959        36  furniture/equipment
+  995 │   994     50  male         2  own      NA               NA                         2390        12  car
+  996 │   995     31  female       1  own      little           NA                         1736        12  furniture/equipment
+  997 │   996     40  male         3  own      little           little                     3857        30  car
+  998 │   997     38  male         2  own      little           NA                          804        12  radio/TV
+  999 │   998     23  male         2  free     little           little                     1845        45  radio/TV
+ 1000 │   999     27  male         2  own      moderate         moderate                   4576        45  car
+                                                                                                               985 rows omitted</code></pre><p>直接在单个列上计算描述性统计量非常容易，只需使用在<code>Statistics</code>模块中定义的函数：</p><pre><code class="language-julia-repl hljs">julia&gt; using Statistics
+
+julia&gt; mean(german.Age)
+35.546</code></pre><p>如果我们想对数据框的所有列应用某个函数，我们可以使用<code>mapcols</code>函数。它返回一个<code>DataFrame</code>，其中源数据框的每一列都通过第一个参数传递的函数进行转换。请注意，<code>mapcols</code>保证不会在返回的<code>DataFrame</code>中重用<code>german</code>的列。如果转换返回其参数，那么在存储之前会先复制它。</p><pre><code class="language-julia-repl hljs">julia&gt; mapcols(id -&gt; id .^ 2, german)
+1000×10 DataFrame
+  Row │ id      Age    Sex           Job    Housing   Saving accounts       Ch ⋯
+      │ Int64   Int64  String        Int64  String    String                St ⋯
+──────┼─────────────────────────────────────────────────────────────────────────
+    1 │      0   4489  malemale          4  ownown    NANA                  li ⋯
+    2 │      1    484  femalefemale      4  ownown    littlelittle          mo
+    3 │      4   2401  malemale          1  ownown    littlelittle          NA
+    4 │      9   2025  malemale          4  freefree  littlelittle          li
+    5 │     16   2809  malemale          4  freefree  littlelittle          li ⋯
+    6 │     25   1225  malemale          1  freefree  NANA                  NA
+    7 │     36   2809  malemale          4  ownown    quite richquite rich  NA
+    8 │     49   1225  malemale          9  rentrent  littlelittle          mo
+  ⋮   │   ⋮       ⋮         ⋮          ⋮       ⋮               ⋮               ⋱
+  994 │ 986049    900  malemale          9  ownown    littlelittle          li ⋯
+  995 │ 988036   2500  malemale          4  ownown    NANA                  NA
+  996 │ 990025    961  femalefemale      1  ownown    littlelittle          NA
+  997 │ 992016   1600  malemale          9  ownown    littlelittle          li
+  998 │ 994009   1444  malemale          4  ownown    littlelittle          NA ⋯
+  999 │ 996004    529  malemale          4  freefree  littlelittle          li
+ 1000 │ 998001    729  malemale          4  ownown    moderatemoderate      mo
+                                                  4 columns and 985 rows omitted</code></pre><p>如果你想查看数据框的第一行和最后一行，那么你可以使用<code>first</code>和<code>last</code>函数分别进行操作：</p><pre><code class="language-julia-repl hljs">julia&gt; first(german, 6)
+6×10 DataFrame
+ Row │ id     Age    Sex      Job    Housing  Saving accounts  Checking accoun ⋯
+     │ Int64  Int64  String7  Int64  String7  String15         String15        ⋯
+─────┼──────────────────────────────────────────────────────────────────────────
+   1 │     0     67  male         2  own      NA               little          ⋯
+   2 │     1     22  female       2  own      little           moderate
+   3 │     2     49  male         1  own      little           NA
+   4 │     3     45  male         2  free     little           little
+   5 │     4     53  male         2  free     little           little          ⋯
+   6 │     5     35  male         1  free     NA               NA
+                                                               4 columns omitted
+
+julia&gt; last(german, 5)
+5×10 DataFrame
+ Row │ id     Age    Sex      Job    Housing  Saving accounts  Checking accoun ⋯
+     │ Int64  Int64  String7  Int64  String7  String15         String15        ⋯
+─────┼──────────────────────────────────────────────────────────────────────────
+   1 │   995     31  female       1  own      little           NA              ⋯
+   2 │   996     40  male         3  own      little           little
+   3 │   997     38  male         2  own      little           NA
+   4 │   998     23  male         2  free     little           little
+   5 │   999     27  male         2  own      moderate         moderate        ⋯
+                                                               4 columns omitted</code></pre><p>如果不传递行数，使用<code>first</code>和<code>last</code>将返回数据框中的第一/最后一个<code>DataFrameRow</code>。<code>DataFrameRow</code>是<code>AbstractDataFrame</code>的单行视图。它存储了对父<code>DataFrame</code>的引用以及从父数据框中选择的行和列的信息。你可以将<code>DataFrameRow</code>看作是可变的<code>NamedTuple</code>，即允许更新源数据框，这通常很有用。</p><pre><code class="language-julia-repl hljs">julia&gt; first(german)
+DataFrameRow
+ Row │ id     Age    Sex      Job    Housing  Saving accounts  Checking accoun ⋯
+     │ Int64  Int64  String7  Int64  String7  String15         String15        ⋯
+─────┼──────────────────────────────────────────────────────────────────────────
+   1 │     0     67  male         2  own      NA               little          ⋯
+                                                               4 columns omitted
+
+julia&gt; last(german)
+DataFrameRow
+  Row │ id     Age    Sex      Job    Housing  Saving accounts  Checking accou ⋯
+      │ Int64  Int64  String7  Int64  String7  String15         String15       ⋯
+──────┼─────────────────────────────────────────────────────────────────────────
+ 1000 │   999     27  male         2  own      moderate         moderate       ⋯
+                                                               4 columns omitted</code></pre><h2 id="获取和设置数据框中的数据"><a class="docs-heading-anchor" href="#获取和设置数据框中的数据">获取和设置数据框中的数据</a><a id="获取和设置数据框中的数据-1"></a><a class="docs-heading-anchor-permalink" href="#获取和设置数据框中的数据" title="Permalink"></a></h2><h3 id="索引语法"><a class="docs-heading-anchor" href="#索引语法">索引语法</a><a id="索引语法-1"></a><a class="docs-heading-anchor-permalink" href="#索引语法" title="Permalink"></a></h3><p>数据框可以类似于矩阵的方式进行索引。在手册的<a href="../../lib/indexing/#Indexing">Indexing</a>部分，你可以找到所有可用选项的详细信息。在这里，我们只强调基本的几种。</p><p>一般的索引语法是<code>data_frame[selected_rows, selected_columns]</code>。请注意，与Julia Base中的矩阵不同，这里总是需要传递行选择器和列选择器。冒号<code>:</code>表示应保留所有项目（取决于它的位置是行还是列）。以下是一些例子：</p><pre><code class="language-julia-repl hljs">julia&gt; german[1:5, [:Sex, :Age]]
+5×2 DataFrame
+ Row │ Sex      Age
+     │ String7  Int64
+─────┼────────────────
+   1 │ male        67
+   2 │ female      22
+   3 │ male        49
+   4 │ male        45
+   5 │ male        53
+
+julia&gt; german[1:5, :]
+5×10 DataFrame
+ Row │ id     Age    Sex      Job    Housing  Saving accounts  Checking accoun ⋯
+     │ Int64  Int64  String7  Int64  String7  String15         String15        ⋯
+─────┼──────────────────────────────────────────────────────────────────────────
+   1 │     0     67  male         2  own      NA               little          ⋯
+   2 │     1     22  female       2  own      little           moderate
+   3 │     2     49  male         1  own      little           NA
+   4 │     3     45  male         2  free     little           little
+   5 │     4     53  male         2  free     little           little          ⋯
+                                                               4 columns omitted
+
+julia&gt; german[[1, 6, 15], :]
+3×10 DataFrame
+ Row │ id     Age    Sex      Job    Housing  Saving accounts  Checking accoun ⋯
+     │ Int64  Int64  String7  Int64  String7  String15         String15        ⋯
+─────┼──────────────────────────────────────────────────────────────────────────
+   1 │     0     67  male         2  own      NA               little          ⋯
+   2 │     5     35  male         1  free     NA               NA
+   3 │    14     28  female       2  rent     little           little
+                                                               4 columns omitted
+
+julia&gt; german[:, [:Age, :Sex]]
+1000×2 DataFrame
+  Row │ Age    Sex
+      │ Int64  String7
+──────┼────────────────
+    1 │    67  male
+    2 │    22  female
+    3 │    49  male
+    4 │    45  male
+    5 │    53  male
+    6 │    35  male
+    7 │    53  male
+    8 │    35  male
+  ⋮   │   ⋮       ⋮
+  994 │    30  male
+  995 │    50  male
+  996 │    31  female
+  997 │    40  male
+  998 │    38  male
+  999 │    23  male
+ 1000 │    27  male
+       985 rows omitted</code></pre><p>注意，<code>german[!, [:Sex]]</code>和<code>german[:, [:Sex]]</code>返回的是一个数据框对象，而<code>german[!, :Sex]</code>和<code>german[:, :Sex]</code>返回的是一个向量。在第一种情况下，<code>[:Sex]</code>是一个向量，表示结果对象应该是一个数据框。另一方面，<code>:Sex</code>是一个单独的<code>Symbol</code>，表示应该提取一个单独的列向量。注意，第一种情况需要传递一个向量（不仅仅是任何可迭代的对象），所以例如<code>german[:, (:Age, :Sex)]</code>是不允许的，但<code>german[:, [:Age, :Sex]]</code>是有效的。下面我们展示这两种操作以强调这个区别：</p><pre><code class="language-julia-repl hljs">julia&gt; german[!, [:Sex]]
+1000×1 DataFrame
+  Row │ Sex
+      │ String7
+──────┼─────────
+    1 │ male
+    2 │ female
+    3 │ male
+    4 │ male
+    5 │ male
+    6 │ male
+    7 │ male
+    8 │ male
+  ⋮   │    ⋮
+  994 │ male
+  995 │ male
+  996 │ female
+  997 │ male
+  998 │ male
+  999 │ male
+ 1000 │ male
+985 rows omitted
+
+julia&gt; german[!, :Sex]
+1000-element PooledArrays.PooledVector{String7, UInt32, Vector{UInt32}}:
+ &quot;male&quot;
+ &quot;female&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ ⋮
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;female&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;
+ &quot;male&quot;</code></pre><p>如同本教程之前解释的，使用<code>!</code>和<code>:</code>传递行索引的区别在于<code>!</code>不复制列，而<code>:</code>从数据框读取数据时会复制。因此，<code>german[!, [:Sex]]</code>数据框存储的是与源<code>german</code>数据框相同的向量，而<code>german[:, [:Sex]]</code>存储的是它的复制品。</p><p><code>!</code>选择器通常应该避免使用，因为使用它可能导致难以捕获的错误。然而，当处理非常大的数据框时，它可以用来节省内存和提高操作的性能。</p><p>回顾我们已经学到的，要从<code>german</code>数据框中获取列<code>:Age</code>，你可以执行以下操作：</p><ul><li>复制向量：<code>german[:, :Age]</code>，<code>german[:, &quot;Age&quot;]</code>或<code>german[:, 2]</code>；</li><li>获取向量而不复制：<code>german.Age</code>，<code>german.&quot;Age&quot;</code>，<code>german[!, :Age]</code>，<code>german[!, &quot;Age&quot;]</code>或<code>german[!, 2]</code>。</li></ul><p>要获取前两列作为<code>DataFrame</code>，我们可以如下索引：</p><ul><li>获取复制的列：<code>german[:, 1:2]</code>，<code>german[:, [:id, :Age]]</code>，或<code>german[:, [&quot;id&quot;, &quot;Age&quot;]]</code>；</li><li>不复制列的情况下重复使用列：<code>german[!, 1:2]</code>，<code>german[!, [:id, :Age]]</code>，或<code>german[!, [&quot;id&quot;, &quot;Age&quot;]]</code>。</li></ul><p>如果你想获取数据框的单个单元格，使用与获取矩阵单元格相同的语法：</p><pre><code class="language-julia-repl hljs">julia&gt; german[4, 4]
+2</code></pre><h3 id="视图"><a class="docs-heading-anchor" href="#视图">视图</a><a id="视图-1"></a><a class="docs-heading-anchor-permalink" href="#视图" title="Permalink"></a></h3><p>我们也可以创建一个数据帧的<code>view</code>。它通常非常有用，因为它比创建实体化的选择更节省内存。你可以使用<code>view</code>函数来创建：</p><pre><code class="language-julia-repl hljs">julia&gt; view(german, :, 2:5)
+1000×4 SubDataFrame
+  Row │ Age    Sex      Job    Housing
+      │ Int64  String7  Int64  String7
+──────┼────────────────────────────────
+    1 │    67  male         2  own
+    2 │    22  female       2  own
+    3 │    49  male         1  own
+    4 │    45  male         2  free
+    5 │    53  male         2  free
+    6 │    35  male         1  free
+    7 │    53  male         2  own
+    8 │    35  male         3  rent
+  ⋮   │   ⋮       ⋮       ⋮       ⋮
+  994 │    30  male         3  own
+  995 │    50  male         2  own
+  996 │    31  female       1  own
+  997 │    40  male         3  own
+  998 │    38  male         2  own
+  999 │    23  male         2  free
+ 1000 │    27  male         2  own
+                       985 rows omitted</code></pre><p>或者使用<code>@view</code>宏：</p><pre><code class="language-julia-repl hljs">julia&gt; @view german[end:-1:1, [1, 4]]
+1000×2 SubDataFrame
+  Row │ id     Job
+      │ Int64  Int64
+──────┼──────────────
+    1 │   999      2
+    2 │   998      2
+    3 │   997      2
+    4 │   996      3
+    5 │   995      1
+    6 │   994      2
+    7 │   993      3
+    8 │   992      1
+  ⋮   │   ⋮      ⋮
+  994 │     6      2
+  995 │     5      1
+  996 │     4      2
+  997 │     3      2
+  998 │     2      1
+  999 │     1      2
+ 1000 │     0      2
+     985 rows omitted</code></pre><p>同样，我们可以获取数据帧一列的视图：</p><pre><code class="language-julia-repl hljs">julia&gt; @view german[1:5, 1]
+5-element view(::Vector{Int64}, 1:5) with eltype Int64:
+ 0
+ 1
+ 2
+ 3
+ 4</code></pre><p>它的单个单元格：</p><pre><code class="language-julia-repl hljs">julia&gt; @view german[2, 2]
+0-dimensional view(::Vector{Int64}, 2) with eltype Int64:
+22</code></pre><p>或者单独的一行：</p><pre><code class="language-julia-repl hljs">julia&gt; @view german[3, 2:5]
+DataFrameRow
+ Row │ Age    Sex      Job    Housing
+     │ Int64  String7  Int64  String7
+─────┼────────────────────────────────
+   3 │    49  male         1  own</code></pre><p>如你所见，行和列的索引语法与索引完全相同。唯一的区别是我们没有创建一个新的对象，而是创建了一个现有对象的视图。</p><p>为了比较索引的性能和创建视图的性能，让我们使用BenchmarkTools.jl包运行以下基准测试（如果你想重新运行这个比较，请安装它）：</p><pre><code class="language-julia hljs">julia&gt; using BenchmarkTools
+
+julia&gt; @btime $german[1:end-1, 1:end-1];
+  9.900 μs (44 allocations: 57.56 KiB)
+
+julia&gt; @btime @view $german[1:end-1, 1:end-1];
+  67.332 ns (2 allocations: 32 bytes)</code></pre><p>如你所见，创建一个视图：</p><ul><li>快一个数量级；</li><li>分配的内存更少。</li></ul><p>视图的缺点是：</p><ul><li>它指向与其父对象相同的内存（所以改变视图会改变父对象，这有时是不可取的）；</li><li>一些操作可能稍微慢一些（因为DataFrames.jl需要执行视图的索引到父对象的索引的映射）。</li></ul><h3 id="更改存储在数据框中的数据"><a class="docs-heading-anchor" href="#更改存储在数据框中的数据">更改存储在数据框中的数据</a><a id="更改存储在数据框中的数据-1"></a><a class="docs-heading-anchor-permalink" href="#更改存储在数据框中的数据" title="Permalink"></a></h3><p>为了展示如何在数据框上执行变异操作，我们首先创建一个<code>german</code>数据框的子集：</p><pre><code class="language-julia-repl hljs">julia&gt; df1 = german[1:6, 2:4]
+6×3 DataFrame
+ Row │ Age    Sex      Job
+     │ Int64  String7  Int64
+─────┼───────────────────────
+   1 │    67  male         2
+   2 │    22  female       2
+   3 │    49  male         1
+   4 │    45  male         2
+   5 │    53  male         2
+   6 │    35  male         1</code></pre><p>在下面的示例中，我们用一个新的向量替换了<code>df1</code>数据框中的列<code>:Age</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; val = [80, 85, 98, 95, 78, 89]
+6-element Vector{Int64}:
+ 80
+ 85
+ 98
+ 95
+ 78
+ 89
+
+julia&gt; df1.Age = val
+6-element Vector{Int64}:
+ 80
+ 85
+ 98
+ 95
+ 78
+ 89
+
+julia&gt; df1
+6×3 DataFrame
+ Row │ Age    Sex      Job
+     │ Int64  String7  Int64
+─────┼───────────────────────
+   1 │    80  male         2
+   2 │    85  female       2
+   3 │    98  male         1
+   4 │    95  male         2
+   5 │    78  male         2
+   6 │    89  male         1</code></pre><p>这是一个非复制操作。只有当<code>val</code>向量的长度与<code>df1</code>的行数相同时，才能执行此操作，或者作为特殊情况，如果<code>df1</code>没有任何列。</p><pre><code class="language-julia-repl hljs">julia&gt; df1.Age === val # 没有进行复制
+true</code></pre><p>如果在索引中从数据框中选择了一部分行，则会就地执行变异操作，即写入现有向量。下面将行<code>1:3</code>中的列<code>:Job</code>的值设置为<code>[2, 4, 6]</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; df1[1:3, :Job] = [2, 3, 2]
+3-element Vector{Int64}:
+ 2
+ 3
+ 2
+
+julia&gt; df1
+6×3 DataFrame
+ Row │ Age    Sex      Job
+     │ Int64  String7  Int64
+─────┼───────────────────────
+   1 │    80  male         2
+   2 │    85  female       3
+   3 │    98  male         2
+   4 │    95  male         2
+   5 │    78  male         2
+   6 │    89  male         1</code></pre><p>作为特殊规则，使用<code>!</code>作为行选择器将替换列而不进行复制（就像上面的<code>df1.Age = val</code>示例中一样）。例如，下面我们替换<code>:Sex</code>列：</p><pre><code class="language-julia-repl hljs">julia&gt; df1[!, :Sex] = [&quot;male&quot;, &quot;female&quot;, &quot;female&quot;, &quot;transgender&quot;, &quot;female&quot;, &quot;male&quot;]
+6-element Vector{String}:
+ &quot;male&quot;
+ &quot;female&quot;
+ &quot;female&quot;
+ &quot;transgender&quot;
+ &quot;female&quot;
+ &quot;male&quot;
+
+julia&gt; df1
+6×3 DataFrame
+ Row │ Age    Sex          Job
+     │ Int64  String       Int64
+─────┼───────────────────────────
+   1 │    80  male             2
+   2 │    85  female           3
+   3 │    98  female           2
+   4 │    95  transgender      2
+   5 │    78  female           2
+   6 │    89  male             1</code></pre><p>类似于设置单列的选定行，我们还可以设置数据框的给定行的选定列：</p><pre><code class="language-julia-repl hljs">julia&gt; df1[3, 1:3] = [78, &quot;male&quot;, 4]
+3-element Vector{Any}:
+ 78
+   &quot;male&quot;
+  4
+
+julia&gt; df1
+6×3 DataFrame
+ Row │ Age    Sex          Job
+     │ Int64  String       Int64
+─────┼───────────────────────────
+   1 │    80  male             2
+   2 │    85  female           3
+   3 │    78  male             4
+   4 │    95  transgender      2
+   5 │    78  female           2
+   6 │    89  male             1</code></pre><p>我们已经提到过<code>DataFrameRow</code>可以用于修改其父数据框。下面是一些示例：</p><pre><code class="language-julia-repl hljs">julia&gt; dfr = df1[2, :] # DataFrameRow，包含df1的第二行和所有列
+DataFrameRow
+ Row │ Age    Sex     Job
+     │ Int64  String  Int64
+─────┼──────────────────────
+   2 │    85  female      3
+
+julia&gt; dfr.Age = 98 # 将第二行中列`:Age`的值设置为`98`
+98
+
+julia&gt; dfr
+DataFrameRow
+ Row │ Age    Sex     Job
+     │ Int64  String  Int64
+─────┼──────────────────────
+   2 │    98  female      3
+
+julia&gt; dfr[2:3] = [&quot;male&quot;, 2] # 设置列`:Sex`和`:Job`中的条目值
+2-element Vector{Any}:
+  &quot;male&quot;
+ 2
+
+julia&gt; dfr
+DataFrameRow
+ Row │ Age    Sex     Job
+     │ Int64  String  Int64
+─────┼──────────────────────
+   2 │    98  male        2</code></pre><p>这些操作更新了存储在<code>df1</code>数据框中的数据。</p><p>类似地，视图可以用于更新其父数据框中存储的数据。下面是一些示例：</p><pre><code class="language-julia-repl hljs">julia&gt; sdf = view(df1, :, 2:3)
+6×2 SubDataFrame
+ Row │ Sex          Job
+     │ String       Int64
+─────┼────────────────────
+   1 │ male             2
+   2 │ male             2
+   3 │ male             4
+   4 │ transgender      2
+   5 │ female           2
+   6 │ male             1
+
+julia&gt; sdf[2, :Sex] = &quot;female&quot; # 将第二行中的列`:Sex`的值设置为`female`
+&quot;female&quot;
+
+julia&gt; sdf
+6×2 SubDataFrame
+ Row │ Sex          Job
+     │ String       Int64
+─────┼────────────────────
+   1 │ male             2
+   2 │ female           2
+   3 │ male             4
+   4 │ transgender      2
+   5 │ female           2
+   6 │ male             1
+
+julia&gt; sdf[6, 1:2] = [&quot;female&quot;, 3]
+2-element Vector{Any}:
+  &quot;female&quot;
+ 3
+
+julia&gt; sdf
+6×2 SubDataFrame
+ Row │ Sex          Job
+     │ String       Int64
+─────┼────────────────────
+   1 │ male             2
+   2 │ female           2
+   3 │ male             4
+   4 │ transgender      2
+   5 │ female           2
+   6 │ female           3</code></pre><p>在所有这些情况下，<code>sdf</code>视图的父级也会被更新。</p><h3 id="广播赋值"><a class="docs-heading-anchor" href="#广播赋值">广播赋值</a><a id="广播赋值-1"></a><a class="docs-heading-anchor-permalink" href="#广播赋值" title="Permalink"></a></h3><p>除了普通的赋值，还可以使用<code>.=</code>操作进行广播赋值。</p><p>在我们继续之前，让我们解释一下在Julia中广播是如何工作的。 执行<a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#man-dot-operators">broadcasting</a>的标准语法是使用<code>.</code>。例如，与R不同，下面的操作会失败：</p><pre><code class="language-julia-repl hljs">julia&gt; s = [25, 26, 35, 56]
+4-element Vector{Int64}:
+ 25
+ 26
+ 35
+ 56
+
+julia&gt; s[2:3] = 0
+ERROR: ArgumentError: indexed assignment with a single value to possibly many locations is not supported; perhaps use broadcasting `.=` instead?</code></pre><p>相反，我们必须写成：</p><pre><code class="language-julia-repl hljs">julia&gt; s[2:3] .= 0
+2-element view(::Vector{Int64}, 2:3) with eltype Int64:
+ 0
+ 0
+
+julia&gt; s
+4-element Vector{Int64}:
+ 25
+  0
+  0
+ 56</code></pre><p>DataFrames.jl完全支持类似的语法。在这里，由于广播赋值，列<code>:Age</code>被一个全新的分配的向量替换：</p><pre><code class="language-julia-repl hljs">julia&gt; df1[!, :Age] .= [85, 89, 78, 58, 96, 68] # 列`:Age`被一个全新的分配的向量替换
+6-element Vector{Int64}:
+ 85
+ 89
+ 78
+ 58
+ 96
+ 68
+
+julia&gt; df1
+6×3 DataFrame
+ Row │ Age    Sex          Job
+     │ Int64  String       Int64
+─────┼───────────────────────────
+   1 │    85  male             2
+   2 │    89  female           2
+   3 │    78  male             4
+   4 │    58  transgender      2
+   5 │    96  female           2
+   6 │    68  female           3</code></pre><p>在上面的例子中，如果使用<code>:</code>而不是<code>!</code>，将在现有列中进行广播赋值。 就地(in-place)和替换(replace)操作之间的主要区别在于，如果新值与旧值具有不同的类型，则需要替换列。</p><p>在下面的示例中，我们操作不存在于<code>df1</code>中的列<code>:Customers</code>和<code>:City</code>。 在这种情况下，使用<code>!</code>和<code>:</code>是等效的，并且会分配一个新的列：</p><pre><code class="language-julia-repl hljs">julia&gt; df1[!, :Customers] .= [&quot;Rohit&quot;, &quot;Akshat&quot;, &quot;Rahul&quot;, &quot;Aayush&quot;, &quot;Prateek&quot;, &quot;Anam&quot;]
+6-element Vector{String}:
+ &quot;Rohit&quot;
+ &quot;Akshat&quot;
+ &quot;Rahul&quot;
+ &quot;Aayush&quot;
+ &quot;Prateek&quot;
+ &quot;Anam&quot;
+
+julia&gt; df1[:, :City] .= [&quot;Kanpur&quot;, &quot;Lucknow&quot;, &quot;Bhuvneshwar&quot;, &quot;Jaipur&quot;, &quot;Ranchi&quot;, &quot;Dehradoon&quot;]
+6-element Vector{String}:
+ &quot;Kanpur&quot;
+ &quot;Lucknow&quot;
+ &quot;Bhuvneshwar&quot;
+ &quot;Jaipur&quot;
+ &quot;Ranchi&quot;
+ &quot;Dehradoon&quot;
+
+julia&gt; df1
+6×5 DataFrame
+ Row │ Age    Sex          Job    Customers  City
+     │ Int64  String       Int64  String     String
+─────┼───────────────────────────────────────────────────
+   1 │    85  male             2  Rohit      Kanpur
+   2 │    89  female           2  Akshat     Lucknow
+   3 │    78  male             4  Rahul      Bhuvneshwar
+   4 │    58  transgender      2  Aayush     Jaipur
+   5 │    96  female           2  Prateek    Ranchi
+   6 │    68  female           3  Anam       Dehradoon</code></pre><p>对于<code>:Age</code>选择器，广播赋值操作是就地进行的，所以下面的操作会引发错误：</p><pre><code class="language-julia-repl hljs">julia&gt; df1[:, :Age] .= &quot;Economics&quot;
+ERROR: MethodError: Cannot `convert` an object of type String to an object of type Int64</code></pre><p>我们需要使用<code>!</code>，因为它会用一个全新的向量替换旧的向量：</p><pre><code class="language-julia-repl hljs">julia&gt; df1[!, :Age] .= &quot;Economics&quot;
+6-element Vector{String}:
+ &quot;Economics&quot;
+ &quot;Economics&quot;
+ &quot;Economics&quot;
+ &quot;Economics&quot;
+ &quot;Economics&quot;
+ &quot;Economics&quot;
+
+julia&gt; df1
+6×5 DataFrame
+ Row │ Age        Sex          Job    Customers  City
+     │ String     String       Int64  String     String
+─────┼───────────────────────────────────────────────────────
+   1 │ Economics  male             2  Rohit      Kanpur
+   2 │ Economics  female           2  Akshat     Lucknow
+   3 │ Economics  male             4  Rahul      Bhuvneshwar
+   4 │ Economics  transgender      2  Aayush     Jaipur
+   5 │ Economics  female           2  Prateek    Ranchi
+   6 │ Economics  female           3  Anam       Dehradoon</code></pre><p>在DataFrames.jl中，有一些情况下，我们自然地希望实现类似广播的行为，但不允许使用<code>.</code>操作。 在这种情况下，为了方便用户，执行所谓的伪广播(pseudo-broadcasting)。 我们已经在<code>DataFrame</code>构造函数的示例中看到了它。下面我们展示了在<code>insertcols!</code>函数中伪广播的工作方式， 该函数在任意位置向数据框中插入列。</p><p>在下面的示例中，我们使用<code>insertcols!</code>函数创建了一个名为<code>:Country</code>的列。 由于我们传递了一个标量值<code>&quot;India&quot;</code>，该列的值被广播到输出数据框的所有行：</p><pre><code class="language-julia-repl hljs">julia&gt; insertcols!(df1, 1, :Country =&gt; &quot;India&quot;)
+6×6 DataFrame
+ Row │ Country  Age        Sex          Job    Customers  City
+     │ String   String     String       Int64  String     String
+─────┼────────────────────────────────────────────────────────────────
+   1 │ India    Economics  male             2  Rohit      Kanpur
+   2 │ India    Economics  female           2  Akshat     Lucknow
+   3 │ India    Economics  male             4  Rahul      Bhuvneshwar
+   4 │ India    Economics  transgender      2  Aayush     Jaipur
+   5 │ India    Economics  female           2  Prateek    Ranchi
+   6 │ India    Economics  female           3  Anam       Dehradoon</code></pre><p>您可以将要插入列的位置作为第二个参数传递给<code>insertcols!</code>函数：</p><pre><code class="nohighlight hljs">julia&gt; insertcols!(df1, 4, :b =&gt; exp(4))
+6×7 DataFrame
+ Row │ Country  Age        Sex          b        Job    Customers  City        ⋯
+     │ String   String     String       Float64  Int64  String     String      ⋯
+─────┼──────────────────────────────────────────────────────────────────────────
+   1 │ India    Economics  male         54.5982      4  Rohit      Kanpur      ⋯
+   2 │ India    Economics  female       54.5982      4  Akshat     Lucknow
+   3 │ India    Economics  male         54.5982      4  Rahul      Bhuvneshwar
+   4 │ India    Economics  transgender  54.5982      4  Aayush     Jaipur
+   5 │ India    Economics  female       54.5982      4  Prateek    Ranchi      ⋯
+   6 │ India    Economics  female       54.5982      4  Anam       Dehradoon</code></pre><h3 id="Not、Between、Cols和All列选择器"><a class="docs-heading-anchor" href="#Not、Between、Cols和All列选择器">Not、Between、Cols和All列选择器</a><a id="Not、Between、Cols和All列选择器-1"></a><a class="docs-heading-anchor-permalink" href="#Not、Between、Cols和All列选择器" title="Permalink"></a></h3><p>在更复杂的列选择场景中，您可以使用<code>Not</code>、<code>Between</code>、<code>Cols</code>和<code>All</code>选择器：</p><ul><li><code>Not</code>选择器（来自<a href="https://github.com/mbauman/InvertedIndices.jl">InvertedIndices.jl</a>包）允许我们指定要从结果数据框中排除的列。我们可以在<code>Not</code>内部放置任何有效的其他列选择器；</li><li><code>Between</code>选择器允许我们指定一系列列（我们可以使用任何单列选择器语法传递起始和停止列）；</li><li><code>Cols(...)</code>选择器选择作为其参数传递的其他选择器的并集；</li><li><code>All()</code>允许我们选择<code>DataFrame</code>的所有列；这与传递<code>:</code>是相同的；</li><li>使用正则表达式选择与其名称匹配的列。</li></ul><p>让我们给出一些这些选择器的示例。</p><p>删除<code>:Age</code>列：</p><pre><code class="language-julia-repl hljs">julia&gt; german[:, Not(:Age)]
+1000×9 DataFrame
+  Row │ id     Sex      Job    Housing  Saving accounts  Checking account  Cre ⋯
+      │ Int64  String7  Int64  String7  String15         String15          Int ⋯
+──────┼─────────────────────────────────────────────────────────────────────────
+    1 │     0  male         2  own      NA               little                ⋯
+    2 │     1  female       2  own      little           moderate
+    3 │     2  male         1  own      little           NA
+    4 │     3  male         2  free     little           little
+    5 │     4  male         2  free     little           little                ⋯
+    6 │     5  male         1  free     NA               NA
+    7 │     6  male         2  own      quite rich       NA
+    8 │     7  male         3  rent     little           moderate
+  ⋮   │   ⋮       ⋮       ⋮       ⋮            ⋮                ⋮              ⋱
+  994 │   993  male         3  own      little           little                ⋯
+  995 │   994  male         2  own      NA               NA
+  996 │   995  female       1  own      little           NA
+  997 │   996  male         3  own      little           little
+  998 │   997  male         2  own      little           NA                    ⋯
+  999 │   998  male         2  free     little           little
+ 1000 │   999  male         2  own      moderate         moderate
+                                                  3 columns and 985 rows omitted</code></pre><p>选择从<code>:Sex</code>到<code>:Housing</code>的列：</p><pre><code class="nohighlight hljs">julia&gt; german[:, Between(:Sex, :Housing)]
+1000×3 DataFrame
+  Row │ Sex     Job    Housing
+      │ String  Int64  String
+──────┼────────────────────────
+    1 │ male        2  own
+    2 │ female      2  own
+    3 │ male        1  own
+    4 │ male        2  free
+    5 │ male        2  free
+    6 │ male        1  free
+    7 │ male        2  own
+    8 │ male        3  rent
+  ⋮   │   ⋮       ⋮       ⋮
+  994 │ male        3  own
+  995 │ male        2  own
+  996 │ female      1  own
+  997 │ male        3  own
+  998 │ male        2  own
+  999 │ male        2  free
+ 1000 │ male        2  own
+               985 rows omitted</code></pre><p>在下面的示例中，<code>Cols</code>选择器选择作为其参数传递的<code>&quot;Age&quot;</code>和<code>Between(&quot;Sex&quot;, &quot;Job&quot;)</code>选择器的并集：</p><pre><code class="language-julia-repl hljs">julia&gt; german[:, Cols(&quot;Age&quot;, Between(&quot;Sex&quot;, &quot;Job&quot;))]
+1000×3 DataFrame
+  Row │ Age    Sex      Job
+      │ Int64  String7  Int64
+──────┼───────────────────────
+    1 │    67  male         2
+    2 │    22  female       2
+    3 │    49  male         1
+    4 │    45  male         2
+    5 │    53  male         2
+    6 │    35  male         1
+    7 │    53  male         2
+    8 │    35  male         3
+  ⋮   │   ⋮       ⋮       ⋮
+  994 │    30  male         3
+  995 │    50  male         2
+  996 │    31  female       1
+  997 │    40  male         3
+  998 │    38  male         2
+  999 │    23  male         2
+ 1000 │    27  male         2
+              985 rows omitted</code></pre><p>您还可以使用正则表达式<code>Regex</code>来选择列。在下面的示例中，我们选择具有其名称中包含<code>&quot;S&quot;</code>的列，并使用<code>Not</code>来删除第5行：</p><pre><code class="language-julia-repl hljs">julia&gt; german[Not(5), r&quot;S&quot;]
+999×2 DataFrame
+ Row │ Sex      Saving accounts
+     │ String7  String15
+─────┼──────────────────────────
+   1 │ male     NA
+   2 │ female   little
+   3 │ male     little
+   4 │ male     little
+   5 │ male     NA
+   6 │ male     quite rich
+   7 │ male     little
+   8 │ male     rich
+  ⋮  │    ⋮            ⋮
+ 993 │ male     little
+ 994 │ male     NA
+ 995 │ female   little
+ 996 │ male     little
+ 997 │ male     little
+ 998 │ male     little
+ 999 │ male     moderate
+                984 rows omitted</code></pre><h2 id="转换函数的基本用法"><a class="docs-heading-anchor" href="#转换函数的基本用法">转换函数的基本用法</a><a id="转换函数的基本用法-1"></a><a class="docs-heading-anchor-permalink" href="#转换函数的基本用法" title="Permalink"></a></h2><p>在DataFrames.jl中，我们有五个函数可以用来对数据帧的列进行转换：</p><ul><li><code>combine</code>：创建一个新的数据帧，其中包含对源数据帧列应用转换得到的列，可以合并行；</li><li><code>select</code>：创建一个与源数据帧具有相同行数的新数据帧，其中包含对源数据帧列应用转换得到的列；</li><li><code>select!</code>：与<code>select</code>相同，但会直接在传入的数据帧上进行更新；</li><li><code>transform</code>：与<code>select</code>相同，但会保留数据帧中已存在的列（需要注意的是，这些列可能会被传递给<code>transform</code>的转换修改）；</li><li><code>transform!</code>：与<code>transform</code>相同，但会直接在传入的数据帧上进行更新。</li></ul><p>指定转换的基本方式有以下几种：</p><ul><li><code>source_column =&gt; transformation =&gt; target_column_name</code>：在这种情况下，将<code>source_column</code>作为参数传递给<code>transformation</code>函数，并将其存储在<code>target_column_name</code>列中。</li><li><code>source_column =&gt; transformation</code>：在这种情况下，我们将转换函数应用于<code>source_column</code>，目标列名会自动生成。</li><li><code>source_column =&gt; target_column_name</code>：将<code>source_column</code>重命名为<code>target_column_name</code>。</li><li><code>source_column</code>：在结果中保持源列不进行任何转换。</li></ul><p>这些规则通常被称为转换迷你语言。</p><p>让我们来看一些应用这些规则的示例。</p><pre><code class="language-julia-repl hljs">julia&gt; using Statistics
+
+julia&gt; combine(german, :Age =&gt; mean =&gt; :mean_age)
+1×1 DataFrame
+ Row │ mean_age
+     │ Float64
+─────┼──────────
+   1 │   35.546
+
+julia&gt; select(german, :Age =&gt; mean =&gt; :mean_age)
+1000×1 DataFrame
+  Row │ mean_age
+      │ Float64
+──────┼──────────
+    1 │   35.546
+    2 │   35.546
+    3 │   35.546
+    4 │   35.546
+    5 │   35.546
+    6 │   35.546
+    7 │   35.546
+    8 │   35.546
+  ⋮   │    ⋮
+  994 │   35.546
+  995 │   35.546
+  996 │   35.546
+  997 │   35.546
+  998 │   35.546
+  999 │   35.546
+ 1000 │   35.546
+ 985 rows omitted</code></pre><p>如您所见，在这两种情况下，<code>mean</code>函数被应用于<code>:Age</code>列，并将结果存储在<code>:mean_age</code>列中。<code>combine</code>和<code>select</code>函数的区别在于，<code>combine</code>对数据进行聚合，并根据转换函数返回的行数生成相应的行数。而<code>select</code>函数始终保持数据帧中的行数与源数据帧相同。因此，在这种情况下，<code>mean</code>函数的结果被广播。</p><p>由于<code>combine</code>可以根据转换的结果生成任意数量的行，如果我们组合了一些转换，其中一些转换生成向量，而其他转换生成标量，则标量会像在<code>select</code>中一样被广播。下面是一个示例：</p><pre><code class="language-julia-repl hljs">julia&gt; combine(german, :Age =&gt; mean =&gt; :mean_age, :Housing =&gt; unique =&gt; :housing)
+3×2 DataFrame
+ Row │ mean_age  housing
+     │ Float64   String7
+─────┼───────────────────
+   1 │   35.546  own
+   2 │   35.546  free
+   3 │   35.546  rent</code></pre><p>请注意，不允许在不同的转换中返回长度不同的向量：</p><pre><code class="language-julia-repl hljs">julia&gt; combine(german, :Age, :Housing =&gt; unique =&gt; :Housing)
+ERROR: ArgumentError: New columns must have the same length as old columns</code></pre><p>让我们使用<code>select</code>讨论一些其他示例。通常，我们希望将某个函数应用于数据帧的整个列，而不是其各个元素。通常，我们可以使用广播来实现这一点，如下所示：</p><pre><code class="language-julia-repl hljs">julia&gt; select(german, :Sex =&gt; (x -&gt; uppercase.(x)) =&gt; :Sex)
+1000×1 DataFrame
+  Row │ Sex
+      │ String
+──────┼────────
+    1 │ MALE
+    2 │ FEMALE
+    3 │ MALE
+    4 │ MALE
+    5 │ MALE
+    6 │ MALE
+    7 │ MALE
+    8 │ MALE
+  ⋮   │   ⋮
+  994 │ MALE
+  995 │ MALE
+  996 │ FEMALE
+  997 │ MALE
+  998 │ MALE
+  999 │ MALE
+ 1000 │ MALE
+985 rows omitted</code></pre><p>这种模式在实践中经常遇到，因此有一个<code>ByRow</code>的便捷包装器，用于创建广播变体的函数。在这些示例中，<code>ByRow</code>是一种特殊类型，用于选择操作，以表示应将包装的函数应用于选择的每个元素（行）。在这里，我们使用<code>uppercase</code>函数将<code>ByRow</code>包装器传递给目标列名<code>:Sex</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; select(german, :Sex =&gt; ByRow(uppercase) =&gt; :SEX)
+1000×1 DataFrame
+  Row │ SEX
+      │ String
+──────┼────────
+    1 │ MALE
+    2 │ FEMALE
+    3 │ MALE
+    4 │ MALE
+    5 │ MALE
+    6 │ MALE
+    7 │ MALE
+    8 │ MALE
+  ⋮   │   ⋮
+  994 │ MALE
+  995 │ MALE
+  996 │ FEMALE
+  997 │ MALE
+  998 │ MALE
+  999 │ MALE
+ 1000 │ MALE
+985 rows omitted</code></pre><p>在这种情况下，我们使用<code>ByRow</code>包装器来转换源列<code>:Age</code>，并自动生成目标列名：</p><pre><code class="language-julia-repl hljs">julia&gt; select(german, :Age, :Age =&gt; ByRow(sqrt))
+1000×2 DataFrame
+  Row │ Age    Age_sqrt
+      │ Int64  Float64
+──────┼─────────────────
+    1 │    67   8.18535
+    2 │    22   4.69042
+    3 │    49   7.0
+    4 │    45   6.7082
+    5 │    53   7.28011
+    6 │    35   5.91608
+    7 │    53   7.28011
+    8 │    35   5.91608
+  ⋮   │   ⋮       ⋮
+  994 │    30   5.47723
+  995 │    50   7.07107
+  996 │    31   5.56776
+  997 │    40   6.32456
+  998 │    38   6.16441
+  999 │    23   4.79583
+ 1000 │    27   5.19615
+        985 rows omitted</code></pre><p>当我们只传递一个列（不包括<code>=&gt;</code>部分）时，我们可以使用在索引中允许的任何列选择器。</p><p>在这里，我们从结果数据框中排除列<code>:Age</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; select(german, Not(:Age))
+1000×9 DataFrame
+  Row │ id     Sex      Job    Housing  Saving accounts  Checking account  Cre ⋯
+      │ Int64  String7  Int64  String7  String15         String15          Int ⋯
+──────┼─────────────────────────────────────────────────────────────────────────
+    1 │     0  male         2  own      NA               little                ⋯
+    2 │     1  female       2  own      little           moderate
+    3 │     2  male         1  own      little           NA
+    4 │     3  male         2  free     little           little
+    5 │     4  male         2  free     little           little                ⋯
+    6 │     5  male         1  free     NA               NA
+    7 │     6  male         2  own      quite rich       NA
+    8 │     7  male         3  rent     little           moderate
+  ⋮   │   ⋮       ⋮       ⋮       ⋮            ⋮                ⋮              ⋱
+  994 │   993  male         3  own      little           little                ⋯
+  995 │   994  male         2  own      NA               NA
+  996 │   995  female       1  own      little           NA
+  997 │   996  male         3  own      little           little
+  998 │   997  male         2  own      little           NA                    ⋯
+  999 │   998  male         2  free     little           little
+ 1000 │   999  male         2  own      moderate         moderate
+                                                  3 columns and 985 rows omitted</code></pre><p>在下一个示例中，我们删除列<code>&quot;Age&quot;</code>、<code>&quot;Saving accounts&quot;</code>、<code>&quot;Checking account&quot;</code>、<code>&quot;Credit amount&quot;</code>和<code>&quot;Purpose&quot;</code>。请注意，这次我们使用字符串列选择器，因为一些列名中包含空格：</p><pre><code class="language-julia-repl hljs">julia&gt; select(german, Not([&quot;Age&quot;, &quot;Saving accounts&quot;, &quot;Checking account&quot;,
+                           &quot;Credit amount&quot;, &quot;Purpose&quot;]))
+1000×5 DataFrame
+  Row │ id     Sex      Job    Housing  Duration
+      │ Int64  String7  Int64  String7  Int64
+──────┼──────────────────────────────────────────
+    1 │     0  male         2  own             6
+    2 │     1  female       2  own            48
+    3 │     2  male         1  own            12
+    4 │     3  male         2  free           42
+    5 │     4  male         2  free           24
+    6 │     5  male         1  free           36
+    7 │     6  male         2  own            24
+    8 │     7  male         3  rent           36
+  ⋮   │   ⋮       ⋮       ⋮       ⋮        ⋮
+  994 │   993  male         3  own            36
+  995 │   994  male         2  own            12
+  996 │   995  female       1  own            12
+  997 │   996  male         3  own            30
+  998 │   997  male         2  own            12
+  999 │   998  male         2  free           45
+ 1000 │   999  male         2  own            45
+                                 985 rows omitted
+</code></pre><p>作为另一个示例，让我们展示一下我们之前使用的<code>r&quot;S&quot;</code>正则表达式在<code>select</code>中也可以使用：</p><pre><code class="language-julia-repl hljs">julia&gt; select(german, r&quot;S&quot;)
+1000×2 DataFrame
+  Row │ Sex      Saving accounts
+      │ String7  String15
+──────┼──────────────────────────
+    1 │ male     NA
+    2 │ female   little
+    3 │ male     little
+    4 │ male     little
+    5 │ male     little
+    6 │ male     NA
+    7 │ male     quite rich
+    8 │ male     little
+  ⋮   │    ⋮            ⋮
+  994 │ male     little
+  995 │ male     NA
+  996 │ female   little
+  997 │ male     little
+  998 │ male     little
+  999 │ male     little
+ 1000 │ male     moderate
+                 985 rows omitted</code></pre><p>使用<code>select</code>或<code>combine</code>相对于索引的好处是更容易获取多个列选择器的并集，例如：</p><pre><code class="language-julia-repl hljs">julia&gt; select(german, r&quot;S&quot;, &quot;Job&quot;, 1)
+1000×4 DataFrame
+  Row │ Sex      Saving accounts  Job    id
+      │ String7  String15         Int64  Int64
+──────┼────────────────────────────────────────
+    1 │ male     NA                   2      0
+    2 │ female   little               2      1
+    3 │ male     little               1      2
+    4 │ male     little               2      3
+    5 │ male     little               2      4
+    6 │ male     NA                   1      5
+    7 │ male     quite rich           2      6
+    8 │ male     little               3      7
+  ⋮   │    ⋮            ⋮           ⋮      ⋮
+  994 │ male     little               3    993
+  995 │ male     NA                   2    994
+  996 │ female   little               1    995
+  997 │ male     little               3    996
+  998 │ male     little               2    997
+  999 │ male     little               2    998
+ 1000 │ male     moderate             2    999
+                               985 rows omitted</code></pre><p>利用这种灵活性，这里是一种将某些列移动到数据框前面的惯用模式：</p><pre><code class="language-julia-repl hljs">julia&gt; select(german, &quot;Sex&quot;, :)
+1000×10 DataFrame
+  Row │ Sex      id     Age    Job    Housing  Saving accounts  Checking accou ⋯
+      │ String7  Int64  Int64  Int64  String7  String15         String15       ⋯
+──────┼─────────────────────────────────────────────────────────────────────────
+    1 │ male         0     67      2  own      NA               little         ⋯
+    2 │ female       1     22      2  own      little           moderate
+    3 │ male         2     49      1  own      little           NA
+    4 │ male         3     45      2  free     little           little
+    5 │ male         4     53      2  free     little           little         ⋯
+    6 │ male         5     35      1  free     NA               NA
+    7 │ male         6     53      2  own      quite rich       NA
+    8 │ male         7     35      3  rent     little           moderate
+  ⋮   │    ⋮       ⋮      ⋮      ⋮       ⋮            ⋮                ⋮       ⋱
+  994 │ male       993     30      3  own      little           little         ⋯
+  995 │ male       994     50      2  own      NA               NA
+  996 │ female     995     31      1  own      little           NA
+  997 │ male       996     40      3  own      little           little
+  998 │ male       997     38      2  own      little           NA             ⋯
+  999 │ male       998     23      2  free     little           little
+ 1000 │ male       999     27      2  own      moderate         moderate
+                                                  4 columns and 985 rows omitted</code></pre><p>下面，我们只是传递源列和目标列名来重命名它们（没有指定转换部分）：</p><pre><code class="language-julia-repl hljs">julia&gt; select(german, :Sex =&gt; :x1, :Age =&gt; :x2)
+1000×2 DataFrame
+  Row │ x1       x2
+      │ String7  Int64
+──────┼────────────────
+    1 │ male        67
+    2 │ female      22
+    3 │ male        49
+    4 │ male        45
+    5 │ male        53
+    6 │ male        35
+    7 │ male        53
+    8 │ male        35
+  ⋮   │    ⋮       ⋮
+  994 │ male        30
+  995 │ male        50
+  996 │ female      31
+  997 │ male        40
+  998 │ male        38
+  999 │ male        23
+ 1000 │ male        27
+       985 rows omitted</code></pre><p>需要注意的是，<code>select</code>始终返回一个数据框，即使只选择了一个单独的列，与索引语法相反。比较以下两种情况：</p><pre><code class="language-julia-repl hljs">julia&gt; select(german, :Age)
+1000×1 DataFrame
+  Row │ Age
+      │ Int64
+──────┼───────
+    1 │    67
+    2 │    22
+    3 │    49
+    4 │    45
+    5 │    53
+    6 │    35
+    7 │    53
+    8 │    35
+  ⋮   │   ⋮
+  994 │    30
+  995 │    50
+  996 │    31
+  997 │    40
+  998 │    38
+  999 │    23
+ 1000 │    27
+985 rows omitted
+
+julia&gt; german[:, :Age]
+1000-element Vector{Int64}:
+ 67
+ 22
+ 49
+ 45
+ 53
+ 35
+ 53
+ 35
+ 61
+ 28
+  ⋮
+ 34
+ 23
+ 30
+ 50
+ 31
+ 40
+ 38
+ 23
+ 27</code></pre><p>默认情况下，<code>select</code>会复制传递的源数据框的列。为了避免复制，可以传递<code>copycols=false</code>关键字参数：</p><pre><code class="language-julia-repl hljs">julia&gt; df = select(german, :Sex)
+1000×1 DataFrame
+  Row │ Sex
+      │ String7
+──────┼─────────
+    1 │ male
+    2 │ female
+    3 │ male
+    4 │ male
+    5 │ male
+    6 │ male
+    7 │ male
+    8 │ male
+  ⋮   │    ⋮
+  994 │ male
+  995 │ male
+  996 │ female
+  997 │ male
+  998 │ male
+  999 │ male
+ 1000 │ male
+985 rows omitted
+
+julia&gt; df.Sex === german.Sex # copy
+false
+
+julia&gt; df = select(german, :Sex, copycols=false)
+1000×1 DataFrame
+  Row │ Sex
+      │ String7
+──────┼─────────
+    1 │ male
+    2 │ female
+    3 │ male
+    4 │ male
+    5 │ male
+    6 │ male
+    7 │ male
+    8 │ male
+  ⋮   │    ⋮
+  994 │ male
+  995 │ male
+  996 │ female
+  997 │ male
+  998 │ male
+  999 │ male
+ 1000 │ male
+985 rows omitted
+
+julia&gt; df.Sex === german.Sex # no-copy is performed
+true</code></pre><p>要在原地执行选择操作，请使用<code>select!</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; select!(german, Not(:Age));
+
+julia&gt; german
+1000×9 DataFrame
+  Row │ id     Sex      Job    Housing  Saving accounts  Checking account  Cre ⋯
+      │ Int64  String7  Int64  String7  String15         String15          Int ⋯
+──────┼─────────────────────────────────────────────────────────────────────────
+    1 │     0  male         2  own      NA               little                ⋯
+    2 │     1  female       2  own      little           moderate
+    3 │     2  male         1  own      little           NA
+    4 │     3  male         2  free     little           little
+    5 │     4  male         2  free     little           little                ⋯
+    6 │     5  male         1  free     NA               NA
+    7 │     6  male         2  own      quite rich       NA
+    8 │     7  male         3  rent     little           moderate
+  ⋮   │   ⋮       ⋮       ⋮       ⋮            ⋮                ⋮              ⋱
+  994 │   993  male         3  own      little           little                ⋯
+  995 │   994  male         2  own      NA               NA
+  996 │   995  female       1  own      little           NA
+  997 │   996  male         3  own      little           little
+  998 │   997  male         2  own      little           NA                    ⋯
+  999 │   998  male         2  free     little           little
+ 1000 │   999  male         2  own      moderate         moderate
+                                                  3 columns and 985 rows omitted</code></pre><p>正如您所看到的，<code>german</code>数据框中的<code>:Age</code>列已被删除。</p><p><code>transform</code>和<code>transform!</code>函数的工作方式与<code>select</code>和<code>select!</code>完全相同，唯一的区别是它们保留源数据框中存在的所有列。以下是一些示例：</p><pre><code class="language-julia-repl hljs">julia&gt; german = copy(german_ref);
+
+julia&gt; df = german_ref[1:8, 1:5]
+8×5 DataFrame
+ Row │ id     Age    Sex      Job    Housing
+     │ Int64  Int64  String7  Int64  String7
+─────┼───────────────────────────────────────
+   1 │     0     67  male         2  own
+   2 │     1     22  female       2  own
+   3 │     2     49  male         1  own
+   4 │     3     45  male         2  free
+   5 │     4     53  male         2  free
+   6 │     5     35  male         1  free
+   7 │     6     53  male         2  own
+   8 │     7     35  male         3  rent
+
+julia&gt; transform(df, :Age =&gt; maximum)
+8×6 DataFrame
+ Row │ id     Age    Sex      Job    Housing  Age_maximum
+     │ Int64  Int64  String7  Int64  String7  Int64
+─────┼────────────────────────────────────────────────────
+   1 │     0     67  male         2  own               67
+   2 │     1     22  female       2  own               67
+   3 │     2     49  male         1  own               67
+   4 │     3     45  male         2  free              67
+   5 │     4     53  male         2  free              67
+   6 │     5     35  male         1  free              67
+   7 │     6     53  male         2  own               67
+   8 │     7     35  male         3  rent              67</code></pre><p>在下面的示例中，我们交换存储在<code>:Sex</code>列和<code>:Age</code>列中的值：</p><pre><code class="language-julia-repl hljs">julia&gt; transform(german, :Age =&gt; :Sex, :Sex =&gt; :Age)
+1000×10 DataFrame
+  Row │ id     Age      Sex    Job    Housing  Saving accounts  Checking accou ⋯
+      │ Int64  String7  Int64  Int64  String7  String15         String15       ⋯
+──────┼─────────────────────────────────────────────────────────────────────────
+    1 │     0  male        67      2  own      NA               little         ⋯
+    2 │     1  female      22      2  own      little           moderate
+    3 │     2  male        49      1  own      little           NA
+    4 │     3  male        45      2  free     little           little
+    5 │     4  male        53      2  free     little           little         ⋯
+    6 │     5  male        35      1  free     NA               NA
+    7 │     6  male        53      2  own      quite rich       NA
+    8 │     7  male        35      3  rent     little           moderate
+  ⋮   │   ⋮       ⋮       ⋮      ⋮       ⋮            ⋮                ⋮       ⋱
+  994 │   993  male        30      3  own      little           little         ⋯
+  995 │   994  male        50      2  own      NA               NA
+  996 │   995  female      31      1  own      little           NA
+  997 │   996  male        40      3  own      little           little
+  998 │   997  male        38      2  own      little           NA             ⋯
+  999 │   998  male        23      2  free     little           little
+ 1000 │   999  male        27      2  own      moderate         moderate
+                                                  4 columns and 985 rows omitted</code></pre><p>如果我们将多个源列传递给转换函数，它们将作为连续的位置参数传递。因此，例如下面的<code>[:Age, :Job] =&gt; (+) =&gt; :res</code>转换会计算<code>+(df1.Age, df1.Job)</code>（将两列相加），并将结果存储在<code>:res</code>列中：</p><pre><code class="language-julia-repl hljs">julia&gt; select(german, :Age, :Job, [:Age, :Job] =&gt; (+) =&gt; :res)
+1000×3 DataFrame
+  Row │ Age    Job    res
+      │ Int64  Int64  Int64
+──────┼─────────────────────
+    1 │    67      2     69
+    2 │    22      2     24
+    3 │    49      1     50
+    4 │    45      2     47
+    5 │    53      2     55
+    6 │    35      1     36
+    7 │    53      2     55
+    8 │    35      3     38
+  ⋮   │   ⋮      ⋮      ⋮
+  994 │    30      3     33
+  995 │    50      2     52
+  996 │    31      1     32
+  997 │    40      3     43
+  998 │    38      2     40
+  999 │    23      2     25
+ 1000 │    27      2     29
+            985 rows omitted</code></pre><p>在这个入门教程中给出的示例并没有涵盖转换迷你语言的所有选项。在手册的后面部分，有更高级的示例，特别是展示如何使用<code>AsTable</code>操作传递或生成多列的示例（您可能在一些DataFrames.jl的演示中见过）。</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../">« Introduction</a><a class="docs-footer-nextpage" href="../getting_started/">Getting Started »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Friday 15 December 2023 13:32">Friday 15 December 2023</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

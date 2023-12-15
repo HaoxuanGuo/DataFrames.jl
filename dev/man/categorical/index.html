@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Categorical Data · DataFrames.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link rel="canonical" href="https://juliadata.github.io/DataFrames.jl/stable/man/categorical/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script><link href="../../assets/favicon.ico" rel="icon" type="image/x-icon"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="DataFrames.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">DataFrames.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../basics/">First Steps with DataFrames.jl</a></li><li><span class="tocitem">User Guide</span><ul><li><a class="tocitem" href="../getting_started/">Getting Started</a></li><li><a class="tocitem" href="../working_with_dataframes/">Working with DataFrames</a></li><li><a class="tocitem" href="../importing_and_exporting/">Importing and Exporting Data (I/O)</a></li><li><a class="tocitem" href="../joins/">Joins</a></li><li><a class="tocitem" href="../split_apply_combine/">Split-apply-combine</a></li><li><a class="tocitem" href="../reshaping_and_pivoting/">Reshaping</a></li><li><a class="tocitem" href="../sorting/">Sorting</a></li><li class="is-active"><a class="tocitem" href>Categorical Data</a></li><li><a class="tocitem" href="../missing/">Missing Data</a></li><li><a class="tocitem" href="../querying_frameworks/">Data manipulation frameworks</a></li><li><a class="tocitem" href="../comparisons/">Comparison with Python/R/Stata</a></li></ul></li><li><span class="tocitem">API</span><ul><li><a class="tocitem" href="../../lib/types/">Types</a></li><li><a class="tocitem" href="../../lib/functions/">Functions</a></li><li><a class="tocitem" href="../../lib/indexing/">Indexing</a></li><li><a class="tocitem" href="../../lib/metadata/">Metadata</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">User Guide</a></li><li class="is-active"><a href>Categorical Data</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Categorical Data</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/HaoxuanGuo/DataFrames.jl/blob/main/docs/src/man/categorical.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="man-categorical"><a class="docs-heading-anchor" href="#man-categorical">分类数据</a><a id="man-categorical-1"></a><a class="docs-heading-anchor-permalink" href="#man-categorical" title="Permalink"></a></h1><p>我们经常需要处理数据框中的某些列，这些列只包含少数几个级别的数据：</p><pre><code class="language-julia-repl hljs">julia&gt; v = [&quot;Group A&quot;, &quot;Group A&quot;, &quot;Group A&quot;, &quot;Group B&quot;, &quot;Group B&quot;, &quot;Group B&quot;]
+6-element Vector{String}:
+ &quot;Group A&quot;
+ &quot;Group A&quot;
+ &quot;Group A&quot;
+ &quot;Group B&quot;
+ &quot;Group B&quot;
+ &quot;Group B&quot;</code></pre><p>在<code>Vector</code>中使用的朴素编码将此向量的每个条目表示为一个完整的字符串。相比之下，我们可以通过将字符串替换为对少数级别的索引，更有效地表示数据。这样做有两个好处。第一，这种向量往往会使用更少的内存。第二，可以使用<code>groupby</code>函数有效地对其进行分组。</p><p>有两种常见的类型允许执行级别池化：</p><ul><li>来自PooledArrays.jl的<code>PooledVector</code>；</li><li>来自CategoricalArrays.jl的<code>CategoricalVector</code>。</li></ul><p><code>PooledVector</code>和<code>CategoricalVector</code>之间的区别如下：</p><ul><li><code>PooledVector</code>适用于数据压缩是唯一目标的情况；</li><li><code>CategoricalVector</code>被设计为同时提供全面的支持  用于处理分类变量，无论是无序的 （名义变量）还是有序的类别（序数变量），但代价是 只允许<code>AbstractString</code>、<code>AbstractChar</code>或<code>Number</code>元素类型 （可选地与<code>Missing</code>联合）。</li></ul><p>当数组中的唯一值（级别）应该尊重有意义的排序时，<code>CategoricalVector</code>特别有用，例如在打印表格、绘制图表或拟合回归模型时。CategoricalArrays.jl提供了设置和检索此顺序以及根据它比较值的函数。相反，<code>PooledVector</code>类型实际上是<code>Vector</code>的替代品，几乎没有用户可见的差异，除了更低的内存使用和更高的性能。</p><p>下面我们展示了使用CategoricalArrays.jl的一些选定示例。 有关分类数组的更多信息，请参阅<a href="https://categoricalarrays.juliadata.org/stable/">CategoricalArrays.jl文档</a>包。 也请注意，本节我们只讨论向量，因为我们正在考虑数据框上下文。然而，一般来说，这两个包都允许处理任何维度的数组。</p><p>要跟随下面的例子，你需要先安装CategoricalArrays.jl包。</p><pre><code class="language-julia-repl hljs">julia&gt; using CategoricalArrays
+
+julia&gt; cv = categorical(v)
+6-element CategoricalArray{String,1,UInt32}:
+ &quot;Group A&quot;
+ &quot;Group A&quot;
+ &quot;Group A&quot;
+ &quot;Group B&quot;
+ &quot;Group B&quot;
+ &quot;Group B&quot;</code></pre><p><code>CategoricalVectors</code>支持缺失值。</p><pre><code class="language-julia-repl hljs">julia&gt; cv = categorical([&quot;Group A&quot;, missing, &quot;Group A&quot;,
+                         &quot;Group B&quot;, &quot;Group B&quot;, missing])
+6-element CategoricalArray{Union{Missing, String},1,UInt32}:
+ &quot;Group A&quot;
+ missing
+ &quot;Group A&quot;
+ &quot;Group B&quot;
+ &quot;Group B&quot;
+ missing</code></pre><p>除了有效地表示重复数据外，<code>CategoricalArray</code> 类型还允许我们使用<code>levels</code>函数随时有效地确定变量的允许级别（注意，级别可能实际上在数据中使用或未使用）：</p><pre><code class="language-julia-repl hljs">julia&gt; levels(cv)
+2-element Vector{String}:
+ &quot;Group A&quot;
+ &quot;Group B&quot;</code></pre><p><code>levels!</code>函数还允许改变级别出现的顺序，这在显示目的或处理有序变量时可能有用。</p><pre><code class="language-julia-repl hljs">julia&gt; levels!(cv, [&quot;Group B&quot;, &quot;Group A&quot;])
+6-element CategoricalArray{Union{Missing, String},1,UInt32}:
+ &quot;Group A&quot;
+ missing
+ &quot;Group A&quot;
+ &quot;Group B&quot;
+ &quot;Group B&quot;
+ missing
+
+julia&gt; levels(cv)
+2-element Vector{String}:
+ &quot;Group B&quot;
+ &quot;Group A&quot;
+
+julia&gt; sort(cv)
+6-element CategoricalArray{Union{Missing, String},1,UInt32}:
+ &quot;Group B&quot;
+ &quot;Group B&quot;
+ &quot;Group A&quot;
+ &quot;Group A&quot;
+ missing
+ missing</code></pre><p>默认情况下，<code>CategoricalVector</code>能够表示<span>$2^{32}$</span>个不同的级别。你可以通过调用<code>compress</code>函数使用更少的内存：</p><pre><code class="language-julia-repl hljs">julia&gt; cv = compress(cv)
+6-element CategoricalArray{Union{Missing, String},1,UInt8}:
+ &quot;Group A&quot;
+ missing
+ &quot;Group A&quot;
+ &quot;Group B&quot;
+ &quot;Group B&quot;
+ missing
+</code></pre><p><code>categorical</code>函数还接受一个关键字参数<code>compress</code>，当设置为<code>true</code>时，等同于在新向量上调用<code>compress</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; cv1 = categorical([&quot;A&quot;, &quot;B&quot;], compress=true)
+2-element CategoricalArray{String,1,UInt8}:
+ &quot;A&quot;
+ &quot;B&quot;</code></pre><p>如果<code>ordered</code>关键字参数设置为<code>true</code>，结果 <code>CategoricalVector</code>将是有序的，这意味着它的级别可以被测试 为顺序（而不是抛出错误）：</p><pre><code class="language-julia-repl hljs">julia&gt; cv2 = categorical([&quot;A&quot;, &quot;B&quot;], ordered=true)
+2-element CategoricalArray{String,1,UInt32}:
+ &quot;A&quot;
+ &quot;B&quot;
+
+julia&gt; cv1[1] &lt; cv1[2]
+ERROR: ArgumentError: Unordered CategoricalValue objects cannot be tested for order using &lt;. Use isless instead, or call the ordered! function on the parent array to change this
+
+julia&gt; cv2[1] &lt; cv2[2]
+true</code></pre><p>你可以使用<code>isordered</code>函数检查<code>CategoricalVector</code>是否有序，并使用<code>ordered!</code>函数在有序和无序之间切换。</p><pre><code class="language-julia-repl hljs">julia&gt; isordered(cv1)
+false
+
+julia&gt; ordered!(cv1, true)
+2-element CategoricalArray{String,1,UInt8}:
+ &quot;A&quot;
+ &quot;B&quot;
+
+julia&gt; isordered(cv1)
+true
+
+julia&gt; cv1[1] &lt; cv1[2]
+true</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../sorting/">« Sorting</a><a class="docs-footer-nextpage" href="../missing/">Missing Data »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Friday 15 December 2023 13:32">Friday 15 December 2023</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

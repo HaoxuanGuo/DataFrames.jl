@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Data manipulation frameworks · DataFrames.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link rel="canonical" href="https://juliadata.github.io/DataFrames.jl/stable/man/querying_frameworks/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script><link href="../../assets/favicon.ico" rel="icon" type="image/x-icon"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="DataFrames.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">DataFrames.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../basics/">First Steps with DataFrames.jl</a></li><li><span class="tocitem">User Guide</span><ul><li><a class="tocitem" href="../getting_started/">Getting Started</a></li><li><a class="tocitem" href="../working_with_dataframes/">Working with DataFrames</a></li><li><a class="tocitem" href="../importing_and_exporting/">Importing and Exporting Data (I/O)</a></li><li><a class="tocitem" href="../joins/">Joins</a></li><li><a class="tocitem" href="../split_apply_combine/">Split-apply-combine</a></li><li><a class="tocitem" href="../reshaping_and_pivoting/">Reshaping</a></li><li><a class="tocitem" href="../sorting/">Sorting</a></li><li><a class="tocitem" href="../categorical/">Categorical Data</a></li><li><a class="tocitem" href="../missing/">Missing Data</a></li><li class="is-active"><a class="tocitem" href>Data manipulation frameworks</a><ul class="internal"><li><a class="tocitem" href="#DataFramesMeta.jl"><span>DataFramesMeta.jl</span></a></li><li><a class="tocitem" href="#DataFrameMacros.jl"><span>DataFrameMacros.jl</span></a></li><li><a class="tocitem" href="#Query.jl"><span>Query.jl</span></a></li></ul></li><li><a class="tocitem" href="../comparisons/">Comparison with Python/R/Stata</a></li></ul></li><li><span class="tocitem">API</span><ul><li><a class="tocitem" href="../../lib/types/">Types</a></li><li><a class="tocitem" href="../../lib/functions/">Functions</a></li><li><a class="tocitem" href="../../lib/indexing/">Indexing</a></li><li><a class="tocitem" href="../../lib/metadata/">Metadata</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">User Guide</a></li><li class="is-active"><a href>Data manipulation frameworks</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Data manipulation frameworks</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/HaoxuanGuo/DataFrames.jl/blob/main/docs/src/man/querying_frameworks.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="数据操作框架"><a class="docs-heading-anchor" href="#数据操作框架">数据操作框架</a><a id="数据操作框架-1"></a><a class="docs-heading-anchor-permalink" href="#数据操作框架" title="Permalink"></a></h1><p>有三个框架提供了方便的方法来操作 <code>DataFrame</code>：DataFramesMeta.jl，DataFrameMacros.jl和Query.jl。它们实现了类似于<a href="https://dplyr.tidyverse.org/">dplyr</a>或<a href="https://en.wikipedia.org/wiki/Language_Integrated_Query">LINQ</a>的功能。</p><h2 id="DataFramesMeta.jl"><a class="docs-heading-anchor" href="#DataFramesMeta.jl">DataFramesMeta.jl</a><a id="DataFramesMeta.jl-1"></a><a class="docs-heading-anchor-permalink" href="#DataFramesMeta.jl" title="Permalink"></a></h2><p><a href="https://github.com/JuliaStats/DataFramesMeta.jl">DataFramesMeta.jl</a>包提供了一个便捷且快速的基于宏的接口来处理 <code>DataFrame</code>。下面的指南适用于DataFramesMeta.jl的0.10.0版本。</p><p>首先安装DataFramesMeta.jl包：</p><pre><code class="language-julia hljs">using Pkg
+Pkg.add(&quot;DataFramesMeta&quot;)</code></pre><p>该包的主要优点是它通过宏<code>@transform</code>，<code>@select</code>，<code>@combine</code>等提供了更便捷的语法来进行转换函数 <code>transform</code>，<code>select</code>和<code>combine</code>。</p><p>DataFramesMeta.jl还从<a href="https://github.com/jkrumbiegel/Chain.jl">Chain.jl</a>中重新导出了<code>@chain</code>宏，允许用户把一个转换的输出作为另一个转换的输入，就像在R中的<code>|&gt;</code>和<code>%&gt;%</code>一样。</p><p>下面我们展示了一些使用该包的选定示例。</p><p>首先我们使用逻辑条件对源数据框的行进行子集选择，并选择其两列，重命名其中一列：</p><pre><code class="language-julia-repl hljs">julia&gt; using DataFramesMeta
+
+julia&gt; df = DataFrame(name=[&quot;John&quot;, &quot;Sally&quot;, &quot;Roger&quot;],
+                      age=[54.0, 34.0, 79.0],
+                      children=[0, 2, 4])
+3×3 DataFrame
+ Row │ name    age      children
+     │ String  Float64  Int64
+─────┼───────────────────────────
+   1 │ John       54.0         0
+   2 │ Sally      34.0         2
+   3 │ Roger      79.0         4
+
+julia&gt; @chain df begin
+           @rsubset :age &gt; 40 
+           @select(:number_of_children = :children, :name)
+       end
+2×2 DataFrame
+ Row │ number_of_children  name
+     │ Int64               String
+─────┼────────────────────────────
+   1 │                  0  John
+   2 │                  4  Roger</code></pre><p>在下面的示例中，我们展示了DataFramesMeta.jl也支持分割-应用-组合模式：</p><pre><code class="language-julia-repl hljs">julia&gt; df = DataFrame(key=repeat(1:3, 4), value=1:12)
+12×2 DataFrame
+ Row │ key    value
+     │ Int64  Int64
+─────┼──────────────
+   1 │     1      1
+   2 │     2      2
+   3 │     3      3
+   4 │     1      4
+   5 │     2      5
+   6 │     3      6
+   7 │     1      7
+   8 │     2      8
+   9 │     3      9
+  10 │     1     10
+  11 │     2     11
+  12 │     3     12
+
+julia&gt; @chain df begin
+           @rsubset :value &gt; 3 
+           @by(:key, :min = minimum(:value), :max = maximum(:value))
+           @select(:key, :range = :max - :min)
+        end
+3×2 DataFrame
+ Row │ key    range
+     │ Int64  Int64
+─────┼──────────────
+   1 │     1      6
+   2 │     2      6
+   3 │     3      6
+
+julia&gt; @chain df begin
+           groupby(:key)
+           @transform :value0 = :value .- minimum(:value)
+       end
+12×3 DataFrame
+ Row │ key    value  value0
+     │ Int64  Int64  Int64
+─────┼──────────────────────
+   1 │     1      1       0
+   2 │     2      2       0
+   3 │     3      3       0
+   4 │     1      4       3
+   5 │     2      5       3
+   6 │     3      6       3
+   7 │     1      7       6
+   8 │     2      8       6
+   9 │     3      9       6
+  10 │     1     10       9
+  11 │     2     11       9
+  12 │     3     12       9</code></pre><p>你可以在<a href="https://github.com/JuliaData/DataFramesMeta.jl">DataFramesMeta.jl GitHub页面</a>上找到更多关于如何使用此包的详细信息。</p><h2 id="DataFrameMacros.jl"><a class="docs-heading-anchor" href="#DataFrameMacros.jl">DataFrameMacros.jl</a><a id="DataFrameMacros.jl-1"></a><a class="docs-heading-anchor-permalink" href="#DataFrameMacros.jl" title="Permalink"></a></h2><p><a href="https://github.com/jkrumbiegel/DataFrameMacros.jl">DataFrameMacros.jl</a> 是DataFramesMeta.jl的替代品，它额外关注于便捷地同时转换多列的解决方案。下面的指南适用于DataFrameMacros.jl的0.3版本。</p><p>首先，安装DataFrameMacros.jl包：</p><pre><code class="language-julia hljs">using Pkg
+Pkg.add(&quot;DataFrameMacros&quot;)</code></pre><p>在DataFrameMacros.jl中，除了<code>@combine</code>宏，默认情况下所有宏都是按行处理的。还有一个<code>@groupby</code>宏，它允许使用与<code>@transform</code>相同的语法在运行时创建分组列，以便在不需要两次编写它们的情况下按新列进行分组。</p><p>在下面的示例中，你还可以看到DataFrameMacros.jl的多列功能，其中<code>mean</code>一次应用于通过<code>r&quot;age&quot;</code>正则表达式选择的两个年龄列。然后使用<code>&quot;{}&quot;</code>快捷方式生成新的列名，该快捷方式将转换的列名插入到字符串中。</p><pre><code class="language-julia-repl hljs">julia&gt; using DataFrames, DataFrameMacros, Chain, Statistics
+
+julia&gt; df = DataFrame(name=[&quot;John&quot;, &quot;Sally&quot;, &quot;Roger&quot;],
+                      age=[54.0, 34.0, 79.0],
+                      children=[0, 2, 4])
+3×3 DataFrame
+ Row │ name    age      children 
+     │ String  Float64  Int64    
+─────┼───────────────────────────
+   1 │ John       54.0         0
+   2 │ Sally      34.0         2
+   3 │ Roger      79.0         4
+
+julia&gt; @chain df begin
+           @transform :age_months = :age * 12
+           @groupby :has_child = :children &gt; 0
+           @combine &quot;mean_{}&quot; = mean({r&quot;age&quot;})
+       end
+2×3 DataFrame
+ Row │ has_child  mean_age  mean_age_months 
+     │ Bool       Float64   Float64         
+─────┼──────────────────────────────────────
+   1 │     false      54.0            648.0
+   2 │      true      56.5            678.0</code></pre><p>还有一种能力是将一组多列作为一个单元引用，例如对它们进行聚合，使用<code>{{ }}</code>语法。在下面的示例中，将第一季度与其他三个季度的最大值进行比较：</p><pre><code class="language-julia-repl hljs">julia&gt; df = DataFrame(q1 = [12.0, 0.4, 42.7],
+                      q2 = [6.4, 2.3, 40.9],
+                      q3 = [9.5, 0.2, 13.6],
+                      q4 = [6.3, 5.4, 39.3])
+3×4 DataFrame
+ Row │ q1       q2       q3       q4      
+     │ Float64  Float64  Float64  Float64 
+─────┼────────────────────────────────────
+   1 │    12.0      6.4      9.5      6.3
+   2 │     0.4      2.3      0.2      5.4
+   3 │    42.7     40.9     13.6     39.3
+
+julia&gt; @transform df :q1_best = :q1 &gt; maximum({{Not(:q1)}})
+3×5 DataFrame
+ Row │ q1       q2       q3       q4       q1_best 
+     │ Float64  Float64  Float64  Float64  Bool    
+─────┼─────────────────────────────────────────────
+   1 │    12.0      6.4      9.5      6.3     true
+   2 │     0.4      2.3      0.2      5.4    false
+   3 │    42.7     40.9     13.6     39.3     true</code></pre><h2 id="Query.jl"><a class="docs-heading-anchor" href="#Query.jl">Query.jl</a><a id="Query.jl-1"></a><a class="docs-heading-anchor-permalink" href="#Query.jl" title="Permalink"></a></h2><p><a href="https://github.com/queryverse/Query.jl">Query.jl</a>包为<code>DataFrame</code>（以及许多其他数据结构）提供了高级数据操作功能。本节提供了该包的简短介绍，<a href="http://www.queryverse.org/Query.jl/stable/">Query.jl文档</a>提供了包的更全面的文档。这里的指示适用于Query.jl的1.0.0版本。</p><p>首先，安装Query.jl包：</p><pre><code class="language-julia hljs">using Pkg
+Pkg.add(&quot;Query&quot;)</code></pre><p>查询以<code>@from</code>宏开始，并由一系列查询命令组成。Query.jl提供了可以过滤，投射，连接，展平和分组<code>DataFrame</code>数据的命令。查询可以返回一个迭代器，或者可以将查询结果实体化到各种数据结构中，包括新的<code>DataFrame</code>。</p><p>一个简单的查询示例如下：</p><pre><code class="language-julia-repl hljs">julia&gt; using DataFrames, Query
+
+julia&gt; df = DataFrame(name=[&quot;John&quot;, &quot;Sally&quot;, &quot;Roger&quot;],
+                      age=[54.0, 34.0, 79.0],
+                      children=[0, 2, 4])
+3×3 DataFrame
+ Row │ name    age      children
+     │ String  Float64  Int64
+─────┼───────────────────────────
+   1 │ John       54.0         0
+   2 │ Sally      34.0         2
+   3 │ Roger      79.0         4
+
+julia&gt; q1 = @from i in df begin
+            @where i.age &gt; 40
+            @select {number_of_children=i.children, i.name}
+            @collect DataFrame
+       end
+2×2 DataFrame
+ Row │ number_of_children  name
+     │ Int64               String
+─────┼────────────────────────────
+   1 │                  0  John
+   2 │                  4  Roger</code></pre><p>查询以<code>@from</code>宏开始。第一个参数<code>i</code>是将在后续查询命令中用于引用单个行的范围变量的名称。下一个参数<code>df</code>是你想要查询的数据源。此查询中的<code>@where</code>命令将通过应用过滤条件<code>i.age &gt; 40</code>来过滤源数据。这将过滤掉任何<code>age</code>列不大于40的行。然后，<code>@select</code>命令将源数据的列投射到新的列结构上。这里的示例应用了三个特定的修改：1) 它只保留源<code>DataFrame</code>中的列子集，即转换后的数据不会包含<code>age</code>列；2) 它更改了选定的两列的顺序；和3) 它将选定的一列从<code>children</code>重命名为<code>number_of_children</code>。示例查询使用<code>{}</code>语法来实现这一点。Query.jl表达式中的<code>{}</code>实例化一个新的<a href="https://github.com/blackrock/NamedTuples.jl">NamedTuple</a>，即它是编写<code>@NT(number_of_children=&gt;i.children, name=&gt;i.name)</code>的快捷方式。<code>@collect</code>语句确定查询返回的数据结构。在此示例中，结果以<code>DataFrame</code>的形式返回。</p><p>没有<code>@collect</code>语句的查询返回一个标准的Julia迭代器，可以用任何可以处理迭代器的正常Julia语言结构来使用。以下代码为查询结果返回一个Julia迭代器：</p><pre><code class="language-julia-repl hljs">julia&gt; q2 = @from i in df begin
+                   @where i.age &gt; 40
+                   @select {number_of_children=i.children, i.name}
+              end; # suppress printing the iterator type
+</code></pre><p>可以使用标准的Julia <code>for</code>语句遍历结果：</p><pre><code class="language-julia-repl hljs">julia&gt; total_children = 0
+0
+
+julia&gt; for i in q2
+           global total_children += i.number_of_children
+       end
+
+julia&gt; total_children
+4
+</code></pre><p>或者可以使用理解（comprehension）来提取一部分行的名称：</p><pre><code class="language-julia-repl hljs">julia&gt; y = [i.name for i in q2 if i.number_of_children &gt; 0]
+1-element Vector{String}:
+ &quot;Roger&quot;
+</code></pre><p>最后一个示例（只提取名称并应用第二个过滤器）当然可以完全表示为查询表达式：</p><pre><code class="language-julia-repl hljs">julia&gt; q3 = @from i in df begin
+            @where i.age &gt; 40 &amp;&amp; i.children &gt; 0
+            @select i.name
+            @collect
+       end
+1-element Vector{String}:
+ &quot;Roger&quot;
+</code></pre><p>以<code>@collect</code>语句结束但没有特定类型的查询将查询结果实体化为数组。还要注意<code>@select</code>语句中的区别：前面的查询都在<code>@select</code>语句中使用<code>{}</code>语法将结果投射到表格格式。最后一个查询在<code>@select</code>语句中只从每行中选择一个值。</p><p>这些例子只是使用<a href="https://github.com/queryverse/Query.jl">Query.jl</a>可以做的事情的冰山一角，有兴趣的读者可以参考<a href="http://www.queryverse.org/Query.jl/stable/">Query.jl文档</a>以获取更多信息。</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../missing/">« Missing Data</a><a class="docs-footer-nextpage" href="../comparisons/">Comparison with Python/R/Stata »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Friday 15 December 2023 13:32">Friday 15 December 2023</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

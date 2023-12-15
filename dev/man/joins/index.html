@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Joins · DataFrames.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link rel="canonical" href="https://juliadata.github.io/DataFrames.jl/stable/man/joins/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script><link href="../../assets/favicon.ico" rel="icon" type="image/x-icon"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="DataFrames.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">DataFrames.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../basics/">First Steps with DataFrames.jl</a></li><li><span class="tocitem">User Guide</span><ul><li><a class="tocitem" href="../getting_started/">Getting Started</a></li><li><a class="tocitem" href="../working_with_dataframes/">Working with DataFrames</a></li><li><a class="tocitem" href="../importing_and_exporting/">Importing and Exporting Data (I/O)</a></li><li class="is-active"><a class="tocitem" href>Joins</a><ul class="internal"><li><a class="tocitem" href="#连接的介绍"><span>连接的介绍</span></a></li><li><a class="tocitem" href="#键值比较和浮点值"><span>键值比较和浮点值</span></a></li><li><a class="tocitem" href="#基于不同名称的关键列进行连接"><span>基于不同名称的关键列进行连接</span></a></li><li><a class="tocitem" href="#处理重复键和追踪源数据框"><span>处理重复键和追踪源数据框</span></a></li><li><a class="tocitem" href="#重命名连接的列"><span>重命名连接的列</span></a></li><li><a class="tocitem" href="#在连接中匹配缺失值"><span>在连接中匹配缺失值</span></a></li><li><a class="tocitem" href="#指定连接结果中的行顺序"><span>指定连接结果中的行顺序</span></a></li><li><a class="tocitem" href="#原地左连接"><span>原地左连接</span></a></li></ul></li><li><a class="tocitem" href="../split_apply_combine/">Split-apply-combine</a></li><li><a class="tocitem" href="../reshaping_and_pivoting/">Reshaping</a></li><li><a class="tocitem" href="../sorting/">Sorting</a></li><li><a class="tocitem" href="../categorical/">Categorical Data</a></li><li><a class="tocitem" href="../missing/">Missing Data</a></li><li><a class="tocitem" href="../querying_frameworks/">Data manipulation frameworks</a></li><li><a class="tocitem" href="../comparisons/">Comparison with Python/R/Stata</a></li></ul></li><li><span class="tocitem">API</span><ul><li><a class="tocitem" href="../../lib/types/">Types</a></li><li><a class="tocitem" href="../../lib/functions/">Functions</a></li><li><a class="tocitem" href="../../lib/indexing/">Indexing</a></li><li><a class="tocitem" href="../../lib/metadata/">Metadata</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">User Guide</a></li><li class="is-active"><a href>Joins</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Joins</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/HaoxuanGuo/DataFrames.jl/blob/main/docs/src/man/joins.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="数据库风格的连接"><a class="docs-heading-anchor" href="#数据库风格的连接">数据库风格的连接</a><a id="数据库风格的连接-1"></a><a class="docs-heading-anchor-permalink" href="#数据库风格的连接" title="Permalink"></a></h1><h2 id="连接的介绍"><a class="docs-heading-anchor" href="#连接的介绍">连接的介绍</a><a id="连接的介绍-1"></a><a class="docs-heading-anchor-permalink" href="#连接的介绍" title="Permalink"></a></h2><p>我们经常需要将两个或更多的数据集合并在一起，以提供我们正在研究的主题的完整画面。例如，假设我们有以下两个数据集：</p><pre><code class="language-julia-repl hljs">julia&gt; using DataFrames
+
+julia&gt; people = DataFrame(ID=[20, 40], Name=[&quot;John Doe&quot;, &quot;Jane Doe&quot;])
+2×2 DataFrame
+ Row │ ID     Name
+     │ Int64  String
+─────┼─────────────────
+   1 │    20  John Doe
+   2 │    40  Jane Doe
+
+julia&gt; jobs = DataFrame(ID=[20, 40], Job=[&quot;Lawyer&quot;, &quot;Doctor&quot;])
+2×2 DataFrame
+ Row │ ID     Job
+     │ Int64  String
+─────┼───────────────
+   1 │    20  Lawyer
+   2 │    40  Doctor</code></pre><p>我们可能希望使用一个包含每个ID的姓名和工作的更大的数据集。我们可以使用<code>innerjoin</code>函数做到这一点：</p><pre><code class="language-julia-repl hljs">julia&gt; innerjoin(people, jobs, on = :ID)
+2×3 DataFrame
+ Row │ ID     Name      Job
+     │ Int64  String    String
+─────┼─────────────────────────
+   1 │    20  John Doe  Lawyer
+   2 │    40  Jane Doe  Doctor</code></pre><p>在关系数据库理论中，这种操作通常被称为连接。用于确定在连接过程中应该合并哪些行的列被称为键。</p><p>以下函数提供了执行七种类型的连接：</p><ul><li><code>innerjoin</code>：输出包含在所有传入的数据框中存在的键值的行。</li><li><code>leftjoin</code>：输出包含在第一个（左）参数中存在的键值的行，无论该值是否在第二个（右）参数中存在。</li><li><code>rightjoin</code>：输出包含在第二个（右）参数中存在的键值的行，无论该值是否在第一个（左）参数中存在。</li><li><code>outerjoin</code>：输出包含在任何传入的数据框中存在的键值的行。</li><li><code>semijoin</code>：类似于内连接，但输出仅限于来自第一个（左）参数的列。</li><li><code>antijoin</code>：输出包含在第一个（左）但不在第二个（右）参数中存在的键值的行。与<code>semijoin</code>一样，输出仅限于来自第一个（左）参数的列。</li><li><code>crossjoin</code>：输出是来自所有传入数据框的行的笛卡尔积。</li></ul><p>有关更多信息，请参见<a href="https://en.wikipedia.org/wiki/Join_(SQL)">SQL连接的维基百科页面</a>。</p><p>以下是不同类型的连接的例子：</p><pre><code class="language-julia-repl hljs">julia&gt; jobs = DataFrame(ID=[20, 60], Job=[&quot;Lawyer&quot;, &quot;Astronaut&quot;])
+2×2 DataFrame
+ Row │ ID     Job
+     │ Int64  String
+─────┼──────────────────
+   1 │    20  Lawyer
+   2 │    60  Astronaut
+
+julia&gt; innerjoin(people, jobs, on = :ID)
+1×3 DataFrame
+ Row │ ID     Name      Job
+     │ Int64  String    String
+─────┼─────────────────────────
+   1 │    20  John Doe  Lawyer
+
+julia&gt; leftjoin(people, jobs, on = :ID)
+2×3 DataFrame
+ Row │ ID     Name      Job
+     │ Int64  String    String?
+─────┼──────────────────────────
+   1 │    20  John Doe  Lawyer
+   2 │    40  Jane Doe  missing
+
+julia&gt; rightjoin(people, jobs, on = :ID)
+2×3 DataFrame
+ Row │ ID     Name      Job
+     │ Int64  String?   String
+─────┼────────────────────────────
+   1 │    20  John Doe  Lawyer
+   2 │    60  missing   Astronaut
+
+julia&gt; outerjoin(people, jobs, on = :ID)
+3×3 DataFrame
+ Row │ ID     Name      Job
+     │ Int64  String?   String?
+─────┼────────────────────────────
+   1 │    20  John Doe  Lawyer
+   2 │    40  Jane Doe  missing
+   3 │    60  missing   Astronaut
+
+julia&gt; semijoin(people, jobs, on = :ID)
+1×2 DataFrame
+ Row │ ID     Name
+     │ Int64  String
+─────┼─────────────────
+   1 │    20  John Doe
+
+julia&gt; antijoin(people, jobs, on = :ID)
+1×2 DataFrame
+ Row │ ID     Name
+     │ Int64  String
+─────┼─────────────────
+   1 │    40  Jane Doe</code></pre><p>交叉连接是唯一一种不使用<code>on</code>键的连接：</p><pre><code class="language-julia-repl hljs">julia&gt; crossjoin(people, jobs, makeunique = true)
+4×4 DataFrame
+ Row │ ID     Name      ID_1   Job
+     │ Int64  String    Int64  String
+─────┼───────────────────────────────────
+   1 │    20  John Doe     20  Lawyer
+   2 │    20  John Doe     60  Astronaut
+   3 │    40  Jane Doe     20  Lawyer
+   4 │    40  Jane Doe     60  Astronaut</code></pre><h2 id="键值比较和浮点值"><a class="docs-heading-anchor" href="#键值比较和浮点值">键值比较和浮点值</a><a id="键值比较和浮点值-1"></a><a class="docs-heading-anchor-permalink" href="#键值比较和浮点值" title="Permalink"></a></h2><p>两个或更多数据框的键值使用<code>isequal</code>函数进行比较。这与Julia Base中的<code>Set</code>和<code>Dict</code>类型保持一致。</p><p>不建议使用浮点数作为键：浮点比较可能会出现令人惊讶和不可预测的结果。如果你确实使用了浮点键，请注意，默认情况下，当键包含<code>-0.0</code>（负零）或<code>NaN</code>值时，会引发错误。以下是一个例子：</p><pre><code class="language-julia-repl hljs">julia&gt; innerjoin(DataFrame(id=[-0.0]), DataFrame(id=[0.0]), on=:id)
+ERROR: ArgumentError: Currently for numeric values `NaN` and `-0.0` in their real or imaginary components are not allowed. Such value was found in column :id in left data frame. Use CategoricalArrays.jl to wrap these values in a CategoricalVector to perform the requested join.</code></pre><p>可以通过将键值包装在<a href="../categorical/#man-categorical">categorical</a>向量中来覆盖这一点。</p><h2 id="基于不同名称的关键列进行连接"><a class="docs-heading-anchor" href="#基于不同名称的关键列进行连接">基于不同名称的关键列进行连接</a><a id="基于不同名称的关键列进行连接-1"></a><a class="docs-heading-anchor-permalink" href="#基于不同名称的关键列进行连接" title="Permalink"></a></h2><p>为了在左表和右表中的关键字拥有不同名称的情况下连接数据框，你可以传递 <code>left =&gt; right</code> 对作为 <code>on</code> 参数：</p><pre><code class="language-julia-repl hljs">julia&gt; a = DataFrame(ID=[20, 40], Name=[&quot;John Doe&quot;, &quot;Jane Doe&quot;])
+2×2 DataFrame
+ Row │ ID     Name
+     │ Int64  String
+─────┼─────────────────
+   1 │    20  John Doe
+   2 │    40  Jane Doe
+
+julia&gt; b = DataFrame(IDNew=[20, 40], Job=[&quot;Lawyer&quot;, &quot;Doctor&quot;])
+2×2 DataFrame
+ Row │ IDNew  Job
+     │ Int64  String
+─────┼───────────────
+   1 │    20  Lawyer
+   2 │    40  Doctor
+
+julia&gt; innerjoin(a, b, on = :ID =&gt; :IDNew)
+2×3 DataFrame
+ Row │ ID     Name      Job
+     │ Int64  String    String
+─────┼─────────────────────────
+   1 │    20  John Doe  Lawyer
+   2 │    40  Jane Doe  Doctor</code></pre><p>这是另一个包含多列的例子：</p><pre><code class="language-julia-repl hljs">julia&gt; a = DataFrame(City=[&quot;Amsterdam&quot;, &quot;London&quot;, &quot;London&quot;, &quot;New York&quot;, &quot;New York&quot;],
+                     Job=[&quot;Lawyer&quot;, &quot;Lawyer&quot;, &quot;Lawyer&quot;, &quot;Doctor&quot;, &quot;Doctor&quot;],
+                     Category=[1, 2, 3, 4, 5])
+5×3 DataFrame
+ Row │ City       Job     Category
+     │ String     String  Int64
+─────┼─────────────────────────────
+   1 │ Amsterdam  Lawyer         1
+   2 │ London     Lawyer         2
+   3 │ London     Lawyer         3
+   4 │ New York   Doctor         4
+   5 │ New York   Doctor         5
+
+julia&gt; b = DataFrame(Location=[&quot;Amsterdam&quot;, &quot;London&quot;, &quot;London&quot;, &quot;New York&quot;, &quot;New York&quot;],
+                     Work=[&quot;Lawyer&quot;, &quot;Lawyer&quot;, &quot;Lawyer&quot;, &quot;Doctor&quot;, &quot;Doctor&quot;],
+                     Name=[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;])
+5×3 DataFrame
+ Row │ Location   Work    Name
+     │ String     String  String
+─────┼───────────────────────────
+   1 │ Amsterdam  Lawyer  a
+   2 │ London     Lawyer  b
+   3 │ London     Lawyer  c
+   4 │ New York   Doctor  d
+   5 │ New York   Doctor  e
+
+julia&gt; innerjoin(a, b, on = [:City =&gt; :Location, :Job =&gt; :Work])
+9×4 DataFrame
+ Row │ City       Job     Category  Name
+     │ String     String  Int64     String
+─────┼─────────────────────────────────────
+   1 │ Amsterdam  Lawyer         1  a
+   2 │ London     Lawyer         2  b
+   3 │ London     Lawyer         3  b
+   4 │ London     Lawyer         2  c
+   5 │ London     Lawyer         3  c
+   6 │ New York   Doctor         4  d
+   7 │ New York   Doctor         5  d
+   8 │ New York   Doctor         4  e
+   9 │ New York   Doctor         5  e</code></pre><h2 id="处理重复键和追踪源数据框"><a class="docs-heading-anchor" href="#处理重复键和追踪源数据框">处理重复键和追踪源数据框</a><a id="处理重复键和追踪源数据框-1"></a><a class="docs-heading-anchor-permalink" href="#处理重复键和追踪源数据框" title="Permalink"></a></h2><p>此外，注意到在最后的连接中，第2行和第3行在两个被连接的 <code>DataFrame</code> 中的 <code>on</code> 变量上具有相同的值。在这种情况下，<code>innerjoin</code>，<code>outerjoin</code>，<code>leftjoin</code> 和 <code>rightjoin</code> 将生成所有匹配行的组合。在我们的示例中，第2行到第5行是作为结果创建的。对于两个被连接的 <code>DataFrame</code> 中的第4行和第5行，也可以观察到相同的行为。</p><p>为了检查作为 <code>on</code> 参数传递的列在每个输入数据框中定义了唯一键（根据 <code>isequal</code>），你可以将 <code>validate</code> 关键字参数设置为一个两元素的元组或一对 <code>Bool</code> 值，每个元素表示是否对相应的数据框运行检查。以下是上述连接操作的示例：</p><pre><code class="language-julia-repl hljs">julia&gt; innerjoin(a, b, on = [(:City =&gt; :Location), (:Job =&gt; :Work)], validate=(true, true))
+ERROR: ArgumentError: Merge key(s) are not unique in both df1 and df2. df1 contains 2 duplicate keys: (City = &quot;London&quot;, Job = &quot;Lawyer&quot;) and (City = &quot;New York&quot;, Job = &quot;Doctor&quot;). df2 contains 2 duplicate keys: (Location = &quot;London&quot;, Work = &quot;Lawyer&quot;) and (Location = &quot;New York&quot;, Work = &quot;Doctor&quot;).</code></pre><p>最后，使用 <code>source</code> 关键字参数，你可以向结果数据框添加一列，指示给定行仅出现在左边，右边还是两个数据框中。这是一个例子：</p><pre><code class="language-julia-repl hljs">julia&gt; a = DataFrame(ID=[20, 40], Name=[&quot;John&quot;, &quot;Jane&quot;])
+2×2 DataFrame
+ Row │ ID     Name
+     │ Int64  String
+─────┼───────────────
+   1 │    20  John
+   2 │    40  Jane
+
+julia&gt; b = DataFrame(ID=[20, 60], Job=[&quot;Lawyer&quot;, &quot;Doctor&quot;])
+2×2 DataFrame
+ Row │ ID     Job
+     │ Int64  String
+─────┼───────────────
+   1 │    20  Lawyer
+   2 │    60  Doctor
+
+julia&gt; outerjoin(a, b, on=:ID, validate=(true, true), source=:source)
+3×4 DataFrame
+ Row │ ID     Name     Job      source
+     │ Int64  String?  String?  String
+─────┼─────────────────────────────────────
+   1 │    20  John     Lawyer   both
+   2 │    40  Jane     missing  left_only
+   3 │    60  missing  Doctor   right_only</code></pre><p>注意，这次我们也使用了 <code>validate</code> 关键字参数，它没有产生错误，因为在两个源数据框中定义的键都是唯一的。</p><h2 id="重命名连接的列"><a class="docs-heading-anchor" href="#重命名连接的列">重命名连接的列</a><a id="重命名连接的列-1"></a><a class="docs-heading-anchor-permalink" href="#重命名连接的列" title="Permalink"></a></h2><p>你经常需要追踪源数据框。这个特性可以通过 <code>renamecols</code> 关键字参数来实现：</p><pre><code class="language-julia-repl hljs">julia&gt; innerjoin(a, b, on=:ID, renamecols = &quot;_left&quot; =&gt; &quot;_right&quot;)
+1×3 DataFrame
+ Row │ ID     Name_left  Job_right
+     │ Int64  String     String
+─────┼─────────────────────────────
+   1 │    20  John       Lawyer</code></pre><p>在上面的例子中，我们给左表的非键列添加了 <code>&quot;_left&quot;</code> 后缀，给右表的非键列添加了 <code>&quot;_right&quot;</code> 后缀。</p><p>另外，也可以传入一个用于转换列名的函数：</p><pre><code class="language-julia-repl hljs">julia&gt; innerjoin(a, b, on=:ID, renamecols = lowercase =&gt; uppercase)
+1×3 DataFrame
+ Row │ ID     name    JOB
+     │ Int64  String  String
+─────┼───────────────────────
+   1 │    20  John    Lawyer
+</code></pre><h2 id="在连接中匹配缺失值"><a class="docs-heading-anchor" href="#在连接中匹配缺失值">在连接中匹配缺失值</a><a id="在连接中匹配缺失值-1"></a><a class="docs-heading-anchor-permalink" href="#在连接中匹配缺失值" title="Permalink"></a></h2><p>默认情况下，当你尝试在一个有 <code>missing</code> 值的键上执行连接操作时，会出现错误：</p><pre><code class="language-julia-repl hljs">julia&gt; df1 = DataFrame(id=[1, missing, 3], a=1:3)
+3×2 DataFrame
+ Row │ id       a
+     │ Int64?   Int64
+─────┼────────────────
+   1 │       1      1
+   2 │ missing      2
+   3 │       3      3
+
+julia&gt; df2 = DataFrame(id=[1, 2, missing], b=1:3)
+3×2 DataFrame
+ Row │ id       b
+     │ Int64?   Int64
+─────┼────────────────
+   1 │       1      1
+   2 │       2      2
+   3 │ missing      3
+
+julia&gt; innerjoin(df1, df2, on=:id)
+ERROR: ArgumentError: Missing values in key columns are not allowed when matchmissing == :error. `missing` found in column :id in left data frame.</code></pre><p>如果你希望 <code>missing</code> 值被视为相等，可以传入 <code>matchmissing=:equal</code> 关键字参数：</p><pre><code class="language-julia-repl hljs">julia&gt; innerjoin(df1, df2, on=:id, matchmissing=:equal)
+2×3 DataFrame
+ Row │ id       a      b
+     │ Int64?   Int64  Int64
+─────┼───────────────────────
+   1 │       1      1      1
+   2 │ missing      2      3</code></pre><p>或者你可能希望删除所有包含 <code>missing</code> 值的行。在这种情况下，传入 <code>matchmissing=:notequal</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; innerjoin(df1, df2, on=:id, matchmissing=:notequal)
+1×3 DataFrame
+ Row │ id      a      b
+     │ Int64?  Int64  Int64
+─────┼──────────────────────
+   1 │      1      1      1</code></pre><h2 id="指定连接结果中的行顺序"><a class="docs-heading-anchor" href="#指定连接结果中的行顺序">指定连接结果中的行顺序</a><a id="指定连接结果中的行顺序-1"></a><a class="docs-heading-anchor-permalink" href="#指定连接结果中的行顺序" title="Permalink"></a></h2><p>默认情况下，连接操作产生的行顺序是未定义的：</p><pre><code class="language-julia-repl hljs">julia&gt; df_left = DataFrame(id=[1, 2, 4, 5], left=1:4)
+4×2 DataFrame
+ Row │ id     left
+     │ Int64  Int64
+─────┼──────────────
+   1 │     1      1
+   2 │     2      2
+   3 │     4      3
+   4 │     5      4
+
+julia&gt; df_right = DataFrame(id=[2, 1, 3, 6, 7], right=1:5)
+5×2 DataFrame
+ Row │ id     right
+     │ Int64  Int64
+─────┼──────────────
+   1 │     2      1
+   2 │     1      2
+   3 │     3      3
+   4 │     6      4
+   5 │     7      5
+
+julia&gt; outerjoin(df_left, df_right, on=:id)
+7×3 DataFrame
+ Row │ id     left     right
+     │ Int64  Int64?   Int64?
+─────┼─────────────────────────
+   1 │     2        2        1
+   2 │     1        1        2
+   3 │     4        3  missing
+   4 │     5        4  missing
+   5 │     3  missing        3
+   6 │     6  missing        4
+   7 │     7  missing        5</code></pre><p>如果你希望结果保持左表的行顺序，可以传入 <code>order=:left</code> 关键字参数：</p><pre><code class="language-julia-repl hljs">julia&gt; outerjoin(df_left, df_right, on=:id, order=:left)
+7×3 DataFrame
+ Row │ id     left     right
+     │ Int64  Int64?   Int64?
+─────┼─────────────────────────
+   1 │     1        1        2
+   2 │     2        2        1
+   3 │     4        3  missing
+   4 │     5        4  missing
+   5 │     3  missing        3
+   6 │     6  missing        4
+   7 │     7  missing        5</code></pre><p>注意，在这种情况下，左表中缺失的键会被放在存在的键之后。</p><p>类似地，<code>order=:right</code> 会保持右表的顺序（并将不在其中的键放在末尾）：</p><pre><code class="language-julia-repl hljs">julia&gt; outerjoin(df_left, df_right, on=:id, order=:right)
+7×3 DataFrame
+ Row │ id     left     right
+     │ Int64  Int64?   Int64?
+─────┼─────────────────────────
+   1 │     2        2        1
+   2 │     1        1        2
+   3 │     3  missing        3
+   4 │     6  missing        4
+   5 │     7  missing        5
+   6 │     4        3  missing
+   7 │     5        4  missing</code></pre><h2 id="原地左连接"><a class="docs-heading-anchor" href="#原地左连接">原地左连接</a><a id="原地左连接-1"></a><a class="docs-heading-anchor-permalink" href="#原地左连接" title="Permalink"></a></h2><p>一个常见的操作是从参考表中添加数据到主表。可以使用 <code>leftjoin!</code> 函数进行此类原地更新。在这种情况下，左表会通过右表中的匹配行进行原地更新。</p><pre><code class="language-julia-repl hljs">julia&gt; main = DataFrame(id=1:4, main=1:4)
+4×2 DataFrame
+ Row │ id     main
+     │ Int64  Int64
+─────┼──────────────
+   1 │     1      1
+   2 │     2      2
+   3 │     3      3
+   4 │     4      4
+
+julia&gt; leftjoin!(main, DataFrame(id=[2, 4], info=[&quot;a&quot;, &quot;b&quot;]), on=:id);
+
+julia&gt; main
+4×3 DataFrame
+ Row │ id     main   info
+     │ Int64  Int64  String?
+─────┼───────────────────────
+   1 │     1      1  missing
+   2 │     2      2  a
+   3 │     3      3  missing
+   4 │     4      4  b</code></pre><p>请注意，在这种情况下，左表的行顺序和数量不会改变。因此，特别的，右表中不允许有重复的键：</p><pre><code class="nohighlight hljs">julia&gt; leftjoin!(main, DataFrame(id=[2, 2], info_bad=[&quot;a&quot;, &quot;b&quot;]), on=:id)
+ERROR: ArgumentError: duplicate rows found in right table</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../importing_and_exporting/">« Importing and Exporting Data (I/O)</a><a class="docs-footer-nextpage" href="../split_apply_combine/">Split-apply-combine »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Friday 15 December 2023 13:32">Friday 15 December 2023</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

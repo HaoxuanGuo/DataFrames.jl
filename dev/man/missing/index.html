@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Missing Data · DataFrames.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link rel="canonical" href="https://juliadata.github.io/DataFrames.jl/stable/man/missing/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script><link href="../../assets/favicon.ico" rel="icon" type="image/x-icon"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="DataFrames.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">DataFrames.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../basics/">First Steps with DataFrames.jl</a></li><li><span class="tocitem">User Guide</span><ul><li><a class="tocitem" href="../getting_started/">Getting Started</a></li><li><a class="tocitem" href="../working_with_dataframes/">Working with DataFrames</a></li><li><a class="tocitem" href="../importing_and_exporting/">Importing and Exporting Data (I/O)</a></li><li><a class="tocitem" href="../joins/">Joins</a></li><li><a class="tocitem" href="../split_apply_combine/">Split-apply-combine</a></li><li><a class="tocitem" href="../reshaping_and_pivoting/">Reshaping</a></li><li><a class="tocitem" href="../sorting/">Sorting</a></li><li><a class="tocitem" href="../categorical/">Categorical Data</a></li><li class="is-active"><a class="tocitem" href>Missing Data</a></li><li><a class="tocitem" href="../querying_frameworks/">Data manipulation frameworks</a></li><li><a class="tocitem" href="../comparisons/">Comparison with Python/R/Stata</a></li></ul></li><li><span class="tocitem">API</span><ul><li><a class="tocitem" href="../../lib/types/">Types</a></li><li><a class="tocitem" href="../../lib/functions/">Functions</a></li><li><a class="tocitem" href="../../lib/indexing/">Indexing</a></li><li><a class="tocitem" href="../../lib/metadata/">Metadata</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">User Guide</a></li><li class="is-active"><a href>Missing Data</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Missing Data</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/HaoxuanGuo/DataFrames.jl/blob/main/docs/src/man/missing.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="缺失数据"><a class="docs-heading-anchor" href="#缺失数据">缺失数据</a><a id="缺失数据-1"></a><a class="docs-heading-anchor-permalink" href="#缺失数据" title="Permalink"></a></h1><p>在Julia中，数据的缺失值使用特殊对象<code>missing</code>来表示，它是<code>Missing</code>类型的唯一实例。</p><pre><code class="language-julia-repl hljs">julia&gt; missing
+missing
+
+julia&gt; typeof(missing)
+Missing</code></pre><p><code>Missing</code>类型允许用户创建包含缺失值的向量和<code>DataFrame</code>列。这里我们创建一个包含缺失值的向量，返回的向量的元素类型是<code>Union{Missing, Int64}</code>。</p><pre><code class="language-julia-repl hljs">julia&gt; x = [1, 2, missing]
+3-element Vector{Union{Missing, Int64}}:
+ 1
+ 2
+  missing
+
+julia&gt; eltype(x)
+Union{Missing, Int64}
+
+julia&gt; Union{Missing, Int}
+Union{Missing, Int64}
+
+julia&gt; eltype(x) == Union{Missing, Int}
+true</code></pre><p>执行操作时可以使用<code>skipmissing</code>来排除<code>missing</code>值，它返回一个内存高效的迭代器。</p><pre><code class="language-julia-repl hljs">julia&gt; skipmissing(x)
+skipmissing(Union{Missing, Int64}[1, 2, missing])</code></pre><p><code>skipmissing</code>的输出可以直接作为函数的参数传入。例如，我们可以找到所有非缺失值的<code>sum</code>，或者将非缺失值<code>collect</code>到一个新的无缺失值向量中。</p><pre><code class="language-julia-repl hljs">julia&gt; sum(skipmissing(x))
+3
+
+julia&gt; collect(skipmissing(x))
+2-element Vector{Int64}:
+ 1
+ 2</code></pre><p>函数<code>coalesce</code>可以用来将缺失值替换为另一个值（注意点，表示应用到<code>x</code>的所有条目）：</p><pre><code class="language-julia-repl hljs">julia&gt; coalesce.(x, 0)
+3-element Vector{Int64}:
+ 1
+ 2
+ 0</code></pre><p>函数<a href="../../lib/functions/#DataFrames.dropmissing"><code>dropmissing</code></a>和<a href="../../lib/functions/#DataFrames.dropmissing!"><code>dropmissing!</code></a>可以用来从数据框中删除包含<code>missing</code>值的行，并分别创建一个新的<code>DataFrame</code>或就地修改原始数据。</p><pre><code class="language-julia-repl hljs">julia&gt; using DataFrames
+
+julia&gt; df = DataFrame(i=1:5,
+                      x=[missing, 4, missing, 2, 1],
+                      y=[missing, missing, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;])
+5×3 DataFrame
+ Row │ i      x        y
+     │ Int64  Int64?   String?
+─────┼─────────────────────────
+   1 │     1  missing  missing
+   2 │     2        4  missing
+   3 │     3  missing  c
+   4 │     4        2  d
+   5 │     5        1  e
+
+julia&gt; dropmissing(df)
+2×3 DataFrame
+ Row │ i      x      y
+     │ Int64  Int64  String
+─────┼──────────────────────
+   1 │     4      2  d
+   2 │     5      1  e</code></pre><p>可以指定在哪些列中搜索包含<code>missing</code>值的行以进行删除。</p><pre><code class="language-julia-repl hljs">julia&gt; dropmissing(df, :x)
+3×3 DataFrame
+ Row │ i      x      y
+     │ Int64  Int64  String?
+─────┼───────────────────────
+   1 │     2      4  missing
+   2 │     4      2  d
+   3 │     5      1  e</code></pre><p>默认情况下，<a href="../../lib/functions/#DataFrames.dropmissing"><code>dropmissing</code></a>和<a href="../../lib/functions/#DataFrames.dropmissing!"><code>dropmissing!</code></a>函数在选定用于行删除的列中保持<code>Union{T, Missing}</code>元素类型。要删除<code>Missing</code>部分（如果存在），请将<code>disallowmissing</code>关键字参数设置为<code>true</code>（它将成为未来的默认行为）。</p><pre><code class="language-julia-repl hljs">julia&gt; dropmissing(df, disallowmissing=true)
+2×3 DataFrame
+ Row │ i      x      y
+     │ Int64  Int64  String
+─────┼──────────────────────
+   1 │     4      2  d
+   2 │     5      1  e</code></pre><p>有时，允许或不允许数据框的某些列支持缺失值是有用的。这些操作由<a href="../../lib/functions/#Missings.allowmissing"><code>allowmissing</code></a>、<a href="../../lib/functions/#DataFrames.allowmissing!"><code>allowmissing!</code></a>、<a href="../../lib/functions/#Missings.disallowmissing"><code>disallowmissing</code></a>和<a href="../../lib/functions/#DataFrames.disallowmissing!"><code>disallowmissing!</code></a>函数支持。这是一个例子：</p><pre><code class="language-julia-repl hljs">julia&gt; df = DataFrame(x=1:3, y=4:6)
+3×2 DataFrame
+ Row │ x      y
+     │ Int64  Int64
+─────┼──────────────
+   1 │     1      4
+   2 │     2      5
+   3 │     3      6
+
+julia&gt; allowmissing!(df)
+3×2 DataFrame
+ Row │ x       y
+     │ Int64?  Int64?
+─────┼────────────────
+   1 │      1       4
+   2 │      2       5
+   3 │      3       6</code></pre><p>现在，<code>df</code>允许其所有列中存在缺失值。我们可以利用这个事实，并将<code>df</code>中的一些值设置为<code>missing</code>，例如：</p><pre><code class="language-julia-repl hljs">julia&gt; df[1, 1] = missing
+missing
+
+julia&gt; df
+3×2 DataFrame
+ Row │ x        y
+     │ Int64?   Int64?
+─────┼─────────────────
+   1 │ missing       4
+   2 │       2       5
+   3 │       3       6</code></pre><p>请注意，可以将列选择器作为第二个位置参数传递给<a href="../../lib/functions/#Missings.allowmissing"><code>allowmissing</code></a>和<a href="../../lib/functions/#DataFrames.allowmissing!"><code>allowmissing!</code></a>，以限制只更改我们数据框中的某些列。</p><p>现在，让我们执行相反的操作，不允许在<code>df</code>中有缺失值。我们知道列<code>:y</code>不包含缺失值，所以我们可以使用<a href="../../lib/functions/#Missings.disallowmissing"><code>disallowmissing</code></a>函数，将列选择器作为第二个位置参数传入：</p><pre><code class="language-julia-repl hljs">julia&gt; disallowmissing(df, :y)
+3×2 DataFrame
+ Row │ x        y
+     │ Int64?   Int64
+─────┼────────────────
+   1 │ missing      4
+   2 │       2      5
+   3 │       3      6</code></pre><p>这个操作创建了一个新的<code>DataFrame</code>。如果我们想就地更新<code>df</code>，应该使用<a href="../../lib/functions/#DataFrames.disallowmissing!"><code>disallowmissing!</code></a>函数。</p><p>如果我们尝试使用<code>disallowmissing(df)</code>在整个数据框中不允许缺失值，我们会得到一个错误。然而，通常在所有实际上不包含它们的列中不允许缺失值，但保持有一些<code>missing</code>值的列不变，而无需明确列出它们，这是很有用的。这可以通过传递<code>error=false</code>关键字参数来实现：</p><pre><code class="language-julia-repl hljs">julia&gt; disallowmissing(df, error=false)
+3×2 DataFrame
+ Row │ x        y
+     │ Int64?   Int64
+─────┼────────────────
+   1 │ missing      4
+   2 │       2      5
+   3 │       3      6</code></pre><p><a href="https://github.com/JuliaData/Missings.jl">Missings.jl</a>包提供了一些方便的函数来处理缺失值。</p><p>最常用的一个是<code>passmissing</code>。它是一个高阶函数，接受一些函数<code>f</code>作为其参数，并返回一个新函数，如果其位置参数中有任何<code>missing</code>，则返回<code>missing</code>，否则将函数<code>f</code>应用于这些参数。这个功能与那些不支持将<code>missing</code>值作为参数传递的函数结合使用是有用的。例如，尝试<code>uppercase(missing)</code>会产生一个错误，而以下的操作是可以的：</p><pre><code class="language-julia-repl hljs">julia&gt; passmissing(uppercase)(&quot;a&quot;)
+&quot;A&quot;
+
+julia&gt; passmissing(uppercase)(missing)
+missing</code></pre><p>函数<code>Missings.replace</code>返回一个迭代器，它用另一个值替换<code>missing</code>元素：</p><pre><code class="language-julia-repl hljs">julia&gt; using Missings
+
+julia&gt; Missings.replace(x, 1)
+Missings.EachReplaceMissing{Vector{Union{Missing, Int64}}, Int64}(Union{Missing, Int64}[1, 2, missing], 1)
+
+julia&gt; collect(Missings.replace(x, 1))
+3-element Vector{Int64}:
+ 1
+ 2
+ 1
+
+julia&gt; collect(Missings.replace(x, 1)) == coalesce.(x, 1)
+true</code></pre><p>函数<code>nonmissingtype</code>返回<code>Union{T, Missing}</code>中的元素类型<code>T</code>。</p><pre><code class="language-julia-repl hljs">julia&gt; eltype(x)
+Union{Missing, Int64}
+
+julia&gt; nonmissingtype(eltype(x))
+Int64</code></pre><p><code>missings</code>函数构建支持缺失值的<code>Vector</code>和<code>Array</code>，使用可选的第一个参数来指定元素类型。</p><pre><code class="language-julia-repl hljs">julia&gt; missings(1)
+1-element Vector{Missing}:
+ missing
+
+julia&gt; missings(3)
+3-element Vector{Missing}:
+ missing
+ missing
+ missing
+
+julia&gt; missings(1, 3)
+1×3 Matrix{Missing}:
+ missing  missing  missing
+
+julia&gt; missings(Int, 1, 3)
+1×3 Matrix{Union{Missing, Int64}}:
+ missing  missing  missing</code></pre><p>请参阅<a href="https://docs.julialang.org/en/v1/manual/missing/">Julia手册</a>以获取更多关于缺失值的信息。</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../categorical/">« Categorical Data</a><a class="docs-footer-nextpage" href="../querying_frameworks/">Data manipulation frameworks »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Friday 15 December 2023 13:32">Friday 15 December 2023</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
