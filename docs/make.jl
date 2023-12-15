@@ -50,9 +50,9 @@ makedocs(
 
 deploydocs(
     # options
-    repo = "github.com/JuliaData/DataFrames.jl.git",
+    repo = "https://github.com/HaoxuanGuo/DataFrames.jl",
     target = "build",
     deps = nothing,
     make = nothing,
-    devbranch = "main"
+    devbranch = "zh"
 )
