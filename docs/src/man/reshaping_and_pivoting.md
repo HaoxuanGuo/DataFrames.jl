@@ -252,7 +252,7 @@ julia> unstack(longdf)
 ```jldoctest reshape
 julia> stack(iris, view=true)
 600×4 DataFrame
- 行 │ Species         id     variable     value
+ Row │ Species         id     variable     value
      │ String15        Int64  String       Float64
 ─────┼─────────────────────────────────────────────
    1 │ Iris-setosa         1  SepalLength      5.1
@@ -271,7 +271,7 @@ julia> stack(iris, view=true)
  598 │ Iris-virginica    148  PetalWidth       2.0
  599 │ Iris-virginica    149  PetalWidth       2.3
  600 │ Iris-virginica    150  PetalWidth       1.8
-                                   585行被省略
+                                   585 rows omitted
 ```
 
 这样可以节省内存。为了创建这个视图，定义了几个`AbstractVector`：

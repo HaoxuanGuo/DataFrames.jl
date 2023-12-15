@@ -1284,12 +1284,12 @@ julia> df1
  Row │ Age        Sex          Job    Customers  City
      │ String     String       Int64  String     String
 ─────┼───────────────────────────────────────────────────────
-   1 │ Economics  male             4  Rohit      Kanpur
-   2 │ Economics  female           4  Akshat     Lucknow
+   1 │ Economics  male             2  Rohit      Kanpur
+   2 │ Economics  female           2  Akshat     Lucknow
    3 │ Economics  male             4  Rahul      Bhuvneshwar
-   4 │ Economics  transgender      4  Aayush     Jaipur
-   5 │ Economics  female           4  Prateek    Ranchi
-   6 │ Economics  female           4  Anam       Dehradoon
+   4 │ Economics  transgender      2  Aayush     Jaipur
+   5 │ Economics  female           2  Prateek    Ranchi
+   6 │ Economics  female           3  Anam       Dehradoon
 ```
 
 在DataFrames.jl中，有一些情况下，我们自然地希望实现类似广播的行为，但不允许使用`.`操作。
@@ -1306,12 +1306,12 @@ julia> insertcols!(df1, 1, :Country => "India")
  Row │ Country  Age        Sex          Job    Customers  City
      │ String   String     String       Int64  String     String
 ─────┼────────────────────────────────────────────────────────────────
-   1 │ India    Economics  male             4  Rohit      Kanpur
-   2 │ India    Economics  female           4  Akshat     Lucknow
+   1 │ India    Economics  male             2  Rohit      Kanpur
+   2 │ India    Economics  female           2  Akshat     Lucknow
    3 │ India    Economics  male             4  Rahul      Bhuvneshwar
-   4 │ India    Economics  transgender      4  Aayush     Jaipur
-   5 │ India    Economics  female           4  Prateek    Ranchi
-   6 │ India    Economics  female           4  Anam       Dehradoon
+   4 │ India    Economics  transgender      2  Aayush     Jaipur
+   5 │ India    Economics  female           2  Prateek    Ranchi
+   6 │ India    Economics  female           3  Anam       Dehradoon
 ```
 
 您可以将要插入列的位置作为第二个参数传递给`insertcols!`函数：
