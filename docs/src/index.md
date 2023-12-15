@@ -117,7 +117,7 @@ Depth = 2
 
 只有导出的（即在加载DataFrames.jl包并使用 `using DataFrames` 后，无需使用 `DataFrames.` 限定符即可使用）类型和函数被视为DataFrames.jl包的公共API的一部分。通常，所有这些对象都在此手册中有文档记录（如果有缺少的文档，请在[这里](https://github.com/JuliaData/DataFrames.jl/issues/new)报告问题）。
 
-!!! 注意
+!!! note
 
     在可能的情况下，DataFrames.jl避免对公共和记录的API进行破坏性更改。
 

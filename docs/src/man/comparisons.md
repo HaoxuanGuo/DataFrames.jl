@@ -12,7 +12,7 @@ df = DataFrame(grp=repeat(1:2, 3), x=6:-1:1, y=4:9, z=[3:7; missing], id='a':'f'
 df2 = DataFrame(grp=[1, 3], w=[10, 11])
 ```
 
-!!! 注意
+!!! note
 
     某些操作会改变表格，因此每个操作都假设在原始数据框上进行。
 

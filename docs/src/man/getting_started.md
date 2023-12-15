@@ -11,7 +11,7 @@ Pkg.add("DataFrames")
 
 在本教程的其余部分，我们假设你已经安装了DataFrames包，并且已经输入了`using DataFrames`，将所有相关的变量引入到你当前的命名空间。
 
-!!! 注意
+!!! note
 
     默认情况下，DataFrames.jl在Jupyter Notebook中显示数据帧时，行和列的数量分别限制为25和100。你可以通过改变`ENV["DATAFRAMES_COLUMNS"]`和`ENV["DATAFRAMES_ROWS"]`变量的值来覆盖这种行为，以保持输出的最大列数和行数。如果这些数字等于或小于0，将打印所有的列或行。
 
@@ -200,7 +200,7 @@ julia> propertynames(df)
  :B
 ```
 
-!!! 注意
+!!! note
 
     DataFrames.jl允许使用`Symbol`（如`:A`）和字符串（如`"A"`）进行所有列索引操作，以便于使用。然而，使用`Symbol`稍微快一些，通常应该被优先选择，除非通过字符串操作生成它们。
 
